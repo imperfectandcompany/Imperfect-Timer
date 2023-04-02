@@ -1,0 +1,50 @@
+"Phrases"
+{
+	"RTV Not Allowed"
+	{
+		"#format"		"{1:s}"
+		"en"			"{1} {red}Rock the Vote is not allowed yet."
+	}
+	
+	"RTV Started"
+	{
+		"#format"		"{1:s}"
+		"en"			"{1} {yellow}Rock the Vote has already started."
+	}
+	
+	"Already Voted"
+	{
+ 		"#format"		"{1:s},{2:d},{3:d}"
+	 	"en"			"{1} {yellow}You have already voted to Rock the Vote. ({2} votes, {3} required)"
+	}
+	
+	"Minimal Players Not Met"
+	{
+		"#format"		"{1:s}"
+		"en"			"{1} {yellow}The minimal number of players required has not been met."
+	}
+	
+	"RTV Requested"
+	{
+		"#format"		"{1:s},{2:s},{3:d},{4:d}"
+		"en"			"{1} {2} wants to rock the vote. ({3} votes, {4} required)"
+	}
+
+	"Changing Maps"
+	{
+		"#format"		"{1:s},{2:s}"
+		"en"			"{1} Changing map to {yellow}{2}{default}! Rock the Vote has spoken!"
+	}
+
+	"Rank Requirement"
+	{
+		"#format"		"{1:s},{2:i}"
+		"en"			"{1} {red}You do not meet the rank {2} requirement!"
+	}
+
+	"Point Requirement"
+	{
+		"#format"		"{1:s}"
+		"en"			"{1} {red}You do not meet the point requirement!"
+	}
+}

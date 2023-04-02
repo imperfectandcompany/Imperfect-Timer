@@ -1,0 +1,117 @@
+"Phrases"
+{
+	"Max Nominations"
+	{
+		"#format"		"{1:s}"
+		"en"			"{1} {red}The maximum allowed nominations has been reached."
+	}
+
+	"Map Already In Vote"
+	{
+		"#format"		"{1:s},{2:s}"
+		"en"			"{1} Map {yellow}'{2}' {default}already in the nominations list."
+	}
+
+	"Map Inserted"
+	{
+		"#format"		"{1:s},{2:s}"
+		"en"			"{1} Map {yellow}'{2}' {green}added{default} to the nominations list."
+	}
+	
+	"Map Already Nominated"
+	{
+		"#format"		"{1:s}"
+		"en"			"{1} {yellow}The map you chose has already been nominated."
+	}
+	
+	"Map Nominated"
+	{
+		"#format"		"{1:s},{2:s},{3:s}"
+		"en"			"{1} {2} has nominated {yellow}{3}{default}."
+	}
+
+	"Map Nomination Changed"
+	{
+		"#format"		"{1:s},{2:s},{3:s}"
+		"en"			"{1} {2} has changed their nomination to {yellow}{3}{default}."
+	}
+	
+	"Nominate Title"
+	{
+		"en"			"Nominate Menu\n "
+	}
+
+	"Nominate Tier Title"
+	{
+		"#format"		"{1:i}"
+		"en"			"Nominate Menu\nTier {1} Maps\n "
+	}
+
+	"Bonuses"
+	{
+		"#format"		"{1:i}"
+		"en"			"- Bonuses {1}"
+	}
+
+	"Linear"
+	{
+		"en"			"- Linear"
+	}
+
+	"Staged"
+	{
+		"#format"		"{1:i}"
+		"en"			"- Stages {1}"
+	}
+
+	"Tier"
+	{
+		"#format"		"{1:i}"
+		"en"			"Tier {1}"
+	}
+
+	"Final Map Info"
+	{
+		"#format"		"{1:s},{2:s},{3:s},{4:s}" // 1-map 2-tier 3-stage 4-bonus
+		"en"			"{1} | {2} {3} {4}"
+	}
+
+	"Can't Nominate Current Map"
+	{
+		"#format"		"{1:s}"
+		"en"			"{1} {red}The map you chose is the current map and cannot be nominated"
+	}
+
+	"Map in Exclude List"
+	{
+		"#format"		"{1:s}"
+		"en"			"{1} {red}The map you chose was recently played and cannot be nominated"
+	}
+
+	"Current Map"
+	{
+		"en"			"(Current Map)"
+	}
+
+	"Recently Played"
+	{
+		"en"			"(Recently Played)"
+	}
+
+	"Nominated"
+	{
+		"en"			"(Nominated)"
+	}
+
+	"Map was not found"
+	{
+		"#format"		"{1:s},{2:s}"
+		"en"			"{1} {red}Map {yellow}{2} {red}was not found."
+	}
+
+	"Usage_addmap"
+	{
+		"#foramt"		"{1:s}"
+		"en"			"{1} {yellow}Usage: sm_nominate_addmap <mapname>"
+	}
+}
