@@ -119,11 +119,10 @@ public void OnPluginEnd()
 			SetEntPropEnt(x, Prop_Send, "m_bSpotted", 1);
 			SetEntProp(x, Prop_Send, "m_iHideHUD", 0);
 			SetEntProp(x, Prop_Send, "m_iAccount", 1);
-				CS_SetClientClanTag(x, "");
+			CS_SetClientClanTag(x, "");
 			OnClientDisconnect(x);
 		}
 	}
-
 
 	// set server convars back to default
 	ServerCommand("sm_cvar sv_enablebunnyhopping 0;sv_friction 5.2;sv_accelerate 5.5;sv_airaccelerate 10;sv_maxvelocity 2000;sv_staminajumpcost .08;sv_staminalandcost .050");
