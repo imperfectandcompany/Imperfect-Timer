@@ -96,7 +96,7 @@ public void LoadClientSetting(int client, int setting)
 			case 4: db_viewPlayerPoints(client);
 			case 5: db_viewPlayerOptions(client, g_szSteamID[client]);
 			case 6: db_CheckVIPAdmin(client, g_szSteamID[client]);
-			case 7: db_viewCustomTitles(client, g_szSteamID[client]);
+			case 7: db_viewCustomTitles(client);
 			case 8: db_viewCheckpoints(client, g_szSteamID[client], g_szMapName);
 			case 9: db_LoadCCP(client);
 			case 10: db_viewPRinfo(client, g_szSteamID[client], g_szMapName);
@@ -2638,9 +2638,9 @@ stock Action PrintSpecMessageAll(int client)
 	char szChatRank[64];
 	Format(szChatRank, 64, "%s", g_pr_chat_coloredrank[client]);
 
-	if (GetConVarBool(g_hPointSystem) && GetConVarBool(g_hColoredNames))
+	if (GetConVarBool(g_hPointSystem) && GetConVarBool(g_hColoredNames) && !g_bDbCustomTitleInUse[client])
 		Format(szName, sizeof(szName), "%s%s", g_pr_namecolour[client], szName);
-	else if (GetConVarBool(g_hPointSystem) && GetConVarBool(g_hColoredNames))
+	else if (GetConVarBool(g_hPointSystem) && GetConVarBool(g_hColoredNames) && g_bDbCustomTitleInUse[client])
 		setNameColor(szName, g_iCustomColours[client][0], 64);
 	// fluffys
 
@@ -2850,38 +2850,78 @@ public void CheckRun(int client)
 
 	if (g_bTimerRunning[client])
 	{
-		if (g_fCurrentRunTime[client] > g_fPersonalRecord[client] && !g_bMissedMapBest[client] && !g_bPause[client] && g_iClientInZone[client][2] == 0)
-		{
-			g_bMissedMapBest[client] = true;
-			if (g_fPersonalRecord[client] > 0.0) {
-				CPrintToChat(client, "%t", "MissedMapBest", g_szChatPrefix, g_szPersonalRecord[client]);
-				if (g_iAutoReset[client] && g_iCurrentStyle[client] == 0) {
-					Command_Restart(client, 1);
-					CPrintToChat(client, "%t", "AutoResetMessage1", g_szChatPrefix);
-					CPrintToChat(client, "%t", "AutoResetMessage2", g_szChatPrefix);
-				} else if (g_iAutoReset[client] && g_iCurrentStyle[client] != 0) {
-					CPrintToChat(client, "%t", "AutoResetMessageStyle", g_szChatPrefix, g_szStyleMenuPrint[g_iCurrentStyle[client]]);
-					CPrintToChat(client, "%t", "AutoResetMessage2", g_szChatPrefix);
+		if (g_fCurrentRunTime[client] > g_fPersonalRecord[client] && !g_bMissedMapBest[client] && !g_bPause[client] && g_iClientInZone[client][2] == 0) /// main map
+		{	
+			if (g_iCurrentStyle[client] == 0)
+			{
+				if (g_fPersonalRecord[client] > 0.0)
+				{	
+					g_bMissedMapBest[client] = true;
+					CPrintToChat(client, "%t", "MissedMapBest", g_szChatPrefix, g_szPersonalRecord[client]);
+
+					if (g_iAutoReset[client] && g_iCurrentStyle[client] == 0) 
+					{
+						Command_Restart(client, 1);
+						CPrintToChat(client, "%t", "AutoResetMessage1", g_szChatPrefix);
+						CPrintToChat(client, "%t", "AutoResetMessage2", g_szChatPrefix);
+					} 	
+					else if (g_iAutoReset[client] && g_iCurrentStyle[client] != 0) 
+					{
+						CPrintToChat(client, "%t", "AutoResetMessageStyle", g_szChatPrefix, g_szStyleMenuPrint[g_iCurrentStyle[client]]);
+						CPrintToChat(client, "%t", "AutoResetMessage2", g_szChatPrefix);
+					}
+				}
+			}
+			else if (g_iCurrentStyle[client] > 0)
+			{
+				if (g_fPersonalStyleRecord[g_iCurrentStyle[client]][client] > 0.0 && g_fCurrentRunTime[client] > g_fPersonalStyleRecord[g_iCurrentStyle[client]][client])
+				{	
+					g_bMissedMapBest[client] = true;
+					CPrintToChat(client, "%t", "MissedMapBest", g_szChatPrefix, g_szPersonalStyleRecord[g_iCurrentStyle[client]][client]);
+
+					if (g_iAutoReset[client] && g_iCurrentStyle[client] == 0) 
+					{
+						Command_Restart(client, 1);
+						CPrintToChat(client, "%t", "AutoResetMessage1", g_szChatPrefix);
+						CPrintToChat(client, "%t", "AutoResetMessage2", g_szChatPrefix);
+					} 	
+					else if (g_iAutoReset[client] && g_iCurrentStyle[client] != 0) 
+					{
+						CPrintToChat(client, "%t", "AutoResetMessageStyle", g_szChatPrefix, g_szStyleMenuPrint[g_iCurrentStyle[client]]);
+						CPrintToChat(client, "%t", "AutoResetMessage2", g_szChatPrefix);
+					}
 				}
 			}
 			EmitSoundToClient(client, "buttons/button18.wav", client);
 		}
-		else
-		{
-			if (g_fCurrentRunTime[client] > g_fPersonalRecordBonus[g_iClientInZone[client][2]][client] && g_iClientInZone[client][2] > 0 && !g_bPause[client] && !g_bMissedBonusBest[client])
+		else if (g_fCurrentRunTime[client] > g_fPersonalRecordBonus[g_iClientInZone[client][2]][client] && g_iClientInZone[client][2] > 0 && !g_bPause[client] && !g_bMissedBonusBest[client]) // bonus
+		{	
+			if (g_iCurrentStyle[client] == 0)
 			{
 				if (g_fPersonalRecordBonus[g_iClientInZone[client][2]][client] > 0.0)
 				{
 					g_bMissedBonusBest[client] = true;
 					CPrintToChat(client, "%t", "Misc29", g_szChatPrefix, g_szPersonalRecordBonus[g_iClientInZone[client][2]][client]);
-					if (g_iAutoReset[client] && g_iCurrentStyle[client] == 0) {
+					EmitSoundToClient(client, "buttons/button18.wav", client);
+				}
+			}
+			else if (g_iCurrentStyle[client] > 0)
+			{
+				if (g_fStylePersonalRecordBonus[g_iCurrentStyle[client]][g_iClientInZone[client][2]][client] > 0.0 && g_fCurrentRunTime[client] && g_fCurrentRunTime[client] > g_fStylePersonalRecordBonus[g_iCurrentStyle[client]][g_iClientInZone[client][2]][client])
+				{
+					g_bMissedBonusBest[client] = true;
+					CPrintToChat(client, "%t", "Misc29", g_szChatPrefix, g_szStylePersonalRecordBonus[g_iCurrentStyle[client]][g_iClientInZone[client][2]][client]);
+					if (g_iAutoReset[client] && g_iCurrentStyle[client] == 0) 
+					{
 						Command_Teleport(client, 0);
 						CPrintToChat(client, "%t", "AutoResetMessage1", g_szChatPrefix);
 						CPrintToChat(client, "%t", "AutoResetMessage2", g_szChatPrefix);
-					} else if (g_iAutoReset[client] && g_iCurrentStyle[client] != 0) {
+					} 
+					else if (g_iAutoReset[client] && g_iCurrentStyle[client] != 0) 
+					{
 						CPrintToChat(client, "%t", "AutoResetMessageStyle", g_szChatPrefix, g_szStyleMenuPrint[g_iCurrentStyle[client]]);
 						CPrintToChat(client, "%t", "AutoResetMessage2", g_szChatPrefix);
-					}
+					}				
 					EmitSoundToClient(client, "buttons/button18.wav", client);
 				}
 			}

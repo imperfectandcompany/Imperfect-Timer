@@ -464,9 +464,9 @@ public Action Say_Hook(int client, const char[] command, int argc)
 	PrintToServer("%s: %s", szName, sText);
 
 	// Name colors
-	if (GetConVarBool(g_hPointSystem) && GetConVarBool(g_hColoredNames))
+	if (GetConVarBool(g_hPointSystem) && GetConVarBool(g_hColoredNames) && !g_bDbCustomTitleInUse[client])
 		Format(szName, sizeof(szName), "%s%s", g_pr_namecolour[client], szName);
-	else if (GetConVarBool(g_hPointSystem) && GetConVarBool(g_hColoredNames))
+	else if (GetConVarBool(g_hPointSystem) && GetConVarBool(g_hColoredNames) && g_bDbCustomTitleInUse[client])
 		setNameColor(szName, g_iCustomColours[client][0], 64);
 
 	// Text colors
@@ -632,10 +632,13 @@ public Action Hook_SetTransmit(int entity, int client)
 	if (client != entity && (0 < entity <= MaxClients) && IsValidClient(client))
 	{
 		if (g_bHide[client] && entity != g_SpecTarget[client])
+		{
 			return Plugin_Handled;
-		else
-			if (entity == g_InfoBot && entity != g_SpecTarget[client])
-				return Plugin_Handled;
+		}
+		else if (entity == g_InfoBot && entity != g_SpecTarget[client])
+		{
+			return Plugin_Handled;
+		}
 	}
 	return Plugin_Continue;
 }
@@ -743,8 +746,10 @@ public Action Event_OnRoundStart(Handle event, const char[] name, bool dontBroad
 	return Plugin_Continue;
 }
 
-public Action ApplyStyles(Handle timer, int client)
+public Action ApplyStyles(Handle timer, int userid)
 {
+	int client = GetClientOfUserId(userid);
+
 	if (IsValidClient(client)) {
 		if (g_iCurrentStyle[client] == 5)// 5 slowmo
 			SetEntPropFloat(client, Prop_Data, "m_flLaggedMovementValue", 0.5);
@@ -758,7 +763,7 @@ public Action ApplyStyles(Handle timer, int client)
 public Action OnMultipleTrigger1(int entity, int client)
 {
 	if (IsValidClient(client)) {
-		CreateTimer(0.1, ApplyStyles, client);
+	CreateTimer(0.1, ApplyStyles, GetClientUserId(client));
 	}
 
 	return Plugin_Continue;
@@ -783,7 +788,9 @@ public Action OnEndTouchGravityTrigger(int entity, int other)
 	if (IsValidClient(other) && !IsFakeClient(other))
 	{
 		if (!g_bNoClip[other] && GetConVarBool(g_hGravityFix))
+		{
 			return Plugin_Handled;
+		}
 	}
 	return Plugin_Continue;
 }

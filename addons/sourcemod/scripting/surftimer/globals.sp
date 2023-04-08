@@ -264,7 +264,7 @@ int g_MapRankBonus[MAXZONEGROUPS][MAXPLAYERS + 1];
 int g_OldMapRankBonus[MAXZONEGROUPS][MAXPLAYERS + 1];
 
 // Has the client missed his best bonus time
-int g_bMissedBonusBest[MAXPLAYERS + 1];
+bool g_bMissedBonusBest[MAXPLAYERS + 1];
 
 // Used to make sure bonus finished prints are correct
 int g_tmpBonusCount[MAXZONEGROUPS];
@@ -1566,6 +1566,18 @@ char g_sDecimalTables[][][] = {
 	{ "ck_prinfo",        "PRtimeinzone", },
 	{ "ck_wrcps",         "runtimepro", }
 };  // Required for the float to decimal conversion
+
+char g_sSteamIdTablesCleanup[][] = {
+	"ck_bonus", 
+	"ck_checkpoints", 
+	"ck_latestrecords", 
+	"ck_playeroptions2", 
+	"ck_playerrank", 
+	"ck_playertemp", 
+	"ck_playertimes", 
+	"ck_prinfo", 
+	"ck_vipadmins"
+};
 
 bool g_tables_converted = false;
 
