@@ -140,6 +140,9 @@ void CreateCommands()
 	RegConsoleCmd("sm_toggletitle", Command_ToggleTitle, "[surftimer] [vip] VIPs can toggle their title.");
 //	RegConsoleCmd("sm_joinmsg", Command_JoinMsg, "[surftimer] [vip] Allows a vip to set their join msg");
 	RegConsoleCmd("sm_vmute", Command_Vmute, "[ImperfectGamers] [vip] Toggle vmute on a player");
+	// IG give/remove titles commands
+	RegAdminCmd("sm_givetitle", Command_GiveTitle, ADMFLAG_ROOT, "[ImperfectGamers] Grants a title to a player");
+	RegAdminCmd("sm_removetitle", Command_RemoveTitle, ADMFLAG_ROOT, "[ImperfectGamers] Removes a title from a player");
 
 	// Automatic Donate Commands - REMOVED give/remove VIP commands; we use SourceBans CUSTOM2 flag (flag p)
 //	RegAdminCmd("sm_givevip", VIP_GiveVip, ADMFLAG_ROOT, "[surftimer] Give a player VIP");
