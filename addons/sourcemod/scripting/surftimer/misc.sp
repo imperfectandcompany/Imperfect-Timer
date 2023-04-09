@@ -2892,7 +2892,7 @@ public void CheckRun(int client)
 					}
 				}
 			}
-			EmitSoundToClient(client, "buttons/button18.wav", client);
+//			EmitSoundToClient(client, "buttons/button18.wav", client);		broken feature temporarily removed
 		}
 		else if (g_fCurrentRunTime[client] > g_fPersonalRecordBonus[g_iClientInZone[client][2]][client] && g_iClientInZone[client][2] > 0 && !g_bPause[client] && !g_bMissedBonusBest[client]) // bonus
 		{	
@@ -2902,7 +2902,7 @@ public void CheckRun(int client)
 				{
 					g_bMissedBonusBest[client] = true;
 					CPrintToChat(client, "%t", "Misc29", g_szChatPrefix, g_szPersonalRecordBonus[g_iClientInZone[client][2]][client]);
-					EmitSoundToClient(client, "buttons/button18.wav", client);
+//					EmitSoundToClient(client, "buttons/button18.wav", client);        broken feature temporarily removed
 				}
 			}
 			else if (g_iCurrentStyle[client] > 0)
@@ -2922,7 +2922,7 @@ public void CheckRun(int client)
 						CPrintToChat(client, "%t", "AutoResetMessageStyle", g_szChatPrefix, g_szStyleMenuPrint[g_iCurrentStyle[client]]);
 						CPrintToChat(client, "%t", "AutoResetMessage2", g_szChatPrefix);
 					}				
-					EmitSoundToClient(client, "buttons/button18.wav", client);
+//					EmitSoundToClient(client, "buttons/button18.wav", client);   broken feature temporarily removed
 				}
 			}
 		}
