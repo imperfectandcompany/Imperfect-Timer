@@ -5,6 +5,10 @@
         "#format"	"{1:s}"
 		"en"		"{1} This feature is not impelemented yet."
     }
+	"ig_vip_title_warning_name_colour"
+	{
+		"#format"	"{1:s}"
+	}
 	"PracticeNormal"
 	{
 		"#format"	"{1:s}"
@@ -90,7 +94,7 @@
 		"#format"	"{1:s},{2:s}"
 		"en"		"{1} You are now ranked as {2}"
 	}
-    "CustomTitle"
+	"CustomTitle"
 	{
 		"#format"	"{1:s},{2:s}"
 		"en"		"{1} You are now using the title {2}"
@@ -992,7 +996,7 @@
 	}
 	"SQLTwo4.3"
 	{
-		"en"		"{darkred}----------------------------------------------------------"
+		"en"		"{darkred}------------------------------------------------------------------"
 	}
 	"SQLTwo5"
 	{
@@ -1167,22 +1171,22 @@
 	"Hooks6"
 	{
 		"#format"	"{1:s},{2:s},{3:s},{4:s}"
-		"en"		"{green}{1} {default}| {2} {3}{default}: {4}"
+		"en"		"{green}{1} {default}{2} {3}{default}: {4}"
 	}
 	"Hooks7"
 	{
 		"#format"	"{1:s},{2:s},{3:s},{4:s}"
-		"en"		"*DEAD* {green}{1} {default}| {2} {3}{default}: {4}"
+		"en"		"*DEAD* {green}{1} {default}{2} {3}{default}: {4}"
 	}
 	"Hooks8"
 	{
-		"#format"	"{1:s},{2:s},{3:s}"
-		"en"		"{1} {default}| {2}{default}: {3}"
+		"#format" "{1:s},{2:s},{3:s}"
+		"en"     "{1} {default}| {2} {default}: {3}"
 	}
 	"Hooks9"
 	{
-		"#format"	"{1:s},{2:s},{3:s}"
-		"en"		"*DEAD* {1} {2}{default}: {3}"
+		"#format" "{1:s},{2:s},{3:s}"
+		"en"		"*DEAD* {1} {default}| {2} {default}: {3}"
 	}
 	"Hooks10"
 	{
@@ -1347,7 +1351,8 @@
 	"Misc25"
 	{
 		"#format"	"{1:s},{2:s},{3:s}"
-		"en"		"*SPEC* {1} {grey}{2}{default}: {3}"
+		"en"		"*SPEC* {grey}{2}{default}: {3}"
+//		"en"		"*SPEC* {1} {grey}{2}{default}: {3}"
 	}
 	"Misc26"
 	{
