@@ -618,7 +618,7 @@ public int CustomTitleMenuHandler(Handle menu, MenuAction action, int client, in
             }
             case 2, 3:
             {
-                db_viewPlayerColours(client, g_szSteamID[client], item);
+                db_viewPlayerColours(client, g_szSteamID[client], item - 2);
             }
 		}
 	}

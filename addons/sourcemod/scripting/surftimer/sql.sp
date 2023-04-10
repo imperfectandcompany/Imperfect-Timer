@@ -10227,7 +10227,7 @@ public void db_viewPlayerColours(int client, char szSteamId[32], int type)
 {
 	Handle data = CreateDataPack();
 	WritePackCell(data, client);
-	WritePackCell(data, type); // 10 = name colour, 1 = text colour
+	WritePackCell(data, type); // 0 = name colour, 1 = text colour
 
 	char szQuery[512];
 	Format(szQuery, 512, "SELECT steamid, namecolour, textcolour FROM ck_vipadmins WHERE `steamid` = '%s';", szSteamId);
