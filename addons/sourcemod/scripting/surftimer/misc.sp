@@ -1310,7 +1310,7 @@ public void SetClientDefaults(int client)
 	g_bShowZones[client] = false;
 
 	// Text Colour
-	g_bHasCustomTextColour[client] = false;
+	// g_bHasCustomTextColour[client] = false;
 
 	// VIP
 	g_bCheckCustomTitle[client] = false;
@@ -2624,6 +2624,7 @@ public int GetSkillgroupIndex(int rank, int points)
 
 stock Action PrintSpecMessageAll(int client)
 {
+    // TODO: Why recalcuate everything if we could just pass in the formatted values from say hook
 	char szName[64];
 	GetClientName(client, szName, sizeof(szName));
 	parseColorsFromString(szName, 64);
@@ -2638,14 +2639,18 @@ stock Action PrintSpecMessageAll(int client)
 	char szChatRank[64];
 	Format(szChatRank, 64, "%s", g_pr_chat_coloredrank[client]);
 
-	if (GetConVarBool(g_hPointSystem) && GetConVarBool(g_hColoredNames) && !g_bDbCustomTitleInUse[client])
-		Format(szName, sizeof(szName), "%s%s", g_pr_namecolour[client], szName);
-	else if (GetConVarBool(g_hPointSystem) && GetConVarBool(g_hColoredNames) && g_bDbCustomTitleInUse[client])
-		setNameColor(szName, g_iCustomColours[client][0], 64);
-	// fluffys
-
-	if (g_bHasCustomTextColour[client])
-		setTextColor(szTextToAll, g_iCustomColours[client][1], 1024);
+	if (GetConVarBool(g_hPointSystem) && GetConVarBool(g_hColoredNames))
+    {
+        if (IsPlayerVip(client))
+        {
+            setNameColor(szName, g_iCustomColours[client][0], 64);
+            setTextColor(szTextToAll, g_iCustomColours[client][1], 1024);
+        }
+        else
+        {
+            Format(szName, sizeof(szName), "%s%s", g_pr_namecolour[client], szName);
+        }
+    }
 
 	char szChatRankColor[1024];
 	Format(szChatRankColor, 1024, "%s", g_pr_chat_coloredrank[client]);

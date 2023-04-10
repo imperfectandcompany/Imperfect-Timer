@@ -10196,7 +10196,6 @@ public void SQL_updateCustomTitleCallback(Handle owner, Handle hndl, const char[
     }
 
     g_bDbCustomTitleInUse[client] = false;
-    g_bHasCustomTextColour[client] = false;
     g_bdbHasCustomTitle[client] = false;
 
     if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl))
@@ -10221,10 +10220,8 @@ public void SQL_updateCustomTitleCallback(Handle owner, Handle hndl, const char[
 
 
         // Okay for now but should check either that non VIP's only have white
-        // or set g_bHasCustomTextColour to false
         g_iCustomColours[client][0] = SQL_FetchInt(hndl, 1);
         g_iCustomColours[client][1] = SQL_FetchInt(hndl, 2);
-        g_bHasCustomTextColour[client] = true;
 
         // TODO: Modify to get title based on index instead of title query
         SQL_FetchString(hndl, 0, g_szCustomTitleColoured[client], sizeof(g_szCustomTitleColoured[]));
