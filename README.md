@@ -6,6 +6,8 @@ Some features include:
 - Fixed it so the game timer reflects actual game time
 - Vote Extends add to the timer correctly
 - changed VIP flag to sourcebans Custom2 flag (flag p)
+- custom givetitle/removetitle commands with auto-format for DJ, RAPPER, VIP, SURFER, STAFF
+- set flags - Zoner=O, VIP=P, admin give/remove titles=Q
 
 # SurfTimer for CS:GO
 
