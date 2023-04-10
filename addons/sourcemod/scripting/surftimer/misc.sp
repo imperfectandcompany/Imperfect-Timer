@@ -2625,21 +2625,21 @@ public int GetSkillgroupIndex(int rank, int points)
 stock Action PrintSpecMessageAll(int client)
 {
     // TODO: Why recalcuate everything if we could just pass in the formatted values from say hook
-	char szName[64];
-	GetClientName(client, szName, sizeof(szName));
-	parseColorsFromString(szName, 64);
+    char szName[64];
+    GetClientName(client, szName, sizeof(szName));
+    parseColorsFromString(szName, 64);
 
-	char szTextToAll[1024];
-	GetCmdArgString(szTextToAll, sizeof(szTextToAll));
-	StripQuotes(szTextToAll);
-	if (StrEqual(szTextToAll, "") || StrEqual(szTextToAll, " ") || StrEqual(szTextToAll, "  "))
-		return Plugin_Handled;
+    char szTextToAll[1024];
+    GetCmdArgString(szTextToAll, sizeof(szTextToAll));
+    StripQuotes(szTextToAll);
+    if (StrEqual(szTextToAll, "") || StrEqual(szTextToAll, " ") || StrEqual(szTextToAll, "  "))
+        return Plugin_Handled;
 
-	parseColorsFromString(szTextToAll, 1024);
-	char szChatRank[64];
-	Format(szChatRank, 64, "%s", g_pr_chat_coloredrank[client]);
+    parseColorsFromString(szTextToAll, 1024);
+    char szChatRank[64];
+    Format(szChatRank, 64, "%s", g_pr_chat_coloredrank[client]);
 
-	if (GetConVarBool(g_hPointSystem) && GetConVarBool(g_hColoredNames))
+    if (GetConVarBool(g_hPointSystem) && GetConVarBool(g_hColoredNames))
     {
         if (IsPlayerVip(client))
         {
@@ -2652,61 +2652,61 @@ stock Action PrintSpecMessageAll(int client)
         }
     }
 
-	char szChatRankColor[1024];
-	Format(szChatRankColor, 1024, "%s", g_pr_chat_coloredrank[client]);
-	CGetRankColor(szChatRankColor, 1024);
-	if (GetConVarBool(g_hPointSystem) && GetConVarBool(g_hColoredNames) && !g_bDbCustomTitleInUse[client])
-		Format(szName, sizeof(szName), "{%s}%s", szChatRankColor, szName);
+    char szChatRankColor[1024];
+    Format(szChatRankColor, 1024, "%s", g_pr_chat_coloredrank[client]);
+    CGetRankColor(szChatRankColor, 1024);
+    if (GetConVarBool(g_hPointSystem) && GetConVarBool(g_hColoredNames) && !g_bDbCustomTitleInUse[client])
+        Format(szName, sizeof(szName), "{%s}%s", szChatRankColor, szName);
 
-	if (GetConVarBool(g_hCountry))
-		CPrintToChatAll("%t", "Misc20", g_szCountryCode[client], szChatRank, szName, szTextToAll);
-	else if (GetConVarBool(g_hPointSystem))
-	{
-		if (StrContains(szChatRank, "{blue}") != -1)
-		{
-			char szPlayerTitle2[256][2];
-			ExplodeString(szChatRank, "{blue}", szPlayerTitle2, 2, 256);
-			char szPlayerTitleColor[1024];
-			Format(szPlayerTitleColor, 1024, "%s", szPlayerTitle2[1]);
-			if (GetConVarBool(g_hPointSystem) && GetConVarBool(g_hColoredNames) && !g_bDbCustomTitleInUse[client])
-				Format(szName, sizeof(szName), "{%s}%s", szPlayerTitleColor, szName);
-			if (IsPlayerAlive(client))
-				CPrintToChatAll("%t", "Misc21", szPlayerTitle2[0], szPlayerTitle2[1], szName, szTextToAll);
-			else
-				CPrintToChatAll("%t", "Misc22", szPlayerTitle2[0], szPlayerTitle2[1], szName, szTextToAll);
+    if (GetConVarBool(g_hCountry))
+        CPrintToChatAll("%t", "Misc20", g_szCountryCode[client], szChatRank, szName, szTextToAll);
+    else if (GetConVarBool(g_hPointSystem))
+    {
+        if (StrContains(szChatRank, "{blue}") != -1)
+        {
+            char szPlayerTitle2[256][2];
+            ExplodeString(szChatRank, "{blue}", szPlayerTitle2, 2, 256);
+            char szPlayerTitleColor[1024];
+            Format(szPlayerTitleColor, 1024, "%s", szPlayerTitle2[1]);
+            if (GetConVarBool(g_hPointSystem) && GetConVarBool(g_hColoredNames) && !g_bDbCustomTitleInUse[client])
+                Format(szName, sizeof(szName), "{%s}%s", szPlayerTitleColor, szName);
+            if (IsPlayerAlive(client))
+                CPrintToChatAll("%t", "Misc21", szPlayerTitle2[0], szPlayerTitle2[1], szName, szTextToAll);
+            else
+                CPrintToChatAll("%t", "Misc22", szPlayerTitle2[0], szPlayerTitle2[1], szName, szTextToAll);
 
-			return Plugin_Handled;
-		}
-		else if (StrContains(szChatRank, "{orange}") != -1)
-		{
-			char szPlayerTitle2[256][2];
-			ExplodeString(szChatRank, "{orange}", szPlayerTitle2, 2, 256);
-			char szPlayerTitleColor[1024];
-			Format(szPlayerTitleColor, 1024, "%s", szPlayerTitle2[1]);
-			if (GetConVarBool(g_hPointSystem) && GetConVarBool(g_hColoredNames) && !g_bDbCustomTitleInUse[client])
-				Format(szName, sizeof(szName), "{%s}%s", szPlayerTitleColor, szName);
-			if (IsPlayerAlive(client))
-				CPrintToChatAll("%t", "Misc23", szPlayerTitle2[0], szPlayerTitle2[1], szName, szTextToAll);
-			else
-				CPrintToChatAll("%t", "Misc24", szPlayerTitle2[0], szPlayerTitle2[1], szName, szTextToAll);
+            return Plugin_Handled;
+        }
+        else if (StrContains(szChatRank, "{orange}") != -1)
+        {
+            char szPlayerTitle2[256][2];
+            ExplodeString(szChatRank, "{orange}", szPlayerTitle2, 2, 256);
+            char szPlayerTitleColor[1024];
+            Format(szPlayerTitleColor, 1024, "%s", szPlayerTitle2[1]);
+            if (GetConVarBool(g_hPointSystem) && GetConVarBool(g_hColoredNames) && !g_bDbCustomTitleInUse[client])
+                Format(szName, sizeof(szName), "{%s}%s", szPlayerTitleColor, szName);
+            if (IsPlayerAlive(client))
+                CPrintToChatAll("%t", "Misc23", szPlayerTitle2[0], szPlayerTitle2[1], szName, szTextToAll);
+            else
+                CPrintToChatAll("%t", "Misc24", szPlayerTitle2[0], szPlayerTitle2[1], szName, szTextToAll);
 
-			return Plugin_Handled;
-		}
-		else
-			CPrintToChatAll("%t", "Misc25", szChatRank, szName, szTextToAll);
-		}
-		else
-			CPrintToChatAll("%t", "Misc26", szName, szTextToAll);
+            return Plugin_Handled;
+        }
+        else
+            CPrintToChatAll("%t", "Misc25", szChatRank, szName, szTextToAll);
+        }
+        else
+            CPrintToChatAll("%t", "Misc26", szName, szTextToAll);
 
-	for (int i = 1; i <= MaxClients; i++)
-		if (IsValidClient(i))
-		{
-			if (GetConVarBool(g_hPointSystem))
-				PrintToConsole(i, "%t", "Misc27", g_pr_rankname[client], szName, szTextToAll);
-			else
-				PrintToConsole(i, "%t", "Misc28", szName, szTextToAll);
-		}
-	return Plugin_Handled;
+    for (int i = 1; i <= MaxClients; i++)
+        if (IsValidClient(i))
+        {
+            if (GetConVarBool(g_hPointSystem))
+                PrintToConsole(i, "%t", "Misc27", g_pr_rankname[client], szName, szTextToAll);
+            else
+                PrintToConsole(i, "%t", "Misc28", szName, szTextToAll);
+        }
+    return Plugin_Handled;
 }
 // http:// pastebin.com/YdUWS93H
 public bool CheatFlag(const char[] voice_inputfromfile, bool isCommand, bool remove)
