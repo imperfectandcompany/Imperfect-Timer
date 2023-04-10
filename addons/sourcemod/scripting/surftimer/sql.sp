@@ -10200,8 +10200,6 @@ public void SQL_updateCustomTitleCallback(Handle owner, Handle hndl, const char[
 
     if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl))
     {
-        g_bdbHasCustomTitle[client] = true; // TODO: Not always true, need to fix
-
         // fluffys temp fix for scoreboard
         // int RankValue[SkillGroup];
         // int index = GetSkillgroupIndex(g_pr_rank[client], g_pr_points[client]);
@@ -10225,34 +10223,59 @@ public void SQL_updateCustomTitleCallback(Handle owner, Handle hndl, const char[
 
         // TODO: Modify to get title based on index instead of title query
         SQL_FetchString(hndl, 0, g_szCustomTitleColoured[client], sizeof(g_szCustomTitleColoured[]));
+        TrimString(g_szCustomTitleColoured[client]);
+
         char szTitle[1024];
         Format(szTitle, 1024, "%s", g_szCustomTitleColoured[client]);
         parseColorsFromString(szTitle, 1024);
         Format(g_szCustomTitle[client], 1024, "%s", szTitle);
+        TrimString(g_szCustomTitle[client]);
 
-        if (SQL_FetchInt(hndl, 3) == 0)
+        if (StrEqual(g_szCustomTitleColoured[client], "") || StrEqual(g_szCustomTitleColoured[client], "0"))
         {
+            g_bdbHasCustomTitle[client] = false;
             g_bDbCustomTitleInUse[client] = false;
+
+            CPrintToChat(client, "%t", "CustomTitleMissing", g_szChatPrefix);
+        }
+        else if (StrEqual(g_szCustomTitle[client], "") || StrEqual(g_szCustomTitle[client], "0"))
+        {
+            char szName[64];
+            GetClientName(client, szName, 64);
+
+            g_bdbHasCustomTitle[client] = false;
+            g_bDbCustomTitleInUse[client] = false;
+            CPrintToChat(client, "%t", "CustomTitleMissing", g_szChatPrefix);
+            LogError("[surftimer] DB Error: Client \"%s\" has a color only title.", szName);
         }
         else
         {
-            char old_pr_rankname[1024];
-            if (!StrEqual(g_pr_rankname[client], "", false))
+            g_bdbHasCustomTitle[client] = true;
+
+            if (SQL_FetchInt(hndl, 3) == 0)
             {
-                Format(old_pr_rankname, 1024, "%s", g_pr_rankname[client]);
+                g_bDbCustomTitleInUse[client] = false;
             }
-
-            Format(g_pr_chat_coloredrank[client], 1024, "%s", g_szCustomTitleColoured[client]);
-            Format(g_pr_chat_coloredrank_style[client], 1024, "%s", g_szCustomTitleColoured[client]);
-            
-            Format(g_pr_rankname[client], 1024, "%s", g_szCustomTitle[client]);
-            Format(g_pr_rankname_style[client], 1024, "%s", g_szCustomTitle[client]);
-
-            g_bDbCustomTitleInUse[client] = true;
-
-            if (!StrEqual(g_pr_rankname[client], old_pr_rankname, false))
+            else
             {
-                CPrintToChat(client, "%t", "CustomTitle", g_szChatPrefix, g_pr_chat_coloredrank[client]);
+                char old_pr_rankname[1024];
+                if (!StrEqual(g_pr_rankname[client], "", false))
+                {
+                    Format(old_pr_rankname, 1024, "%s", g_pr_rankname[client]);
+                }
+
+                Format(g_pr_chat_coloredrank[client], 1024, "%s", g_szCustomTitleColoured[client]);
+                Format(g_pr_chat_coloredrank_style[client], 1024, "%s", g_szCustomTitleColoured[client]);
+                
+                Format(g_pr_rankname[client], 1024, "%s", g_szCustomTitle[client]);
+                Format(g_pr_rankname_style[client], 1024, "%s", g_szCustomTitle[client]);
+
+                g_bDbCustomTitleInUse[client] = true;
+
+                if (!StrEqual(g_pr_rankname[client], old_pr_rankname, false))
+                {
+                    CPrintToChat(client, "%t", "CustomTitle", g_szChatPrefix, g_pr_chat_coloredrank[client]);
+                }
             }
         }
 

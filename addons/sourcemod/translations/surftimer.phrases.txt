@@ -95,6 +95,11 @@
 		"#format"	"{1:s},{2:s}"
 		"en"		"{1} You are now using the title {2}"
 	}
+    "CustomTitleMissing"
+	{
+		"#format"	"{1:s}"
+		"en"		"{1} You do not have a custom title."
+	}
 	"Rc_PlayerRankStart"
 	{
 		"#format"	"{1:s}"
