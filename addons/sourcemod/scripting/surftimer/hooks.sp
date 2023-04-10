@@ -467,8 +467,11 @@ public Action Say_Hook(int client, const char[] command, int argc)
     {
         if (IsPlayerVip(client))
         {
-            setNameColor(szName, g_iCustomColours[client][0], 64);
-            setTextColor(sText, g_iCustomColours[client][1], 1024);
+            int nameColorIndex = g_iCustomColours[client][0];
+            setColor(szName, sizeof(szName), nameColorIndex);
+
+            int textColorIndex = g_iCustomColours[client][1];
+            setColor(sText, sizeof(sText), textColorIndex);
         }
         else
         {

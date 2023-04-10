@@ -10291,97 +10291,86 @@ public void db_viewPlayerColours(int client, char szSteamId[32], int type)
 
 public void SQL_ViewPlayerColoursCallback(Handle owner, Handle hndl, const char[] error, any data)
 {
-	ResetPack(data);
-	int client = ReadPackCell(data);
-	int type = ReadPackCell(data); // 0 = name colour, 1 = text colour
-	CloseHandle(data);
+    ResetPack(data);
+    int client = ReadPackCell(data);
+    int type = ReadPackCell(data); // 0 = name colour, 1 = text colour
+    CloseHandle(data);
 
-	if (hndl == null)
-	{
-		LogError("[surftimer] SQL Error (SQL_ViewPlayerColoursCallback): %s", error);
-		return;
-	}
+    if (hndl == null)
+    {
+        LogError("[surftimer] SQL Error (SQL_ViewPlayerColoursCallback): %s", error);
+        return;
+    }
 
-	if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl))
-	{
-		char szSteamId[32];
-		int colour[2];
+    if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl))
+    {
+        char szSteamId[32];
+        int color[2];
 
-		// get the result
-		SQL_FetchString(hndl, 0, szSteamId, 32);
-		colour[0] = SQL_FetchInt(hndl, 1);
-		colour[1] = SQL_FetchInt(hndl, 2);
+        // get the result
+        SQL_FetchString(hndl, 0, szSteamId, 32);
+        color[0] = SQL_FetchInt(hndl, 1);
+        color[1] = SQL_FetchInt(hndl, 2);
 
-		char szColour[32];
-		getColourName(client, szColour, 32, colour[type]);
+        char szColorName[32];
+        int colorIndex = color[type];
+        getColorName(szColorName, sizeof(szColorName), colorIndex);
 
-		// change title menu
-		char szTitle[1024];
-		char szType[32];
-		switch (type)
-		{
-			case 0:
-			{
-				Format(szTitle, 1024, "Changing Name Colour (Current: %s):\n \n", szColour);
-				Format(szType, 32, "name");
-			}
-			case 1:
-			{
-				Format(szTitle, 1024, "Changing Text Colour (Current: %s):\n \n", szColour);
-				Format(szType, 32, "text");
-			}
-		}
+        // change title menu
+        char szTitle[1024];
+        char szType[32];
+        switch (type)
+        {
+            case 0:
+            {
+                Format(szTitle, 1024, "Changing Name Color (Current: %s):\n \n", szColorName);
+                Format(szType, 32, "name");
+            }
+            case 1:
+            {
+                Format(szTitle, 1024, "Changing Text Color (Current: %s):\n \n", szColorName);
+                Format(szType, 32, "text");
+            }
+        }
 
-		Menu changeColoursMenu = new Menu(changeColoursMenuHandler);
+        Menu changeColoursMenu = new Menu(changeColoursMenuHandler);
 
-		changeColoursMenu.SetTitle(szTitle);
+        changeColoursMenu.SetTitle(szTitle);
 
-		changeColoursMenu.AddItem(szType, "White");
-		changeColoursMenu.AddItem(szType, "Dark Red");
-		changeColoursMenu.AddItem(szType, "Green");
-		changeColoursMenu.AddItem(szType, "Lime Green");
-		changeColoursMenu.AddItem(szType, "Blue");
-		changeColoursMenu.AddItem(szType, "Light Green");
-		changeColoursMenu.AddItem(szType, "Red");
-		changeColoursMenu.AddItem(szType, "Grey");
-		changeColoursMenu.AddItem(szType, "Yellow");
-		changeColoursMenu.AddItem(szType, "Light Blue");
-		changeColoursMenu.AddItem(szType, "Dark Blue");
-		changeColoursMenu.AddItem(szType, "Pink");
-		changeColoursMenu.AddItem(szType, "Light Red");
-		changeColoursMenu.AddItem(szType, "Purple");
-		changeColoursMenu.AddItem(szType, "Dark Grey");
-		changeColoursMenu.AddItem(szType, "Orange");
+        for (int i = 0; i < sizeof(g_szColors); i++)
+        {
+            changeColoursMenu.AddItem(szType, g_szColors[i]);
+        }
 
-		changeColoursMenu.ExitButton = true;
-		changeColoursMenu.Display(client, MENU_TIME_FOREVER);
-	}
+        changeColoursMenu.ExitButton = true;
+        changeColoursMenu.Display(client, MENU_TIME_FOREVER);
+    }
 }
 
 public int changeColoursMenuHandler(Handle menu, MenuAction action, int client, int item)
 {
-	if (action == MenuAction_Select)
-	{
-		char szType[32];
-		int type;
-		GetMenuItem(menu, item, szType, sizeof(szType));
-		if (StrEqual(szType, "name"))
-			type = 0;
-		else if (StrEqual(szType, "text"))
-			type = 1;
-		if(item >= 0 && item <= 15)
-			db_updateColours(client, g_szSteamID[client], item, type);
-	}
-	else if (action == MenuAction_Cancel)
-	{
-		CustomTitleMenu(client);
-	}
-	else if (action == MenuAction_End)
-	{
-		delete menu;
-	}
+    if (action == MenuAction_Select)
+    {
+        char szType[32];
+        int type;
+        GetMenuItem(menu, item, szType, sizeof(szType));
+        if (StrEqual(szType, "name"))
+            type = 0;
+        else if (StrEqual(szType, "text"))
+            type = 1;
+        
+        db_updateColours(client, g_szSteamID[client], item, type);
+    }
+    else if (action == MenuAction_Cancel)
+    {
+        CustomTitleMenu(client);
+    }
+    else if (action == MenuAction_End)
+    {
+        delete menu;
+    }
 
-	return 0;
+    return 0;
 }
 
 public void db_updateColours(int client, char szSteamId[32], int newColour, int type)

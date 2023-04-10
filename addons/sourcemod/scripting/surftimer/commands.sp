@@ -575,22 +575,22 @@ public void CustomTitleMenu(int client)
     // Only display colors if the user is a VIP
     if (IsPlayerVip(client))
     {
-        // Get the users name color
-        char nameColor[32];
-        getColourName(client, nameColor, 32, g_iCustomColours[client][0]);
-
         // Create the menu name color text
+        char nameColorName[32];
+        int nameColorIndex = g_iCustomColours[client][0];
+        getColorName(nameColorName, sizeof(nameColorName), nameColorIndex);
+        
         char menuNameColor[128];
-        Format(menuNameColor, 128, "Name Color: %s", nameColor);
+        Format(menuNameColor, sizeof(menuNameColor), "Name Color: %s", nameColorName);
         AddMenuItem(menu, "Name Color", menuNameColor);
 
-        // Get the users text color
-        char textColor[32];
-        getColourName(client, textColor, 32, g_iCustomColours[client][1]);
-
         // Create the menu text color text
+        char textColorName[32];
+        int textColorIndex = g_iCustomColours[client][1];
+        getColorName(textColorName, sizeof(textColorName), textColorIndex);
+
         char menuTextColor[128];
-        Format(menuTextColor, 128, "Text Color: %s", textColor);
+        Format(menuTextColor, 128, "Text Color: %s", textColorName);
         AddMenuItem(menu, "Text Color", menuTextColor);
     }
 

@@ -640,82 +640,14 @@ public void readMapycycle()
 	return;
 }
 
-public void setNameColor(char[] ClientName, int index, int size)
+public void getColorName(char[] buffer, int size, int colorIndex)
 {
-	switch (index)
-	{
-		case 0: // 1st Rank
-			Format(ClientName, size, "%c%s", WHITE, ClientName);
-		case 1:
-			Format(ClientName, size, "%c%s", DARKRED, ClientName);
-		case 2:
-			Format(ClientName, size, "%c%s", GREEN, ClientName);
-		case 3:
-			Format(ClientName, size, "%c%s", LIMEGREEN, ClientName);
-		case 4:
-			Format(ClientName, size, "%c%s", BLUE, ClientName);
-		case 5:
-			Format(ClientName, size, "%c%s", LIGHTGREEN, ClientName);
-		case 6:
-			Format(ClientName, size, "%c%s", RED, ClientName);
-		case 7:
-			Format(ClientName, size, "%c%s", GRAY, ClientName);
-		case 8:
-			Format(ClientName, size, "%c%s", YELLOW, ClientName);
-		case 9:
-			Format(ClientName, size, "%c%s", LIGHTBLUE, ClientName);
-		case 10:
-			Format(ClientName, size, "%c%s", DARKBLUE, ClientName);
-		case 11:
-			Format(ClientName, size, "%c%s", PINK, ClientName);
-		case 12:
-			Format(ClientName, size, "%c%s", LIGHTRED, ClientName);
-		case 13:
-			Format(ClientName, size, "%c%s", PURPLE, ClientName);
-		case 14:
-			Format(ClientName, size, "%c%s", DARKGREY, ClientName);
-		case 15:
-			Format(ClientName, size, "%c%s", ORANGE, ClientName);
-	}
+    Format(buffer, size, g_szColors[colorIndex]);
 }
 
-public void setTextColor(char[] ClientText, int index, int size)
+public void setColor(char[] buffer, int size, int colorIndex)
 {
-	switch (index)
-	{
-		case 0: // 1st Rank
-			Format(ClientText, size, "%c%s", WHITE, ClientText);
-		case 1:
-			Format(ClientText, size, "%c%s", DARKRED, ClientText);
-		case 2:
-			Format(ClientText, size, "%c%s", GREEN, ClientText);
-		case 3:
-			Format(ClientText, size, "%c%s", LIMEGREEN, ClientText);
-		case 4:
-			Format(ClientText, size, "%c%s", BLUE, ClientText);
-		case 5:
-			Format(ClientText, size, "%c%s", LIGHTGREEN, ClientText);
-		case 6:
-			Format(ClientText, size, "%c%s", RED, ClientText);
-		case 7:
-			Format(ClientText, size, "%c%s", GRAY, ClientText);
-		case 8:
-			Format(ClientText, size, "%c%s", YELLOW, ClientText);
-		case 9:
-			Format(ClientText, size, "%c%s", LIGHTBLUE, ClientText);
-		case 10:
-			Format(ClientText, size, "%c%s", DARKBLUE, ClientText);
-		case 11:
-			Format(ClientText, size, "%c%s", PINK, ClientText);
-		case 12:
-			Format(ClientText, size, "%c%s", LIGHTRED, ClientText);
-		case 13:
-			Format(ClientText, size, "%c%s", PURPLE, ClientText);
-		case 14:
-			Format(ClientText, size, "%c%s", DARKGREY, ClientText);
-		case 15:
-			Format(ClientText, size, "%c%s", ORANGE, ClientText);
-	}
+    Format(buffer, size, "%c%s", colorIndex + 1, buffer);
 }
 
 public void parseColorsFromString(char[] ParseString, int size)
@@ -2643,8 +2575,11 @@ stock Action PrintSpecMessageAll(int client)
     {
         if (IsPlayerVip(client))
         {
-            setNameColor(szName, g_iCustomColours[client][0], 64);
-            setTextColor(szTextToAll, g_iCustomColours[client][1], 1024);
+            int nameColorIndex = g_iCustomColours[client][0];
+            setColor(szName, sizeof(szName), nameColorIndex);
+
+            int textColorIndex = g_iCustomColours[client][1];
+            setColor(szTextToAll, sizeof(szTextToAll), textColorIndex);
         }
         else
         {
@@ -4555,31 +4490,6 @@ int[] GetSpeedColourCSD(int client, int speed, int type)
 		else
 			return displayColor; //WHITE
 	}
-}
-
-public void getColourName(int client, char[] buffer, int length, int colour)
-{
-	switch (colour)
-	{
-		case 0: Format(buffer, length, "White");
-		case 1: Format(buffer, length, "Dark Red");
-		case 2: Format(buffer, length, "Green");
-		case 3: Format(buffer, length, "Limegreen");
-		case 4: Format(buffer, length, "Blue");
-		case 5: Format(buffer, length, "Lightgreen");
-		case 6: Format(buffer, length, "Red");
-		case 7: Format(buffer, length, "Grey");
-		case 8: Format(buffer, length, "Yellow");
-		case 9: Format(buffer, length, "Lightblue");
-		case 10: Format(buffer, length, "Darkblue");
-		case 11: Format(buffer, length, "Pink");
-		case 12: Format(buffer, length, "Light Red");
-		case 13: Format(buffer, length, "Purple");
-		case 14: Format(buffer, length, "Dark Grey");
-		case 15: Format(buffer, length, "Orange");
-	}
-
-	return;
 }
 
 public void diffForHumans(int unix, char[] buffer, int size, int type)
