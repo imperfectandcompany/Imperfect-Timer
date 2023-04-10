@@ -141,13 +141,13 @@ void CreateCommands()
 //	RegConsoleCmd("sm_joinmsg", Command_JoinMsg, "[surftimer] [vip] Allows a vip to set their join msg");
 	RegConsoleCmd("sm_vmute", Command_Vmute, "[ImperfectGamers] [vip] Toggle vmute on a player");
 	// IG give/remove titles commands
-	RegAdminCmd("sm_givetitle", Command_GiveTitle, ADMFLAG_ROOT, "[ImperfectGamers] Grants a title to a player");
-	RegAdminCmd("sm_removetitle", Command_RemoveTitle, ADMFLAG_ROOT, "[ImperfectGamers] Removes a title from a player");
+	RegAdminCmd("sm_givetitle", Command_GiveTitle, ADMFLAG_CUSTOM3, "[ImperfectGamers] Grants a title to a player");
+	RegAdminCmd("sm_removetitle", Command_RemoveTitle, ADMFLAG_CUSTOM3, "[ImperfectGamers] Removes a title from a player");
 
 	// Automatic Donate Commands - REMOVED give/remove VIP commands; we use SourceBans CUSTOM2 flag (flag p)
 //	RegAdminCmd("sm_givevip", VIP_GiveVip, ADMFLAG_ROOT, "[surftimer] Give a player VIP");
 //	RegAdminCmd("sm_removevip", VIP_RemoveVip, ADMFLAG_ROOT, "[surftimer] Remove a players VIP");
-	RegAdminCmd("sm_addcredits", VIP_GiveCredits, ADMFLAG_ROOT, "[surftimer] Give a player credits");
+	RegAdminCmd("sm_addcredits", VIP_GiveCredits, ADMFLAG_CUSTOM3, "[surftimer] Give a player credits");
 
 	// WRCPs
 	RegConsoleCmd("sm_wrcp", Client_Wrcp, "[surftimer] displays stage times for map");
