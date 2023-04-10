@@ -559,18 +559,18 @@ public void CustomTitleMenu(int client)
 
     // Create the menu title text
     char menuTitle[256];
-    Format(menuTitle, 256, "Custom Titles Menu: %s", clientName);
+    Format(menuTitle, 256, "Custom Titles Menu");
     SetMenuTitle(menu, menuTitle);
+
+    // Display the current title state
+    char menuTitleEnabled[256];
+    Format(menuTitleEnabled, 256, "Enable Title: %s", g_bDbCustomTitleInUse[client] ? "True" : "False");
+    AddMenuItem(menu, "Enable Title", menuTitleEnabled);
 
     // Display the current title of the user
     char menuCurrentTitle[256];
     Format(menuCurrentTitle, 256, "Current Title: %s", g_szCustomTitle[client]);
     AddMenuItem(menu, "Current Title", menuCurrentTitle);
-
-    // Display the current title state
-    char menuTitleEnabled[256];
-    Format(menuTitleEnabled, 256, "Title Enabled: %s", g_bDbCustomTitleInUse[client] ? "True" : "False");
-    AddMenuItem(menu, "Title Enabled", menuTitleEnabled);
 
     // Only display colors if the user is a VIP
     if (IsPlayerVip(client))
@@ -614,11 +614,11 @@ public int CustomTitleMenuHandler(Handle menu, MenuAction action, int client, in
         {
             case 0:
             {
-                db_viewCustomTitles(client);
+                db_toggleCustomPlayerTitle(client);
             }
             case 1:
             {
-                db_toggleCustomPlayerTitle(client);
+                db_viewCustomTitles(client);
             }
             case 2, 3:
             {
