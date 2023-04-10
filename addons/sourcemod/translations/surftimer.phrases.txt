@@ -1,5 +1,10 @@
 "Phrases"
 {
+    "NotImplemented"
+    {
+        "#format"	"{1:s}"
+		"en"		"{1} This feature is not impelemented yet."
+    }
 	"PracticeNormal"
 	{
 		"#format"	"{1:s}"
@@ -84,6 +89,16 @@
 	{
 		"#format"	"{1:s},{2:s}"
 		"en"		"{1} You are now ranked as {2}"
+	}
+    "CustomTitle"
+	{
+		"#format"	"{1:s},{2:s}"
+		"en"		"{1} You are now using the title {2}"
+	}
+    "CustomTitleMissing"
+	{
+		"#format"	"{1:s}"
+		"en"		"{1} You do not have a custom title."
 	}
 	"Rc_PlayerRankStart"
 	{

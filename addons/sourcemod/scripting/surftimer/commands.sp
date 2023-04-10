@@ -539,50 +539,100 @@ public Action Command_Vip(int client, int args)
 	return Plugin_Handled;
 }
 
+/**
+ * Creates the CustomTitle Menu for the user.
+ */
 public void CustomTitleMenu(int client)
 {
-	if (!IsPlayerVip(client))
-		return;
+    // Make sure the client is valid
+    if (!IsValidClient(client))
+    {
+        return;
+    }
 
-	char szName[64], szSteamID[32], szColour[3][96], szTitle[256], szItem[128], szItem2[128];
+    // Create the menu object
+    Menu menu = CreateMenu(CustomTitleMenuHandler);
 
-	GetClientName(client, szName, 64);
-	getSteamIDFromClient(client, szSteamID, 32);
-	getColourName(client, szColour[0], 32, g_iCustomColours[client][0]);
-	getColourName(client, szColour[1], 32, g_iCustomColours[client][1]);
+    // Get the clients name
+    char clientName[64];
+    GetClientName(client, clientName, 64);
 
-	Format(szTitle, 256, "Custom Titles Menu: %s\nCustom Title: %s\n \n", szName, g_szCustomTitle[client]);
-	Format(szItem, 128, "Name Colour: %s", szColour[0]);
-	Format(szItem2, 128, "Text Colour: %s", szColour[1]);
+    // Create the menu title text
+    char menuTitle[256];
+    Format(menuTitle, 256, "Custom Titles Menu");
+    SetMenuTitle(menu, menuTitle);
 
-	Menu menu = CreateMenu(CustomTitleMenuHandler);
-	SetMenuTitle(menu, szTitle);
+    // Display the current title state
+    char menuTitleEnabled[256];
+    Format(menuTitleEnabled, 256, "Enable Title: %s", g_bDbCustomTitleInUse[client] ? "True" : "False");
+    AddMenuItem(menu, "Enable Title", menuTitleEnabled);
 
-	AddMenuItem(menu, "Name Colour", szItem);
-	AddMenuItem(menu, "Text Colour", szItem2);
-	if (g_bDbCustomTitleInUse[client])
-		AddMenuItem(menu, "disable", "Enable Title");
-	else
-		AddMenuItem(menu, "disable", "Disable Title");
+    // Display the current title of the user
+    char menuCurrentTitle[256];
+    Format(menuCurrentTitle, 256, "Current Title: %s", g_szCustomTitle[client]);
+    AddMenuItem(menu, "Current Title", menuCurrentTitle);
 
-	SetMenuOptionFlags(menu, MENUFLAG_BUTTON_EXIT);
-	DisplayMenu(menu, client, MENU_TIME_FOREVER);
+    // Only display colors if the user is a VIP
+    if (IsPlayerVip(client))
+    {
+        // Create the menu name color text
+        char nameColorName[32];
+        int nameColorIndex = g_iCustomColours[client][0];
+        getColorName(nameColorName, sizeof(nameColorName), nameColorIndex);
+        
+        char menuNameColor[128];
+        Format(menuNameColor, sizeof(menuNameColor), "Name Color: %s", nameColorName);
+        AddMenuItem(menu, "Name Color", menuNameColor);
+
+        // Create the menu text color text
+        char textColorName[32];
+        int textColorIndex = g_iCustomColours[client][1];
+        getColorName(textColorName, sizeof(textColorName), textColorIndex);
+
+        char menuTextColor[128];
+        Format(menuTextColor, 128, "Text Color: %s", textColorName);
+        AddMenuItem(menu, "Text Color", menuTextColor);
+    }
+
+    SetMenuOptionFlags(menu, MENUFLAG_BUTTON_EXIT);
+    DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
 
-public int CustomTitleMenuHandler(Handle menu, MenuAction action, int param1, int param2)
+/**
+ * The handle for the CustomTitle Menu.
+ */
+public int CustomTitleMenuHandler(Handle menu, MenuAction action, int client, int item)
 {
-	if (action == MenuAction_Select)
-	{
-		switch (param2)
-		{
-			case 0, 1: db_viewPlayerColours(param1, g_szSteamID[param1], param2);
-			case 2: db_toggleCustomPlayerTitle(param1);
-		}
-	}
-	else if (action == MenuAction_End)
-		delete menu;
+    g_bFromCustomTitleMenu[client] = false;
 
-	return 0;
+    // If the client selected an option, process it
+    if (action == MenuAction_Select)
+    {
+        g_bFromCustomTitleMenu[client] = true;
+
+        switch (item)
+        {
+            case 0:
+            {
+                db_toggleCustomPlayerTitle(client);
+            }
+            case 1:
+            {
+                db_viewCustomTitles(client);
+            }
+            case 2, 3:
+            {
+                db_viewPlayerColours(client, g_szSteamID[client], item - 2);
+            }
+        }
+    }
+    else if (action == MenuAction_End)
+    {
+        // Delete the menu object if the exit item is selected
+        delete menu;
+    }
+
+    return 0;
 }
 
 public Action Command_VoteExtend(int client, int args)
@@ -627,18 +677,26 @@ public void VoteExtend(int client)
 
 public Action Command_normalMode(int client, int args)
 {
-	if (!IsValidClient(client))
-		return Plugin_Handled;
+    if (!IsValidClient(client))
+        return Plugin_Handled;
 
-	Client_Stop(client, 1);
+    Client_Stop(client, 1);
 
-	if (g_bPracticeMode[client])
-		g_bPracticeMode[client] = false;
+    if (g_bPracticeMode[client])
+        g_bPracticeMode[client] = false;
 
-	Command_Restart(client, 1);
+    // TODO: Create a function for each style to do this
+    g_iCurrentStyle[client] = 0;
+    g_iInitalStyle[client] = 0;
+    Format(g_szInitalStyle[client], 128, "Normal");
+    Format(g_szStyleHud[client], 32, "");
+    g_bRankedStyle[client] = true;
+    g_bFunStyle[client] = false;
 
-	CPrintToChat(client, "%t", "PracticeNormal", g_szChatPrefix);
-	return Plugin_Handled;
+    Command_Restart(client, 1);
+
+    CPrintToChat(client, "%t", "PracticeNormal", g_szChatPrefix);
+    return Plugin_Handled;
 }
 
 public Action Command_createPlayerCheckpoint(int client, int args)
@@ -4483,12 +4541,15 @@ public int CSDOptionsHandler(Menu menu, MenuAction action, int param1, int param
 	return 0;
 }
 
-// fluffys
 public Action Command_PlayerTitle(int client, int args)
 {
-	if (IsValidClient(client) && IsPlayerVip(client, _, true))
-		CustomTitleMenu(client);
-	return Plugin_Handled;
+    // Make sure the client is valid
+    if (IsValidClient(client))
+    {
+        CustomTitleMenu(client);
+    }
+
+    return Plugin_Handled;
 }
 
 public Action Command_SetDbTitle(int client, int args)

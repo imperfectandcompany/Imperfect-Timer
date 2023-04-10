@@ -17,13 +17,13 @@
 #define RED 0x07
 #define GRAY 0x08
 #define YELLOW 0x09
-#define ORANGE 0x10
 #define DARKGREY 0x0A
 #define BLUE 0x0B
 #define DARKBLUE 0x0C
 #define LIGHTBLUE 0x0D
 #define PINK 0x0E
 #define LIGHTRED 0x0F
+#define ORANGE 0x10
 #define ORCHID 0x1A // not sure if this is orchid color in csgo.
 
 // Paths for folders and files
@@ -428,10 +428,29 @@ bool g_bdbHasCustomTitle[MAXPLAYERS + 1] = {false, ...};
 // 0 = name, 1 = text;
 int g_iCustomColours[MAXPLAYERS + 1][2];
 
+char g_szColors[16][32] = {
+    "White",
+    "Dark Red",
+    "Purple",
+    "Green",
+    "Light Green",
+    "Lime Green",
+    "Red",
+    "Gray",
+    "Yellow",
+    "Dark Gray",
+    "Blue",
+    "Dark Blue",
+    "Light Blue",
+    "Pink",
+    "Light Red",
+    "Orange",
+};
+
 // int g_idbCustomTextColour[MAXPLAYERS + 1] = {0, ...};
-bool g_bHasCustomTextColour[MAXPLAYERS + 1] = {false, ...};
+// bool g_bHasCustomTextColour[MAXPLAYERS + 1] = {false, ...};
 bool g_bCustomTitleAccess[MAXPLAYERS + 1] = {false, ...};
-bool g_bUpdatingColours[MAXPLAYERS + 1];
+bool g_bFromCustomTitleMenu[MAXPLAYERS + 1];
 // char g_szsText[MAXPLAYERS + 1];
 
 // to be used with sm_p, stage sr
