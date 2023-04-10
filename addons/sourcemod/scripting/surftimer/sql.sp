@@ -10341,7 +10341,7 @@ public void SQL_ViewPlayerColoursCallback(Handle owner, Handle hndl, const char[
 		changeColoursMenu.AddItem(szType, "Green");
 		changeColoursMenu.AddItem(szType, "Lime Green");
 		changeColoursMenu.AddItem(szType, "Blue");
-		changeColoursMenu.AddItem(szType, "Moss Green");
+		changeColoursMenu.AddItem(szType, "Light Green");
 		changeColoursMenu.AddItem(szType, "Red");
 		changeColoursMenu.AddItem(szType, "Grey");
 		changeColoursMenu.AddItem(szType, "Yellow");
