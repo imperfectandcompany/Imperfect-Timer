@@ -603,14 +603,18 @@ public void CustomTitleMenu(int client)
  */
 public int CustomTitleMenuHandler(Handle menu, MenuAction action, int client, int item)
 {
+    g_bFromCustomTitleMenu[client] = false;
+
     // If the client selected an option, process it
-	if (action == MenuAction_Select)
-	{
-		switch (item)
-		{
-			case 0:
+    if (action == MenuAction_Select)
+    {
+        g_bFromCustomTitleMenu[client] = true;
+
+        switch (item)
+        {
+            case 0:
             {
-                // TODO: Implement function for switching titles
+                db_viewCustomTitles(client);
             }
             case 1:
             {
@@ -620,15 +624,15 @@ public int CustomTitleMenuHandler(Handle menu, MenuAction action, int client, in
             {
                 db_viewPlayerColours(client, g_szSteamID[client], item - 2);
             }
-		}
-	}
-	else if (action == MenuAction_End)
+        }
+    }
+    else if (action == MenuAction_End)
     {
         // Delete the menu object if the exit item is selected
-		delete menu;
+        delete menu;
     }
 
-	return 0;
+    return 0;
 }
 
 public Action Command_VoteExtend(int client, int args)

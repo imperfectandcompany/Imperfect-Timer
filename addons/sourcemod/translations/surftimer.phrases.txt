@@ -1,5 +1,10 @@
 "Phrases"
 {
+    "NotImplemented"
+    {
+        "#format"	"{1:s}"
+		"en"		"{1} This feature is not impelemented yet."
+    }
 	"PracticeNormal"
 	{
 		"#format"	"{1:s}"

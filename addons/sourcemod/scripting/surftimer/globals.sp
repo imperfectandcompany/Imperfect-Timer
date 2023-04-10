@@ -431,7 +431,7 @@ int g_iCustomColours[MAXPLAYERS + 1][2];
 // int g_idbCustomTextColour[MAXPLAYERS + 1] = {0, ...};
 bool g_bHasCustomTextColour[MAXPLAYERS + 1] = {false, ...};
 bool g_bCustomTitleAccess[MAXPLAYERS + 1] = {false, ...};
-bool g_bUpdatingColours[MAXPLAYERS + 1];
+bool g_bFromCustomTitleMenu[MAXPLAYERS + 1];
 // char g_szsText[MAXPLAYERS + 1];
 
 // to be used with sm_p, stage sr

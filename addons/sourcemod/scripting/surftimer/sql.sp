@@ -9890,7 +9890,7 @@ public void SQL_CheckVIPAdminCallback(Handle owner, Handle hndl, const char[] er
 
 	if (g_bCheckCustomTitle[client])
 	{
-		db_viewCustomTitles(client);
+		db_updateCustomTitle(client);
 		g_bCheckCustomTitle[client] = false;
 	}
 
@@ -10041,7 +10041,7 @@ public void SQL_insertCustomPlayerTitleCallback(Handle owner, Handle hndl, const
 
 	if (client)
 	{
-		db_viewCustomTitles(client);
+		db_updateCustomTitle(client);
 	}
 }
 
@@ -10060,7 +10060,7 @@ public void SQL_updateCustomPlayerTitleCallback(Handle owner, Handle hndl, const
 
 	if (client)
 	{
-		db_viewCustomTitles(client);
+		db_updateCustomTitle(client);
 	}
 }
 
@@ -10079,7 +10079,7 @@ public void SQL_updateCustomPlayerNameColourCallback(Handle owner, Handle hndl, 
 
 	if (client)
 	{
-		db_viewCustomTitles(client);
+		db_updateCustomTitle(client);
 	}
 }
 
@@ -10098,7 +10098,7 @@ public void SQL_updateCustomPlayerTextColourCallback(Handle owner, Handle hndl, 
 
 	if (client)
 	{
-		db_viewCustomTitles(client);
+		db_updateCustomTitle(client);
 	}
 }
 
@@ -10127,14 +10127,58 @@ public void SQL_toggleCustomPlayerTitleCallback(Handle owner, Handle hndl, const
 	}
 }
 
+/**
+ * TODO: Use to create a query for retrieving a list of custom titles for the client.
+ */
 public void db_viewCustomTitles(int client)
+{
+    char szQuery[728];
+    Format(szQuery, 728, "SELECT `title` FROM `ck_vipadmins` WHERE `steamid` = '%s'", g_szSteamID[client]);
+    SQL_TQuery(g_hDb, SQL_viewCustomTitlesCallback, szQuery, GetClientUserId(client), DBPrio_Low);
+}
+
+/**
+ * TODO: Use to display a menu of available custom titles to the client and set a global variable for the choosen one.
+ */
+public void SQL_viewCustomTitlesCallback(Handle owner, Handle hndl, const char[] error, int userid)
+{
+    int client = GetClientOfUserId(userid);
+
+    if (!client)
+    {
+        return;
+    }
+
+    if (hndl == INVALID_HANDLE)
+    {
+        LogError("[surftimer] SQL Error (SQL_viewCustomTitlesCallback): %s ", error);
+        if (!g_bSettingsLoaded[client])
+            LoadClientSetting(client, g_iSettingToLoad[client]);
+        return;
+    }
+
+    // TODO: Create a menu for choosing a custom title
+    // The selected title should update an index pointer to it
+    // This could be stored in another column or as the first item in the title column
+    CPrintToChat(client, "%t", "NotImplemented", g_szChatPrefix);
+
+    db_updateCustomTitle(client);
+}
+
+/**
+ * TODO: Modify to not retrieve the title(s) but the index instead
+ */
+public void db_updateCustomTitle(int client)
 {
 	char szQuery[728];
 	Format(szQuery, 728, "SELECT `title`, `namecolour`, `textcolour`, `inuse`, `vip`, `zoner`, `joinmsg` FROM `ck_vipadmins` WHERE `steamid` = '%s'", g_szSteamID[client]);
-	SQL_TQuery(g_hDb, SQL_viewCustomTitlesCallback, szQuery, GetClientUserId(client), DBPrio_Low);
+	SQL_TQuery(g_hDb, SQL_updateCustomTitleCallback, szQuery, GetClientUserId(client), DBPrio_Low);
 }
 
-public void SQL_viewCustomTitlesCallback(Handle owner, Handle hndl, const char[] error, int userid) 
+/**
+ * TODO: Modify to use select the new title based on the index
+ */
+public void SQL_updateCustomTitleCallback(Handle owner, Handle hndl, const char[] error, int userid) 
 {
     int client = GetClientOfUserId(userid);
 
@@ -10145,7 +10189,7 @@ public void SQL_viewCustomTitlesCallback(Handle owner, Handle hndl, const char[]
 
     if (hndl == null)
     {
-        LogError("[surftimer] SQL Error (SQL_viewCustomTitlesCallback): %s ", error);
+        LogError("[surftimer] SQL Error (SQL_updateCustomTitleCallback): %s ", error);
         if (!g_bSettingsLoaded[client])
             LoadClientSetting(client, g_iSettingToLoad[client]);
         return;
@@ -10157,31 +10201,37 @@ public void SQL_viewCustomTitlesCallback(Handle owner, Handle hndl, const char[]
 
     if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl))
     {
-        g_bdbHasCustomTitle[client] = true;
-        SQL_FetchString(hndl, 0, g_szCustomTitleColoured[client], sizeof(g_szCustomTitleColoured[]));
+        g_bdbHasCustomTitle[client] = true; // TODO: Not always true, need to fix
 
         // fluffys temp fix for scoreboard
         // int RankValue[SkillGroup];
         // int index = GetSkillgroupIndex(g_pr_rank[client], g_pr_points[client]);
         // GetArrayArray(g_hSkillGroups, index, RankValue[0]);
-        Format(g_pr_chat_coloredrank[client], 1024, "%s", g_szCustomTitleColoured[client]);
-        Format(g_pr_chat_coloredrank_style[client], 1024, "%s", g_szCustomTitleColoured[client]);
 
-        char szTitle[1024];
-        Format(szTitle, 1024, "%s", g_szCustomTitleColoured[client]);
-        parseColorsFromString(szTitle, 1024);
-        Format(g_pr_rankname[client], 1024, "%s", szTitle);
-        Format(g_pr_rankname_style[client], 1024, "%s", szTitle);
-        Format(g_szCustomTitle[client], 1024, "%s", szTitle);
-
-        if (!SQL_IsFieldNull(hndl, 6) && IsPlayerVip(client, true, false))
-            SQL_FetchString(hndl, 6, g_szCustomJoinMsg[client], sizeof(g_szCustomJoinMsg));
-        else
-            Format(g_szCustomJoinMsg[client], sizeof(g_szCustomJoinMsg), "none");
+        // if (!SQL_IsFieldNull(hndl, 6) && IsPlayerVip(client, true, false))
+        //     SQL_FetchString(hndl, 6, g_szCustomJoinMsg[client], sizeof(g_szCustomJoinMsg));
+        // else
+        //     Format(g_szCustomJoinMsg[client], sizeof(g_szCustomJoinMsg), "none");
 
         // SQL_FetchString(hndl, 7, g_szCustomSounds[client][0], sizeof(g_szCustomSounds));
         // SQL_FetchString(hndl, 8, g_szCustomSounds[client][1], sizeof(g_szCustomSounds));
         // SQL_FetchString(hndl, 9, g_szCustomSounds[client][2], sizeof(g_szCustomSounds));
+
+        // setNameColor(szName, g_szdbCustomNameColour[client], 64);
+
+
+        // Okay for now but should check either that non VIP's only have white
+        // or set g_bHasCustomTextColour to false
+        g_iCustomColours[client][0] = SQL_FetchInt(hndl, 1);
+        g_iCustomColours[client][1] = SQL_FetchInt(hndl, 2);
+        g_bHasCustomTextColour[client] = true;
+
+        // TODO: Modify to get title based on index instead of title query
+        SQL_FetchString(hndl, 0, g_szCustomTitleColoured[client], sizeof(g_szCustomTitleColoured[]));
+        char szTitle[1024];
+        Format(szTitle, 1024, "%s", g_szCustomTitleColoured[client]);
+        parseColorsFromString(szTitle, 1024);
+        Format(g_szCustomTitle[client], 1024, "%s", szTitle);
 
         if (SQL_FetchInt(hndl, 3) == 0)
         {
@@ -10189,32 +10239,37 @@ public void SQL_viewCustomTitlesCallback(Handle owner, Handle hndl, const char[]
         }
         else
         {
-            g_bDbCustomTitleInUse[client] = true;
-            g_iCustomColours[client][0] = SQL_FetchInt(hndl, 1);
-            // setNameColor(szName, g_szdbCustomNameColour[client], 64);
+            char old_pr_rankname[1024];
+            if (!StrEqual(g_pr_rankname[client], "", false))
+            {
+                Format(old_pr_rankname, 1024, "%s", g_pr_rankname[client]);
+            }
 
-            g_iCustomColours[client][1] = SQL_FetchInt(hndl, 2);
-            g_bHasCustomTextColour[client] = true;
-            CPrintToChat(client, "%t", "CustomTitle", g_szChatPrefix, g_pr_chat_coloredrank[client]);
+            Format(g_pr_chat_coloredrank[client], 1024, "%s", g_szCustomTitleColoured[client]);
+            Format(g_pr_chat_coloredrank_style[client], 1024, "%s", g_szCustomTitleColoured[client]);
+            
+            Format(g_pr_rankname[client], 1024, "%s", g_szCustomTitle[client]);
+            Format(g_pr_rankname_style[client], 1024, "%s", g_szCustomTitle[client]);
+
+            g_bDbCustomTitleInUse[client] = true;
+
+            if (!StrEqual(g_pr_rankname[client], old_pr_rankname, false))
+            {
+                CPrintToChat(client, "%t", "CustomTitle", g_szChatPrefix, g_pr_chat_coloredrank[client]);
+            }
+        }
+
+        if (g_bFromCustomTitleMenu[client])
+        {
+            CustomTitleMenu(client);
         }
     }
-    else
-    {
-        g_bDbCustomTitleInUse[client] = false;
-        g_bHasCustomTextColour[client] = false;
-        g_bdbHasCustomTitle[client] = false;
-    }
-
-    if (g_bUpdatingColours[client])
-        CustomTitleMenu(client);
-
-    g_bUpdatingColours[client] = false;
 
     if (!g_bSettingsLoaded[client])
     {
         g_fTick[client][1] = GetGameTime();
         float tick = g_fTick[client][1] - g_fTick[client][0];
-        LogQueryTime("[SurfTimer] %s: Finished db_viewCustomTitles in %fs", g_szSteamID[client], tick);
+        LogQueryTime("[SurfTimer] %s: Finished db_updateCustomTitle in %fs", g_szSteamID[client], tick);
 
         g_fTick[client][0] = GetGameTime();
         LoadClientSetting(client, g_iSettingToLoad[client]);
@@ -10352,8 +10407,7 @@ public void SQL_UpdatePlayerColoursCallback(Handle owner, Handle hndl, const cha
 		return;
 	}
 
-	g_bUpdatingColours[client] = true;
-	db_viewCustomTitles(client);
+	db_updateCustomTitle(client);
 }
 
 // fluffys end custom titles
