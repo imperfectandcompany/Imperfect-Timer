@@ -10104,17 +10104,17 @@ public void SQL_updateCustomPlayerTextColourCallback(Handle owner, Handle hndl, 
 
 public void db_toggleCustomPlayerTitle(int client)
 {
-	char szQuery[512];
-	if (g_bDbCustomTitleInUse[client])
-	{
-		Format(szQuery, 512, "UPDATE `ck_vipadmins` SET `inuse` = '0' WHERE `steamid` = '%s';", g_szSteamID[client]);
-	}
-	else
-	{
-		Format(szQuery, 512, "UPDATE `ck_vipadmins` SET `inuse` = '1' WHERE `steamid` = '%s';", g_szSteamID[client]);
-	}
+    char szQuery[512];
+    if (g_bDbCustomTitleInUse[client])
+    {
+        Format(szQuery, 512, "UPDATE `ck_vipadmins` SET `inuse` = '0' WHERE `steamid` = '%s';", g_szSteamID[client]);
+    }
+    else
+    {
+        Format(szQuery, 512, "UPDATE `ck_vipadmins` SET `inuse` = '1' WHERE `steamid` = '%s';", g_szSteamID[client]);
+    }
 
-	SQL_TQuery(g_hDb, SQL_insertCustomPlayerTitleCallback, szQuery, GetClientUserId(client), DBPrio_Low);
+    SQL_TQuery(g_hDb, SQL_insertCustomPlayerTitleCallback, szQuery, GetClientUserId(client), DBPrio_Low);
 }
 
 public void SQL_toggleCustomPlayerTitleCallback(Handle owner, Handle hndl, const char[] error, int userid)
@@ -10195,6 +10195,7 @@ public void SQL_viewCustomTitlesCallback(Handle owner, Handle hndl, const char[]
 
             g_iCustomColours[client][1] = SQL_FetchInt(hndl, 2);
             g_bHasCustomTextColour[client] = true;
+            CPrintToChat(client, "%t", "CustomTitle", g_szChatPrefix, g_pr_chat_coloredrank[client]);
         }
     }
     else

@@ -85,6 +85,11 @@
 		"#format"	"{1:s},{2:s}"
 		"en"		"{1} You are now ranked as {2}"
 	}
+    "CustomTitle"
+	{
+		"#format"	"{1:s},{2:s}"
+		"en"		"{1} You are now using the title {2}"
+	}
 	"Rc_PlayerRankStart"
 	{
 		"#format"	"{1:s}"
