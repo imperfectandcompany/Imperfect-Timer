@@ -4536,8 +4536,8 @@ public Action Command_PlayerTitle(int client, int args)
     {
         CustomTitleMenu(client);
     }
-	
-	return Plugin_Handled;
+
+    return Plugin_Handled;
 }
 
 public Action Command_SetDbTitle(int client, int args)
