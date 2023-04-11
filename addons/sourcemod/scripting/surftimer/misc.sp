@@ -29,7 +29,7 @@ public void SetBotQuota()
 		SetConVarInt(hBotQuota, count, false, false);
 	}
 
-	CloseHandle(hBotQuota);
+	delete hBotQuota;
 
 	return;
 }
@@ -570,8 +570,7 @@ public void readHints()
 	else
 		SetFailState("[surftimer] %s is empty or does not exist.", HINTS_PATH);
 
-	if (fileHandle != null)
-		CloseHandle(fileHandle);
+	delete fileHandle;
 
 	return;
 }
@@ -601,8 +600,7 @@ public void readMultiServerMapcycle()
 	else
 		SetFailState("[surftimer] %s is empty or does not exist.", MULTI_SERVER_MAPCYCLE);
 
-	if (fileHandle != null)
-		CloseHandle(fileHandle);
+	delete fileHandle;
 
 	return;
 }
@@ -685,7 +683,7 @@ public void checkSpawnPoints()
 		// Check if spawn point has been added to the database with !addspawn
 		char szQuery[256];
 		Format(szQuery, 256, "SELECT pos_x, pos_y, pos_z, ang_x, ang_y, ang_z FROM ck_spawnlocations WHERE mapname = '%s' AND zonegroup = 0;", g_szMapName);
-		Handle query = SQL_Query(g_hDb, szQuery);
+		Handle query = SQL_Query(g_hDb, szQuery); // TODO: Threaded Query?
 		if (query == INVALID_HANDLE)
 		{
 			char szError[255];
@@ -703,7 +701,7 @@ public void checkSpawnPoints()
 				f_spawnAngle[1] = SQL_FetchFloat(query, 4);
 				f_spawnAngle[2] = SQL_FetchFloat(query, 5);
 			}
-			CloseHandle(query);
+			delete query;
 		}
 
 		if (f_spawnLocation[0] == 0.0 && f_spawnLocation[1] == 0.0 && f_spawnLocation[2] == 0.0) // No spawnpoint added to map with !addspawn, try to find spawns from map
@@ -2418,8 +2416,8 @@ public void SetSkillGroups()
 				PushArrayArray(g_hSkillGroups, RankValue, sizeof(RankValue));
 			} while (KvGotoNextKey(hKeyValues));
 		}
-		if (hKeyValues != null)
-			CloseHandle(hKeyValues);
+
+		delete hKeyValues;
 	}
 	else
 		SetFailState("[surftimer] %s not found.", SKILLGROUP_PATH);
@@ -3198,8 +3196,8 @@ public void SetInfoBotName(int ent)
 	Handle hTmp;
 	hTmp = FindConVar("mp_timelimit");
 	int iTimeLimit = GetConVarInt(hTmp);
-	if (hTmp != null)
-		CloseHandle(hTmp);
+	delete hTmp;
+
 	if (GetConVarBool(g_hMapEnd) && iTimeLimit > 0)
 		Format(szBuffer, sizeof(szBuffer), "%s (in %s)", sNextMap, szTime);
 	else
@@ -4719,7 +4717,7 @@ public void ReadDefaultTitlesWhitelist()
 			if (StrContains(line, "//", true) == -1)
 				PushArrayString(g_DefaultTitlesWhitelist, line);
 		}
-		CloseHandle(whitelist);
+		delete whitelist;
 	}
 	else
 		LogError("[SurfTimer] %s not found", DEFAULT_TITLES_WHITELIST_PATH);

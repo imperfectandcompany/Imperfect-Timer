@@ -107,7 +107,7 @@ public void db_selectVipStatus(char szSteamId[128], int iVip, int type)
 		SQL_TQuery(g_hDb, db_removeVipCallback, szQuery, client, DBPrio_Low);
 	}
 }
-
+/*
 public void db_selectVipStatusCallback(Handle owner, Handle hndl, const char[] error, any pack)
 {
 	char szSteamId[128];
@@ -261,3 +261,4 @@ public void db_updateVip(char szSteamId[128], int iVip)
 	Format(szQuery, 256, "UPDATE ck_vipadmins SET title = '%s', namecolour = %i, textcolour = 0, inuse = 1, vip = %i WHERE steamid = '%s';", szTitle, colour, iVip, szSteamId);
 	SQL_TQuery(g_hDb, db_insertVipCallback, szQuery, pack, DBPrio_Low);
 }
+*/
