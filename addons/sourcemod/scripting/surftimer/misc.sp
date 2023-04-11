@@ -2167,7 +2167,7 @@ public void FormatTimeFloat(int client, float time, int type, char[] string, int
 		Format(string, 32, "%s %s %s %s", szHours, szMinutes, szSeconds, szMilli);
 	}
 	else
-	// 00:00:00
+	// 00:00.00 -> 00:00:00.00
 	if (type == 3)
 	{
 		if (imilli < 10)
@@ -2185,10 +2185,10 @@ public void FormatTimeFloat(int client, float time, int type, char[] string, int
 		if (ihours > 0)
 		{
 			Format(szHours, 16, "%d", ihours);
-			Format(string, length, "%s:%s:%s:%s", szHours, szMinutes, szSeconds, szMilli);
+			Format(string, length, "%s:%s:%s.%s", szHours, szMinutes, szSeconds, szMilli);
 		}
 		else
-			Format(string, length, "%s:%s:%s", szMinutes, szSeconds, szMilli);
+			Format(string, length, "%s:%s.%s", szMinutes, szSeconds, szMilli);
 	}
 	// Time: 00:00:00
 	if (type == 4)
@@ -2213,7 +2213,7 @@ public void FormatTimeFloat(int client, float time, int type, char[] string, int
 		else
 			Format(string, length, "Time: %s:%s", szMinutes, szSeconds);
 	}
-	// goes to 00:00
+	// goes to 00.00
 	if (type == 5)
 	{
 		if (imilli < 10)
@@ -2232,15 +2232,15 @@ public void FormatTimeFloat(int client, float time, int type, char[] string, int
 		{
 
 			Format(szHours, 16, "%d", ihours);
-			Format(string, length, "%s:%s:%s:%s", szHours, szMinutes, szSeconds, szMilli);
+			Format(string, length, "%s:%s:%s.%s", szHours, szMinutes, szSeconds, szMilli);
 		}
 		else
 			if (iminutes > 0)
-				Format(string, length, "%s:%s:%s", szMinutes, szSeconds, szMilli);
+				Format(string, length, "%s:%s.%s", szMinutes, szSeconds, szMilli);
 			else
-				Format(string, length, "%s:%ss", szSeconds, szMilli);
+				Format(string, length, "%s.%ss", szSeconds, szMilli);
 	}
-	// +-00:00:00
+	// +-00:00.00
 	if (type == 6)
 	{
 		if (imilli < 10)
@@ -2258,10 +2258,10 @@ public void FormatTimeFloat(int client, float time, int type, char[] string, int
 		if (ihours > 0)
 		{
 			Format(szHours, 16, "%d", ihours);
-			Format(string, length, "%s:%s:%s:%s", szHours, szMinutes, szSeconds, szMilli);
+			Format(string, length, "%s:%s:%s.%s", szHours, szMinutes, szSeconds, szMilli);
 		}
 		else
-			Format(string, length, "%s:%s:%s", szMinutes, szSeconds, szMilli);
+			Format(string, length, "%s:%s.%s", szMinutes, szSeconds, szMilli);
 
 		ReplaceString(string, length, "-", "");
 
@@ -3339,7 +3339,7 @@ public void CenterHudDead(int client)
 			}
 			else 
 			{
-				obsAika = "<font color='#f32'>00:00:00</font>";
+				obsAika = "<font color='#f32'>00:00.00</font>";
 			}
 			
 			char timerText[32] = "";
