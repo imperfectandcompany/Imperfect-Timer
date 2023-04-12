@@ -76,6 +76,7 @@ public Action VIP_GiveCredits(int client, int args)
 }
 
 // SQL
+/*
 public void db_selectVipStatus(char szSteamId[128], int iVip, int type)
 {
 	char szQuery[256];
@@ -107,7 +108,7 @@ public void db_selectVipStatus(char szSteamId[128], int iVip, int type)
 		SQL_TQuery(g_hDb, db_removeVipCallback, szQuery, client, DBPrio_Low);
 	}
 }
-/*
+
 public void db_selectVipStatusCallback(Handle owner, Handle hndl, const char[] error, any pack)
 {
 	char szSteamId[128];
