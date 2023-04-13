@@ -10104,9 +10104,16 @@ public void SQL_updateCustomPlayerTextColourCallback(Handle owner, Handle hndl, 
 
 public void db_toggleCustomPlayerTitle(int client)
 {
-    char szQuery[512];
-    if (g_bDbCustomTitleInUse[client])
+    // Let the user know if they don't have a custom title
+    if (!g_bdbHasCustomTitle[client])
     {
+        CPrintToChat(client, "%t", "CustomTitleMissing", g_szChatPrefix);
+    }
+
+    char szQuery[512];
+    if (g_bDbCustomTitleInUse[client] || !g_bdbHasCustomTitle[client])
+    {
+        // Always set inuse to 0 if no custom title
         Format(szQuery, 512, "UPDATE `ck_vipadmins` SET `inuse` = '0' WHERE `steamid` = '%s';", g_szSteamID[client]);
     }
     else
@@ -10200,100 +10207,84 @@ public void SQL_updateCustomTitleCallback(Handle owner, Handle hndl, const char[
         return;
     }
 
-    g_bDbCustomTitleInUse[client] = false;
-    g_bdbHasCustomTitle[client] = false;
-
-    if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl))
+    // If no results are returned from the SQL request, the user doesn't have an entry so create one
+    if (!SQL_HasResultSet(hndl) || !SQL_FetchRow(hndl))
     {
-        // fluffys temp fix for scoreboard
-        // int RankValue[SkillGroup];
-        // int index = GetSkillgroupIndex(g_pr_rank[client], g_pr_points[client]);
-        // GetArrayArray(g_hSkillGroups, index, RankValue[0]);
+        char szName[64];
+        GetClientName(client, szName, 64);
+        LogError("[surftimer] SQL_updateCustomTitleCallback: Invalid SQL request for ck_vipadmins, creating client \"%s\".", szName);
+        
+        char szSteamID[64];
+        getSteamIDFromClient(client, szSteamID, 64);
 
-        // if (!SQL_IsFieldNull(hndl, 6) && IsPlayerVip(client, true, false))
-        //     SQL_FetchString(hndl, 6, g_szCustomJoinMsg[client], sizeof(g_szCustomJoinMsg));
-        // else
-        //     Format(g_szCustomJoinMsg[client], sizeof(g_szCustomJoinMsg), "none");
+        char szQuery[512];
+        Format(szQuery, 512, "INSERT IGNORE INTO ck_vipadmins (steamid) VALUES ('%s')", szSteamID);
+        SQL_TQuery(g_hDb, SQL_InsertPlayerCallBack, szQuery, client, DBPrio_Low);
 
-        // SQL_FetchString(hndl, 7, g_szCustomSounds[client][0], sizeof(g_szCustomSounds));
-        // SQL_FetchString(hndl, 8, g_szCustomSounds[client][1], sizeof(g_szCustomSounds));
-        // SQL_FetchString(hndl, 9, g_szCustomSounds[client][2], sizeof(g_szCustomSounds));
-
-        // setNameColor(szName, g_szdbCustomNameColour[client], 64);
-
-
+        g_iCustomColours[client][0] = 0;
+        g_iCustomColours[client][1] = 0;
+        g_szCustomTitleColoured[client] = "0";
+        g_bDbCustomTitleInUse[client] = false;
+    }
+    else
+    {
         // Okay for now but should check either that non VIP's only have white
         g_iCustomColours[client][0] = SQL_FetchInt(hndl, 1);
         g_iCustomColours[client][1] = SQL_FetchInt(hndl, 2);
 
         // TODO: Modify to get title based on index instead of title query
         SQL_FetchString(hndl, 0, g_szCustomTitleColoured[client], sizeof(g_szCustomTitleColoured[]));
-        TrimString(g_szCustomTitleColoured[client]);
 
-        char szTitle[1024];
-        Format(szTitle, 1024, "%s", g_szCustomTitleColoured[client]);
-        parseColorsFromString(szTitle, 1024);
-        Format(g_szCustomTitle[client], 1024, "%s", szTitle);
-        TrimString(g_szCustomTitle[client]);
-
-        if (StrEqual(g_szCustomTitleColoured[client], "") || StrEqual(g_szCustomTitleColoured[client], "0"))
-        {
-            g_bdbHasCustomTitle[client] = false;
-            g_bDbCustomTitleInUse[client] = false;
-
-            CPrintToChat(client, "%t", "CustomTitleMissing", g_szChatPrefix);
-        }
-        else if (StrEqual(g_szCustomTitle[client], "") || StrEqual(g_szCustomTitle[client], "0"))
-        {
-            char szName[64];
-            GetClientName(client, szName, 64);
-
-            g_bdbHasCustomTitle[client] = false;
-            g_bDbCustomTitleInUse[client] = false;
-            CPrintToChat(client, "%t", "CustomTitleMissing", g_szChatPrefix);
-            LogError("[surftimer] DB Error: Client \"%s\" has a color only title.", szName);
-        }
-        else
-        {
-            g_bdbHasCustomTitle[client] = true;
-
-            if (SQL_FetchInt(hndl, 3) == 0)
-            {
-                g_bDbCustomTitleInUse[client] = false;
-            }
-            else
-            {
-                char old_pr_rankname[1024];
-                if (!StrEqual(g_pr_rankname[client], "", false))
-                {
-                    Format(old_pr_rankname, 1024, "%s", g_pr_rankname[client]);
-                }
-
-                Format(g_pr_chat_coloredrank[client], 1024, "%s", g_szCustomTitleColoured[client]);
-                Format(g_pr_chat_coloredrank_style[client], 1024, "%s", g_szCustomTitleColoured[client]);
-                
-                Format(g_pr_rankname[client], 1024, "%s", g_szCustomTitle[client]);
-                Format(g_pr_rankname_style[client], 1024, "%s", g_szCustomTitle[client]);
-
-                g_bDbCustomTitleInUse[client] = true;
-
-                if (!StrEqual(g_pr_rankname[client], old_pr_rankname, false))
-                {
-                    CPrintToChat(client, "%t", "CustomTitle", g_szChatPrefix, g_pr_chat_coloredrank[client]);
-                }
-            }
-        }
-
-        if (g_bFromCustomTitleMenu[client])
-        {
-            CustomTitleMenu(client);
-        }
+        // Set the inuse state
+        g_bDbCustomTitleInUse[client] = SQL_FetchInt(hndl, 3) ? true : false;
     }
-    else
+    
+    char szTitle[1024];
+    TrimString(g_szCustomTitleColoured[client]);
+    Format(szTitle, 1024, "%s", g_szCustomTitleColoured[client]);
+    parseColorsFromString(szTitle, 1024);
+    Format(g_szCustomTitle[client], 1024, "%s", szTitle);
+    TrimString(g_szCustomTitle[client]);
+
+    g_bdbHasCustomTitle[client] = true;
+
+    if (StrEqual(g_szCustomTitleColoured[client], "") || StrEqual(g_szCustomTitleColoured[client], "0"))
     {
+        g_bdbHasCustomTitle[client] = false;
+    }
+    else if (StrEqual(g_szCustomTitle[client], "") || StrEqual(g_szCustomTitle[client], "0"))
+    {
+        g_bdbHasCustomTitle[client] = false;
+
         char szName[64];
         GetClientName(client, szName, 64);
-        LogError("[surftimer] SQL_updateCustomTitleCallback: Invalid SQL Response from client \"%s\".", szName);
+        LogError("[surftimer] DB Error: Client \"%s\" has a color only title.", szName);
+    }
+
+    // Trying to enable custom title
+    if (g_bDbCustomTitleInUse[client] && g_bdbHasCustomTitle[client])
+    {
+        char old_pr_rankname[1024];
+        if (!StrEqual(g_pr_rankname[client], "", false))
+        {
+            Format(old_pr_rankname, 1024, "%s", g_pr_rankname[client]);
+        }
+
+        Format(g_pr_chat_coloredrank[client], 1024, "%s", g_szCustomTitleColoured[client]);
+        Format(g_pr_chat_coloredrank_style[client], 1024, "%s", g_szCustomTitleColoured[client]);
+        
+        Format(g_pr_rankname[client], 1024, "%s", g_szCustomTitle[client]);
+        Format(g_pr_rankname_style[client], 1024, "%s", g_szCustomTitle[client]);
+
+        if (!StrEqual(g_pr_rankname[client], old_pr_rankname, false))
+        {
+            CPrintToChat(client, "%t", "CustomTitle", g_szChatPrefix, g_pr_chat_coloredrank[client]);
+        }
+    }
+
+    if (g_bFromCustomTitleMenu[client])
+    {
+        CustomTitleMenu(client);
     }
 
     if (!g_bSettingsLoaded[client])
