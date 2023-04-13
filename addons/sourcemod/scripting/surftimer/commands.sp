@@ -603,6 +603,13 @@ public void CustomTitleMenu(int client)
  */
 public int CustomTitleMenuHandler(Handle menu, MenuAction action, int client, int item)
 {
+    // Make sure the client is valid
+    if (!IsValidClient(client))
+    {
+        delete menu;
+        return 0;
+    }
+
     g_bFromCustomTitleMenu[client] = false;
 
     // If the client selected an option, process it

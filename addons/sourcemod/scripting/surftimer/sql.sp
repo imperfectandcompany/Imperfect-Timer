@@ -10182,16 +10182,21 @@ public void SQL_updateCustomTitleCallback(Handle owner, Handle hndl, const char[
 {
     int client = GetClientOfUserId(userid);
 
-    if (!client)
+    if (!IsValidClient(client))
     {
+        LogError("[surftimer] SQL_updateCustomTitleCallback: Invalid Client \"%s\".", client);
         return;
     }
 
-    if (hndl == null)
+    if (hndl == INVALID_HANDLE)
     {
-        LogError("[surftimer] SQL Error (SQL_updateCustomTitleCallback): %s ", error);
+        LogError("[surftimer] SQL_updateCustomTitleCallback: INVALID_HANDLE \"%s\".", error);
+
         if (!g_bSettingsLoaded[client])
+        {
             LoadClientSetting(client, g_iSettingToLoad[client]);
+        }
+
         return;
     }
 
@@ -10283,6 +10288,12 @@ public void SQL_updateCustomTitleCallback(Handle owner, Handle hndl, const char[
         {
             CustomTitleMenu(client);
         }
+    }
+    else
+    {
+        char szName[64];
+        GetClientName(client, szName, 64);
+        LogError("[surftimer] SQL_updateCustomTitleCallback: Invalid SQL Response from client \"%s\".", szName);
     }
 
     if (!g_bSettingsLoaded[client])
