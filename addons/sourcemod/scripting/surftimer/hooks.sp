@@ -1141,6 +1141,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		g_fLastSpeed[client] = speed;
 		g_LastButton[client] = buttons;
 
+		if (!IsFakeClient(client))
 		BeamBox_OnPlayerRunCmd(client);
 	}
 
