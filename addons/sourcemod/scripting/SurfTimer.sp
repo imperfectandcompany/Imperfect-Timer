@@ -154,166 +154,177 @@ public void OnEntityCreated(int entity, const char[] classname) {
 
 public void OnMapStart()
 {
-	CreateTimer(30.0, EnableJoinMsgs, INVALID_HANDLE, TIMER_FLAG_NO_MAPCHANGE);
+    // Format Start Time
+    int unix = GetTime();
+    char szTime[128];
+    FormatTime(szTime, sizeof(szTime), "%Y-%m-%d_%H-%M-%S", unix);
 
-	// Get mapname
-	GetCurrentMap(g_szMapName, 128);
+    // Create logs folder if it doesn't already exist
+    if (!DirExists("addons/sourcemod/logs/surftimer"))
+    {
+        CreateDirectory("addons/sourcemod/logs/surftimer", 0);
+    }
 
-	// Download map radar image if existing
-	AddRadarImages();
-	
-	// Create nav file
-	CreateNavFile();
+    CreateTimer(30.0, EnableJoinMsgs, INVALID_HANDLE, TIMER_FLAG_NO_MAPCHANGE);
 
-	// Workshop fix
-	char mapPieces[6][128];
-	int lastPiece = ExplodeString(g_szMapName, "/", mapPieces, sizeof(mapPieces), sizeof(mapPieces[]));
-	Format(g_szMapName, sizeof(g_szMapName), "%s", mapPieces[lastPiece - 1]);
+    // Get mapname
+    GetCurrentMap(g_szMapName, 128);
 
-	// Debug Logging
-	if (!DirExists("addons/sourcemod/logs/surftimer"))
-		CreateDirectory("addons/sourcemod/logs/surftimer", 511);
-	BuildPath(Path_SM, g_szLogFile, sizeof(g_szLogFile), "logs/surftimer/%s.log", g_szMapName);
+    // Download map radar image if existing
+    AddRadarImages();
 
-	// Get map maxvelocity
-	g_hMaxVelocity = FindConVar("sv_maxvelocity");
+    // Create nav file
+    CreateNavFile();
 
-	// Load spawns
-	if (!g_bRenaming && !g_bInTransactionChain)
-	{
-		checkSpawnPoints();
-	}
+    // Workshop fix
+    char mapPieces[6][128];
+    int lastPiece = ExplodeString(g_szMapName, "/", mapPieces, sizeof(mapPieces), sizeof(mapPieces[]));
+    Format(g_szMapName, sizeof(g_szMapName), "%s", mapPieces[lastPiece - 1]);
 
-	db_viewMapSettings();
+    // Build a path to the new log file
+    BuildPath(Path_SM, g_szLogFile, sizeof(g_szLogFile), "logs/surftimer/%s.log", szTime);
 
-	/// Start Loading Server Settings
-	ConVar cvHibernateWhenEmpty = FindConVar("sv_hibernate_when_empty");
-	
-	if(g_tables_converted)
-	{
-		if (!g_bRenaming && !g_bInTransactionChain && (IsServerProcessing() || !cvHibernateWhenEmpty.BoolValue))
-		{
-			LogQueryTime("[surftimer] Starting to load server settings");
-			g_fServerLoading[0] = GetGameTime();
-			db_selectMapZones();
-		}
-	}
-	else
-	{
-		CreateTimer(1.0, DatabaseUpgrading, INVALID_HANDLE, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
-	}
+    LogInfo("Map: \"%s\".", g_szMapName);
 
-	// Get Map Tag
-	ExplodeString(g_szMapName, "_", g_szMapPrefix, 2, 32);
+    // Get map maxvelocity
+    g_hMaxVelocity = FindConVar("sv_maxvelocity");
 
-	// sv_pure 1 could lead to problems with the ckSurf models
-	ServerCommand("sv_pure 0");
+    // Load spawns
+    if (!g_bRenaming && !g_bInTransactionChain)
+    {
+        checkSpawnPoints();
+    }
 
-	// reload language files
-	LoadTranslations("surftimer.phrases");
+    db_viewMapSettings();
 
-	CheatFlag("bot_zombie", false, true);
-	g_bTierFound = false;
-	for (int i = 0; i < MAXZONEGROUPS; i++)
-	{
-		g_fBonusFastest[i] = 9999999.0;
-		g_bCheckpointRecordFound[i] = false;
-	}
+    /// Start Loading Server Settings
+    ConVar cvHibernateWhenEmpty = FindConVar("sv_hibernate_when_empty");
 
-	for (int i = 0; i < MAX_STYLES; i++)
-	{
-		g_bReplayTickFound[i] = false;
-	}
+    if(g_tables_converted)
+    {
+        if (!g_bRenaming && !g_bInTransactionChain && (IsServerProcessing() || !cvHibernateWhenEmpty.BoolValue))
+        {
+            LogInfo("Starting to load server settings.");
+            g_fServerLoading[0] = GetGameTime();
+            db_selectMapZones();
+        }
+    }
+    else
+    {
+        CreateTimer(1.0, DatabaseUpgrading, INVALID_HANDLE, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+    }
 
-	// Precache
-	InitPrecache();
-	SetCashState();
+    // Get Map Tag
+    ExplodeString(g_szMapName, "_", g_szMapPrefix, 2, 32);
 
-	// Timers
-	CreateTimer(0.1, Timer_100ms, INVALID_HANDLE, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
-	CreateTimer(1.0, Timer_1s, INVALID_HANDLE, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
-	CreateTimer(60.0, Timer_1m, INVALID_HANDLE, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
-	CreateTimer(600.0, PlayerRanksTimer, INVALID_HANDLE, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
+    // sv_pure 1 could lead to problems with the ckSurf models
+    ServerCommand("sv_pure 0");
 
-	delete g_hZoneTimer;
-	g_hZoneTimer = CreateTimer(GetConVarFloat(g_hChecker), BeamBoxAll, _, TIMER_REPEAT);
+    // reload language files
+    LoadTranslations("surftimer.phrases");
 
-	// AutoBhop
-	g_bAutoBhop = GetConVarBool(g_hAutoBhopConVar);
+    CheatFlag("bot_zombie", false, true);
+    g_bTierFound = false;
+    for (int i = 0; i < MAXZONEGROUPS; i++)
+    {
+        g_fBonusFastest[i] = 9999999.0;
+        g_bCheckpointRecordFound[i] = false;
+    }
 
-	// main.cfg & replays
-	CreateTimer(1.0, DelayedStuff, INVALID_HANDLE, TIMER_FLAG_NO_MAPCHANGE);
-	CreateTimer(GetConVarFloat(g_replayBotDelay), LoadReplaysTimer, INVALID_HANDLE, TIMER_FLAG_NO_MAPCHANGE); // replay bots
+    for (int i = 0; i < MAX_STYLES; i++)
+    {
+        g_bReplayTickFound[i] = false;
+    }
 
-	int iEnt;
+    // Precache
+    InitPrecache();
+    SetCashState();
 
-	// Trigger Gravity Fix
-	iEnt = -1;
-	while ((iEnt = FindEntityByClassname(iEnt, "trigger_gravity")) != -1)
-	{
-		SDKHook(iEnt, SDKHook_EndTouch, OnEndTouchGravityTrigger);
-	}
+    // Timers
+    CreateTimer(0.1, Timer_100ms, INVALID_HANDLE, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
+    CreateTimer(1.0, Timer_1s, INVALID_HANDLE, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
+    CreateTimer(60.0, Timer_1m, INVALID_HANDLE, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
+    CreateTimer(600.0, PlayerRanksTimer, INVALID_HANDLE, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
 
-	// Hook Zones
-	iEnt = -1;
-	if (g_hTriggerMultiple != null)
-	{
-		CloseHandle(g_hTriggerMultiple);
-	}
+    delete g_hZoneTimer;
+    g_hZoneTimer = CreateTimer(GetConVarFloat(g_hChecker), BeamBoxAll, _, TIMER_REPEAT);
 
-	g_hTriggerMultiple = CreateArray(256);
-	while ((iEnt = FindEntityByClassname(iEnt, "trigger_multiple")) != -1)
-	{
-		SDKHook(iEnt, SDKHook_EndTouch, OnMultipleTrigger1);
-		SDKHook(iEnt, SDKHook_StartTouch, OnMultipleTrigger1);
-		/* SDKHook(iEnt, SDKHook_StartTouch, OnMultipleTrigger2);
-		SDKHook(iEnt, SDKHook_EndTouch, OnMultipleTrigger3);
-		HookSingleEntityOutput(iEnt, "OnEndTouch", OnTriggerOutput); */
-		PushArrayCell(g_hTriggerMultiple, iEnt);
-	}
+    // AutoBhop
+    g_bAutoBhop = GetConVarBool(g_hAutoBhopConVar);
 
-	g_mTriggerMultipleMenu = CreateMenu(HookZonesMenuHandler);
-	SetMenuTitle(g_mTriggerMultipleMenu, "Select a trigger");
+    // main.cfg & replays
+    CreateTimer(1.0, DelayedStuff, INVALID_HANDLE, TIMER_FLAG_NO_MAPCHANGE);
+    CreateTimer(GetConVarFloat(g_replayBotDelay), LoadReplaysTimer, INVALID_HANDLE, TIMER_FLAG_NO_MAPCHANGE); // replay bots
 
-	for (int i = 0; i < GetArraySize(g_hTriggerMultiple); i++)
-	{
-		iEnt = GetArrayCell(g_hTriggerMultiple, i);
+    int iEnt;
 
-		if (IsValidEntity(iEnt))
-		{
-			char szTriggerName[128];
-			GetEntPropString(iEnt, Prop_Send, "m_iName", szTriggerName, 128, 0);
-			//PushArrayString(g_TriggerMultipleList, szTriggerName);
-			AddMenuItem(g_mTriggerMultipleMenu, szTriggerName, szTriggerName);
-		}
-	}
+    // Trigger Gravity Fix
+    iEnt = -1;
+    while ((iEnt = FindEntityByClassname(iEnt, "trigger_gravity")) != -1)
+    {
+        SDKHook(iEnt, SDKHook_EndTouch, OnEndTouchGravityTrigger);
+    }
 
-	SetMenuOptionFlags(g_mTriggerMultipleMenu, MENUFLAG_BUTTON_EXIT);
+    // Hook Zones
+    iEnt = -1;
+    if (g_hTriggerMultiple != null)
+    {
+        CloseHandle(g_hTriggerMultiple);
+    }
 
-	// info_teleport_destinations
-	iEnt = -1;
-	if (g_hDestinations != null)
-		CloseHandle(g_hDestinations);
+    g_hTriggerMultiple = CreateArray(256);
+    while ((iEnt = FindEntityByClassname(iEnt, "trigger_multiple")) != -1)
+    {
+        SDKHook(iEnt, SDKHook_EndTouch, OnMultipleTrigger1);
+        SDKHook(iEnt, SDKHook_StartTouch, OnMultipleTrigger1);
+        /* SDKHook(iEnt, SDKHook_StartTouch, OnMultipleTrigger2);
+        SDKHook(iEnt, SDKHook_EndTouch, OnMultipleTrigger3);
+        HookSingleEntityOutput(iEnt, "OnEndTouch", OnTriggerOutput); */
+        PushArrayCell(g_hTriggerMultiple, iEnt);
+    }
 
-	g_hDestinations = CreateArray(128);
-	while ((iEnt = FindEntityByClassname(iEnt, "info_teleport_destination")) != -1)
-		PushArrayCell(g_hDestinations, iEnt);
+    g_mTriggerMultipleMenu = CreateMenu(HookZonesMenuHandler);
+    SetMenuTitle(g_mTriggerMultipleMenu, "Select a trigger");
 
-	// Set default values
-	g_fMapStartTime = GetGameTime();
-	g_bRoundEnd = false;
+    for (int i = 0; i < GetArraySize(g_hTriggerMultiple); i++)
+    {
+        iEnt = GetArrayCell(g_hTriggerMultiple, i);
 
-	// Server Announcements
-	g_iServerID = GetConVarInt(g_hServerID);
+        if (IsValidEntity(iEnt))
+        {
+            char szTriggerName[128];
+            GetEntPropString(iEnt, Prop_Send, "m_iName", szTriggerName, 128, 0);
+            //PushArrayString(g_TriggerMultipleList, szTriggerName);
+            AddMenuItem(g_mTriggerMultipleMenu, szTriggerName, szTriggerName);
+        }
+    }
 
-	// Show Triggers
-	g_iTriggerTransmitCount = 0;
+    SetMenuOptionFlags(g_mTriggerMultipleMenu, MENUFLAG_BUTTON_EXIT);
 
-	// Save Locs
-	ResetSaveLocs();
+    // info_teleport_destinations
+    iEnt = -1;
+    if (g_hDestinations != null)
+        CloseHandle(g_hDestinations);
 
-	//CSD Hud Synchronizer
-	HUD_Handle = CreateHudSynchronizer();
+    g_hDestinations = CreateArray(128);
+    while ((iEnt = FindEntityByClassname(iEnt, "info_teleport_destination")) != -1)
+        PushArrayCell(g_hDestinations, iEnt);
+
+    // Set default values
+    g_fMapStartTime = GetGameTime();
+    g_bRoundEnd = false;
+
+    // Server Announcements
+    g_iServerID = GetConVarInt(g_hServerID);
+
+    // Show Triggers
+    g_iTriggerTransmitCount = 0;
+
+    // Save Locs
+    ResetSaveLocs();
+
+    //CSD Hud Synchronizer
+    HUD_Handle = CreateHudSynchronizer();
 }
 
 public void OnMapEnd()

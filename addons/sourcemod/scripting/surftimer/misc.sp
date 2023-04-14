@@ -5437,17 +5437,30 @@ public void resetCCPDefaults(int client){
 	}
 }
 
-void LogQueryTime(const char[] format, any ...)
+public void LogDebug(const char[] message, any ...)
 {
-	char sMessage[512];
-	VFormat(sMessage, sizeof(sMessage), format, 2);
+    char sMessage[512];
+    VFormat(sMessage, sizeof(sMessage), message, 2);
+    LogToFileEx(g_szLogFile, "[DEBUG] %s", sMessage);
+}
 
-	if (g_hLogQueryTimes.BoolValue)
-	{
-		LogToFileEx(g_szLogFile, sMessage);
-	}
-	else
-	{
-		PrintToServer(sMessage);
-	}
+public void LogInfo(const char[] message, any ...)
+{
+    char sMessage[512];
+    VFormat(sMessage, sizeof(sMessage), message, 2);
+    LogToFileEx(g_szLogFile, "[INFO] %s", sMessage);
+}
+
+public void LogWarning(const char[] message, any ...)
+{
+    char sMessage[512];
+    VFormat(sMessage, sizeof(sMessage), message, 2);
+    LogToFileEx(g_szLogFile, "[WARNING] %s", sMessage);
+}
+
+public void LogCritical(const char[] message, any ...)
+{
+    char sMessage[512];
+    VFormat(sMessage, sizeof(sMessage), message, 2);
+    LogToFileEx(g_szLogFile, "[CRITICAL] %s", sMessage);
 }

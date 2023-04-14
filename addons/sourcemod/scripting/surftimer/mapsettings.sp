@@ -278,7 +278,7 @@ public void db_viewMapSettings()
 
 public void sql_viewMapSettingsCallback(Handle owner, Handle hndl, const char[] error, float time)
 {
-	LogQueryTime("[SurfTimer] : Finished sql_viewMapSettingsCallback in: %f", GetGameTime() - time);
+	LogDebug("Finished sql_viewMapSettingsCallback in: %f", GetGameTime() - time);
 	
 	if (hndl == null)
 	{
