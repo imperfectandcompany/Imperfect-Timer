@@ -88,8 +88,6 @@ void CreateCommands()
 	RegConsoleCmd("sm_saveloc", Command_createPlayerCheckpoint, "[surftimer] Creates a checkpoint, where the player can teleport back to");
 	RegConsoleCmd("sm_savelocs", Command_SaveLocList);
 	RegConsoleCmd("sm_loclist", Command_SaveLocList);
-	RegConsoleCmd("sm_normal", Command_normalMode, "[surftimer] Switches player back to normal mode.");
-	RegConsoleCmd("sm_n", Command_normalMode, "[surftimer] Switches player back to normal mode.");
 	RegConsoleCmd("sm_clearsavelocs", Command_clearPlayerCheckpoints, "[surftimer] Clears the players savelocs");
 	RegConsoleCmd("sm_clearlocs", Command_clearPlayerCheckpoints, "[surftimer] Clears the players savelocs");
 	RegConsoleCmd("sm_addsaveloc", Command_recreatePlayerCheckpoint, "[surftimer] Recreates a saveloc with supplied information, where the player can teleport back to");
@@ -189,6 +187,23 @@ void CreateCommands()
 	// Styles
 	RegConsoleCmd("sm_style", Client_SelectStyle, "[surftimer] open style select menu.");
 	RegConsoleCmd("sm_styles", Client_SelectStyle, "[surftimer] open style select menu.");
+
+	RegConsoleCmd("sm_normal", Command_normalMode, "[surftimer] Switches player back to normal mode.");
+	RegConsoleCmd("sm_n", Command_normalMode, "[surftimer] Switches player back to normal mode.");
+	RegConsoleCmd("sm_fastforward", Command_fastForwardMode, "[surftimer] Switches player to fast forward mode.");
+	RegConsoleCmd("sm_ff", Command_fastForwardMode, "[surftimer] Switches player to fast forward mode.");
+	RegConsoleCmd("sm_sideways", Command_sidewaysMode, "[surftimer] Switches player to sideways mode");
+	RegConsoleCmd("sm_sw", Command_sidewaysMode, "[surftimer] Switches player to sideways mode");
+	RegConsoleCmd("sm_halfSideways", Command_halfSidewaysMode, "[surftimer] Switches player to half-sideways mode");
+	RegConsoleCmd("sm_hsw", Command_halfSidewaysMode, "[surftimer] Switches player to half-sideways mode");
+	RegConsoleCmd("sm_backwards", Command_backwardsMode, "[surftimer] Switches player to backwards mode");
+	RegConsoleCmd("sm_bw", Command_backwardsMode, "[surftimer] Switches player to backwards mode");
+	RegConsoleCmd("sm_lowGrav", Command_lowGravityMode, "[surftimer] Switches player to low-gravity mode");
+	RegConsoleCmd("sm_lg", Command_lowGravityMode, "[surftimer] Switches player to low-gravity mode");
+	RegConsoleCmd("sm_slowMotion", Command_slowMotionMode, "[surftimer] Switches player to slow motion mode");
+	RegConsoleCmd("sm_slow", Command_slowMotionMode, "[surftimer] Switches player to slow motion mode");
+	RegConsoleCmd("sm_freestyle", Command_freestyleMode, "[surftimer] Switches player to freestyle mode");
+	RegConsoleCmd("sm_fs", Command_freestyleMode, "[surftimer] Switches player to freestyle mode");
 
 	// Test
 	RegAdminCmd("sm_test", sm_test, ADMFLAG_CUSTOM6);
@@ -685,7 +700,6 @@ public Action Command_normalMode(int client, int args)
     if (g_bPracticeMode[client])
         g_bPracticeMode[client] = false;
 
-    // TODO: Create a function for each style to do this
     g_iCurrentStyle[client] = 0;
     g_iInitalStyle[client] = 0;
     Format(g_szInitalStyle[client], 128, "Normal");
@@ -696,6 +710,172 @@ public Action Command_normalMode(int client, int args)
     Command_Restart(client, 1);
 
     CPrintToChat(client, "%t", "PracticeNormal", g_szChatPrefix);
+    return Plugin_Handled;
+}
+
+public Action Command_sidewaysMode(int client, int args)
+{
+    if (!IsValidClient(client))
+        return Plugin_Handled;
+
+    Client_Stop(client, 1);
+
+    if (g_bPracticeMode[client])
+        g_bPracticeMode[client] = false;
+
+    g_iCurrentStyle[client] = 1;
+    g_iInitalStyle[client] = 1;
+    Format(g_szInitalStyle[client], 128, "Sideways");
+    Format(g_szStyleHud[client], 32, "[SW]");
+    g_bRankedStyle[client] = true;
+    g_bFunStyle[client] = false;
+
+    Command_Restart(client, 1);
+
+    CPrintToChat(client, "%t", "PracticeSideways", g_szChatPrefix);
+    return Plugin_Handled;
+}
+
+public Action Command_halfSidewaysMode(int client, int args)
+{
+    if (!IsValidClient(client))
+        return Plugin_Handled;
+
+    Client_Stop(client, 1);
+
+    if (g_bPracticeMode[client])
+        g_bPracticeMode[client] = false;
+
+    g_iCurrentStyle[client] = 2;
+    g_iInitalStyle[client] = 2;
+    Format(g_szInitalStyle[client], 128, "Half-Sideways");
+    Format(g_szStyleHud[client], 32, "[HSW]");
+    g_bRankedStyle[client] = true;
+    g_bFunStyle[client] = false;
+
+    Command_Restart(client, 1);
+
+    CPrintToChat(client, "%t", "PracticeHalfSideways", g_szChatPrefix);
+    return Plugin_Handled;
+}
+
+public Action Command_backwardsMode(int client, int args)
+{
+    if (!IsValidClient(client))
+        return Plugin_Handled;
+
+    Client_Stop(client, 1);
+
+    if (g_bPracticeMode[client])
+        g_bPracticeMode[client] = false;
+
+    g_iCurrentStyle[client] = 3;
+    g_iInitalStyle[client] = 3;
+    Format(g_szInitalStyle[client], 128, "Backwards");
+    Format(g_szStyleHud[client], 32, "[BW]");
+    g_bRankedStyle[client] = true;
+    g_bFunStyle[client] = false;
+
+    Command_Restart(client, 1);
+
+    CPrintToChat(client, "%t", "PracticeBackwards", g_szChatPrefix);
+    return Plugin_Handled;
+}
+
+public Action Command_lowGravityMode(int client, int args)
+{
+    if (!IsValidClient(client))
+        return Plugin_Handled;
+
+    Client_Stop(client, 1);
+
+    if (g_bPracticeMode[client])
+        g_bPracticeMode[client] = false;
+
+    g_iCurrentStyle[client] = 4;
+    g_iInitalStyle[client] = 4;
+    Format(g_szInitalStyle[client], 128, "Low-Gravity");
+    Format(g_szStyleHud[client], 32, "[LG]");
+    SetEntityGravity(client, 0.5);
+    g_bRankedStyle[client] = false;
+    g_bFunStyle[client] = true;
+
+    Command_Restart(client, 1);
+
+    CPrintToChat(client, "%t", "PracticeLowGrav", g_szChatPrefix);
+    return Plugin_Handled;
+}
+
+public Action Command_slowMotionMode(int client, int args)
+{
+    if (!IsValidClient(client))
+        return Plugin_Handled;
+
+    Client_Stop(client, 1);
+
+    if (g_bPracticeMode[client])
+        g_bPracticeMode[client] = false;
+
+    g_iCurrentStyle[client] = 5;
+    g_iInitalStyle[client] = 5;
+    Format(g_szInitalStyle[client], 128, "Slow Motion");
+    Format(g_szStyleHud[client], 32, "[SM]");
+    SetEntPropFloat(client, Prop_Data, "m_flLaggedMovementValue", 0.5);
+    g_bRankedStyle[client] = false;
+    g_bFunStyle[client] = true;
+
+    Command_Restart(client, 1);
+
+    CPrintToChat(client, "%t", "PracticeSlowMotion", g_szChatPrefix);
+    return Plugin_Handled;
+}
+
+public Action Command_fastForwardMode(int client, int args)
+{
+    if (!IsValidClient(client))
+        return Plugin_Handled;
+
+    Client_Stop(client, 1);
+
+    if (g_bPracticeMode[client])
+        g_bPracticeMode[client] = false;
+
+    g_iCurrentStyle[client] = 6;
+    g_iInitalStyle[client] = 6;
+    Format(g_szInitalStyle[client], 128, "Fast Forward");
+    Format(g_szStyleHud[client], 32, "[FF]");
+    SetEntPropFloat(client, Prop_Data, "m_flLaggedMovementValue", 1.5);
+    g_bRankedStyle[client] = false;
+    g_bFunStyle[client] = true;
+
+    Command_Restart(client, 1);
+
+    CPrintToChat(client, "%t", "PracticeFastForward", g_szChatPrefix);
+    return Plugin_Handled;
+}
+
+public Action Command_freestyleMode(int client, int args)
+{
+    if (!IsValidClient(client))
+        return Plugin_Handled;
+
+    Client_Stop(client, 1);
+
+    if (g_bPracticeMode[client])
+        g_bPracticeMode[client] = false;
+
+    g_iCurrentStyle[client] = 7;
+    g_iInitalStyle[client] = 7;
+    Format(g_szInitalStyle[client], 128, "Freestyle");
+    Format(g_szStyleHud[client], 32, "[FS]");
+    g_bRankedStyle[client] = false;
+    g_bFunStyle[client] = true;
+    g_bAutoBhop = true;
+    g_bAutoBhopClient[client] = true;
+
+    Command_Restart(client, 1);
+
+    CPrintToChat(client, "%t", "PracticeFreestyle", g_szChatPrefix);
     return Plugin_Handled;
 }
 

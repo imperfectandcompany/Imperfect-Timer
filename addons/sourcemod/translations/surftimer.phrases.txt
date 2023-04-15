@@ -14,6 +14,41 @@
 		"#format"	"{1:s}"
 		"en"		"{1} Normal mode activated. Change to practice mode by writing {lightgreen}!tele"
 	}
+	"PracticeSideways"
+	{
+		"#format"	"{1:s}"
+		"en"		"{1} Sideways mode activated. Change to practice mode by writing {lightgreen}!tele"
+	}
+	"PracticeHalfSideways"
+	{
+		"#format"	"{1:s}"
+		"en"		"{1} Half Sideways mode activated. Change to practice mode by writing {lightgreen}!tele"
+	}
+	"PracticeBackwards"
+	{
+		"#format"	"{1:s}"
+		"en"		"{1} Backwards mode activated. Change to practice mode by writing {lightgreen}!tele"
+	}
+	"PracticeLowGrav"
+	{
+		"#format"	"{1:s}"
+		"en"		"{1} Low Gravity mode activated. Change to practice mode by writing {lightgreen}!tele"
+	}
+	"PracticeSlowMotion"
+	{
+		"#format"	"{1:s}"
+		"en"		"{1} Slow Motion mode activated. Change to practice mode by writing {lightgreen}!tele"
+	}
+	"PracticeFreestyle"
+	{
+		"#format"	"{1:s}"
+		"en"		"{1} Freestyle mode activated. Change to practice mode by writing {lightgreen}!tele"
+	}
+	"PracticeFastForward"
+	{
+		"#format"	"{1:s}"
+		"en"		"{1} Fast Forward mode activated. Change to practice mode by writing {lightgreen}!tele"
+	}
 	"PracticeInStartZone"
 	{
 		"#format"	"{1:s}"
