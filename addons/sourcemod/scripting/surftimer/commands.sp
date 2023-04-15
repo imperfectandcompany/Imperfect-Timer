@@ -144,7 +144,10 @@ void CreateCommands()
 	RegAdminCmd("sm_givetitle", Command_GiveTitle, ADMFLAG_CUSTOM3, "[ImperfectGamers] Grants a title to a player");
 	RegAdminCmd("sm_removetitle", Command_RemoveTitle, ADMFLAG_CUSTOM3, "[ImperfectGamers] Removes a title from a player");
 
-	// Automatic Donate Commands - REMOVED give/remove VIP commands; we use SourceBans CUSTOM2 flag (flag p)
+//	Add extendmap command for zoners - flag O
+	RegAdminCmd("sm_extendmap", Command_ExtendMap, ADMFLAG_CUSTOM1, "[IG] Extend the map by specified minutes");
+
+// Automatic Donate Commands - REMOVED give/remove VIP commands; we use SourceBans CUSTOM2 flag (flag p)
 //	RegAdminCmd("sm_givevip", VIP_GiveVip, ADMFLAG_ROOT, "[surftimer] Give a player VIP");
 //	RegAdminCmd("sm_removevip", VIP_RemoveVip, ADMFLAG_ROOT, "[surftimer] Remove a players VIP");
 	RegAdminCmd("sm_addcredits", VIP_GiveCredits, ADMFLAG_CUSTOM3, "[surftimer] Give a player credits");
@@ -6775,6 +6778,26 @@ public Action Command_Vmute(int client, int args)
 	} else {
 			SourceComms_SetClientMute(targetId, false, -1, false, reason);
 			CPrintToChatAll("VIP %s unmuted %s temporarily", clientName, targetNamed);
+	}
+
+	return Plugin_Handled;
+}
+
+public Action Command_ExtendMap(int client, int args)
+{
+	char arg1[32];
+	GetCmdArg(1, arg1, sizeof(arg1));
+
+	if (!arg1[0])
+		return Plugin_Handled;
+
+	int minutes = StringToInt(arg1);
+
+	if (minutes > 0)
+	{
+		int seconds = minutes * 60;
+		ExtendMapTimeLimit(seconds);
+		GameRules_SetProp("m_iRoundTime", GameRules_GetProp("m_iRoundTime", 4, 0) + seconds, 4, 0, true);
 	}
 
 	return Plugin_Handled;
