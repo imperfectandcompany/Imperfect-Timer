@@ -151,6 +151,11 @@ public void teleportClient(int client, int zonegroup, int zone, bool stopTime)
 	// fluffys gravity
 	ResetGravity(client);
 
+    if (g_bPracticeMode[client])
+    {
+        UpdateStyle(client, g_iInitalStyle[client]);
+    }
+
     // Fix speed if not fast forward or slow mode
 	if (g_iInitalStyle[client] != 5 && g_iInitalStyle[client] != 6)
     {
