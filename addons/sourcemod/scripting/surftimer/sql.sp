@@ -3961,7 +3961,7 @@ public void db_viewBonusPRinfoCallback(Handle owner, Handle hndl, const char[] e
 
         float time = g_fTick[client][1] - g_fClientsLoading[client][0];
         GetClientName(client, szName, sizeof(szName));
-        LogDebug("Loaded \"%s - %s\" settings in: %f", g_szSteamID[client], szName, time);
+        LogInfo("Finished loading \"%s - %s\" settings in: %f", g_szSteamID[client], szName, time);
     }
 
     return;
