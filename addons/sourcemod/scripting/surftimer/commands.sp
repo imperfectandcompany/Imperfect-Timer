@@ -4,243 +4,257 @@
 */
 void CreateCommands()
 {
-	// Client Commands
-	RegConsoleCmd("sm_usp", Client_Usp, "[surftimer] spawns a usp silencer");
-	RegConsoleCmd("sm_glock", Client_Glock, "[surftimer] spawns a glock");
-	RegConsoleCmd("sm_avg", Client_Avg, "[surftimer] prints in chat the average time of the current map");
-	RegConsoleCmd("sm_hidechat", Client_HideChat, "[surftimer] hides your ingame chat");
-	RegConsoleCmd("sm_hideweapon", Client_HideWeapon, "[surftimer] hides your weapon model");
-	RegConsoleCmd("sm_disarm", Client_HideWeapon, "[surftimer] hides your weapon model");
-	RegAdminCmd("sm_goto", Client_GoTo, ADMFLAG_CUSTOM2, "[surftimer] teleports you to a selected player");
-	RegConsoleCmd("sm_sound", Client_QuakeSounds, "[surftimer] on/off quake sounds");
-	RegConsoleCmd("sm_bhop", Client_AutoBhop, "[surftimer] on/off autobhop");
-	RegConsoleCmd("sm_flashlight", Client_Flashlight, "[surftimer] on/off flashlight");
-	RegConsoleCmd("sm_maptop", Client_MapTop, "[surftimer] displays local map top for a given map");
-	RegConsoleCmd("sm_wr", Client_Wr, "[surftimer] prints records wr in chat");
-	RegConsoleCmd("sm_wrb", Client_Wrb, "[surftimer] prints records wrb in chat");
-	RegConsoleCmd("sm_spec", Client_Spec, "[surftimer] chooses a player who you want to spectate and switch you to spectators");
-	RegConsoleCmd("sm_watch", Client_Spec, "[surftimer] chooses a player who you want to spectate and switch you to spectators");
-	RegConsoleCmd("sm_spectate", Client_Spec, "[surftimer] chooses a player who you want to spectate and switch you to spectators");
-	RegConsoleCmd("sm_helpmenu", Client_Help, "[surftimer] help menu which displays all SurfTimer commands");
-	RegConsoleCmd("sm_help", Client_Help, "[surftimer] help menu which displays all SurfTimer commands");
-	RegConsoleCmd("sm_profile", Client_Profile, "[surftimer] opens a player profile");
-	RegConsoleCmd("sm_options", Client_OptionMenu, "[surftimer] opens options menu");
-	RegConsoleCmd("sm_top", Client_Top, "[surftimer] displays top rankings (Top 100 Players, Top 50 overall)");
-	RegConsoleCmd("sm_topsurfers", Client_Top, "[surftimer] displays top rankings (Top 100 Players, Top 50 overall)");
-	RegConsoleCmd("sm_bonustop", Client_BonusTop, "[surftimer] displays top rankings of the bonus");
-	RegConsoleCmd("sm_btop", Client_BonusTop, "[surftimer] displays top rankings of the bonus");
-	RegConsoleCmd("sm_stop", Client_Stop, "[surftimer] stops your timer");
-	RegConsoleCmd("sm_ranks", Client_Ranks, "[surftimer] Displays a menu with available player ranks");
-	RegConsoleCmd("sm_pause", Client_Pause, "[surftimer] on/off pause (timer on hold and movement frozen)");
-	RegConsoleCmd("sm_latest", Client_Latest, "[surftimer] shows latest map records");
-	RegConsoleCmd("sm_rr", Client_Latest, "[surftimer] shows latest map records");
-	RegConsoleCmd("sm_rb", Client_Latest, "[surftimer] shows latest map records");
-	RegConsoleCmd("sm_hide", Client_Hide, "[surftimer] on/off - hides other players");
-	RegConsoleCmd("sm_togglecheckpoints", ToggleCheckpoints, "[surftimer] on/off - Enable player checkpoints");
-	RegConsoleCmd("+noclip", NoClip, "[surftimer] Player noclip on");
-	RegConsoleCmd("-noclip", UnNoClip, "[surftimer] Player noclip off");
-	RegConsoleCmd("sm_nc", Command_ckNoClip, "[surftimer] Player noclip on/off");
-	RegConsoleCmd("sm_ctop", Client_CountryTOP, "[surftimer] displays country top rankings");
-	RegConsoleCmd("sm_ctop_help", Client_CountryTop_Help, "[surftimer] displays information on how to use the command sm_ctop");
-	RegConsoleCmd("sm_crank", Client_CountryRank, "[surftimer] displays player country rank");
-	RegConsoleCmd("sm_crank_help", Client_CountryRank_Help, "[surftimer] displays information on how to use the command sm_crank");
-	RegConsoleCmd("sm_continenttop", Client_ContinentTOP, "[surftimer] displays country top rankings");
-	RegConsoleCmd("sm_continenttop_help", Client_ContinentTop_Help, "[surftimer] displays information on how to use the command sm_ctop");
-	RegConsoleCmd("sm_continentrank", Client_ContinentRank, "[surftimer] displays player country rank");
-	RegConsoleCmd("sm_continentrank_help", Client_ContinentRank_Help, "[surftimer] displays information on how to use the command sm_crank");
+    // Client Commands
+    RegConsoleCmd("sm_usp", Client_Usp, "[surftimer] spawns a usp silencer");
+    RegConsoleCmd("sm_glock", Client_Glock, "[surftimer] spawns a glock");
+    RegConsoleCmd("sm_avg", Client_Avg, "[surftimer] prints in chat the average time of the current map");
+    RegConsoleCmd("sm_hidechat", Client_HideChat, "[surftimer] hides your ingame chat");
+    RegConsoleCmd("sm_hideweapon", Client_HideWeapon, "[surftimer] hides your weapon model");
+    RegConsoleCmd("sm_disarm", Client_HideWeapon, "[surftimer] hides your weapon model");
+    RegAdminCmd("sm_goto", Client_GoTo, ADMFLAG_CUSTOM2, "[surftimer] teleports you to a selected player");
+    RegConsoleCmd("sm_sound", Client_QuakeSounds, "[surftimer] on/off quake sounds");
+    RegConsoleCmd("sm_bhop", Client_AutoBhop, "[surftimer] on/off autobhop");
+    RegConsoleCmd("sm_flashlight", Client_Flashlight, "[surftimer] on/off flashlight");
+    RegConsoleCmd("sm_maptop", Client_MapTop, "[surftimer] displays local map top for a given map");
+    RegConsoleCmd("sm_wr", Client_Wr, "[surftimer] prints records wr in chat");
+    RegConsoleCmd("sm_wrb", Client_Wrb, "[surftimer] prints records wrb in chat");
+    RegConsoleCmd("sm_spec", Client_Spec, "[surftimer] chooses a player who you want to spectate and switch you to spectators");
+    RegConsoleCmd("sm_watch", Client_Spec, "[surftimer] chooses a player who you want to spectate and switch you to spectators");
+    RegConsoleCmd("sm_spectate", Client_Spec, "[surftimer] chooses a player who you want to spectate and switch you to spectators");
+    RegConsoleCmd("sm_helpmenu", Client_Help, "[surftimer] help menu which displays all SurfTimer commands");
+    RegConsoleCmd("sm_help", Client_Help, "[surftimer] help menu which displays all SurfTimer commands");
+    RegConsoleCmd("sm_profile", Client_Profile, "[surftimer] opens a player profile");
+    RegConsoleCmd("sm_options", Client_OptionMenu, "[surftimer] opens options menu");
+    RegConsoleCmd("sm_top", Client_Top, "[surftimer] displays top rankings (Top 100 Players, Top 50 overall)");
+    RegConsoleCmd("sm_topsurfers", Client_Top, "[surftimer] displays top rankings (Top 100 Players, Top 50 overall)");
+    RegConsoleCmd("sm_bonustop", Client_BonusTop, "[surftimer] displays top rankings of the bonus");
+    RegConsoleCmd("sm_btop", Client_BonusTop, "[surftimer] displays top rankings of the bonus");
+    RegConsoleCmd("sm_stop", Client_Stop, "[surftimer] stops your timer");
+    RegConsoleCmd("sm_ranks", Client_Ranks, "[surftimer] Displays a menu with available player ranks");
+    RegConsoleCmd("sm_pause", Client_Pause, "[surftimer] on/off pause (timer on hold and movement frozen)");
+    RegConsoleCmd("sm_latest", Client_Latest, "[surftimer] shows latest map records");
+    RegConsoleCmd("sm_rr", Client_Latest, "[surftimer] shows latest map records");
+    RegConsoleCmd("sm_rb", Client_Latest, "[surftimer] shows latest map records");
+    RegConsoleCmd("sm_hide", Client_Hide, "[surftimer] on/off - hides other players");
+    RegConsoleCmd("sm_togglecheckpoints", ToggleCheckpoints, "[surftimer] on/off - Enable player checkpoints");
+    RegConsoleCmd("+noclip", NoClip, "[surftimer] Player noclip on");
+    RegConsoleCmd("-noclip", UnNoClip, "[surftimer] Player noclip off");
+    RegConsoleCmd("sm_nc", Command_ckNoClip, "[surftimer] Player noclip on/off");
+    RegConsoleCmd("sm_ctop", Client_CountryTOP, "[surftimer] displays country top rankings");
+    RegConsoleCmd("sm_ctop_help", Client_CountryTop_Help, "[surftimer] displays information on how to use the command sm_ctop");
+    RegConsoleCmd("sm_crank", Client_CountryRank, "[surftimer] displays player country rank");
+    RegConsoleCmd("sm_crank_help", Client_CountryRank_Help, "[surftimer] displays information on how to use the command sm_crank");
+    RegConsoleCmd("sm_continenttop", Client_ContinentTOP, "[surftimer] displays country top rankings");
+    RegConsoleCmd("sm_continenttop_help", Client_ContinentTop_Help, "[surftimer] displays information on how to use the command sm_ctop");
+    RegConsoleCmd("sm_continentrank", Client_ContinentRank, "[surftimer] displays player country rank");
+    RegConsoleCmd("sm_continentrank_help", Client_ContinentRank_Help, "[surftimer] displays information on how to use the command sm_crank");
 
-	// Teleportation Commands
-	RegConsoleCmd("sm_stages", Command_SelectStage, "[surftimer] Opens up the stage selector");
-	RegConsoleCmd("sm_r", Command_Restart, "[surftimer] Teleports player back to the start");
-	RegConsoleCmd("sm_restart", Command_Restart, "[surftimer] Teleports player back to the start");
-	RegConsoleCmd("sm_start", Command_Restart, "[surftimer] Teleports player back to the start");
-	RegConsoleCmd("sm_b", Command_ToBonus, "[surftimer] Teleports player to the start of a bonus");
-	RegConsoleCmd("sm_bonus", Command_ToBonus, "[surftimer] Teleports player to the start of a bonus");
-	RegConsoleCmd("sm_bonuses", Command_ListBonuses, "[surftimer] Displays a list of bonuses in current map");
-	RegConsoleCmd("sm_s", Command_ToStage, "[surftimer] Teleports player to the selected stage");
-	RegConsoleCmd("sm_stage", Command_ToStage, "[surftimer] Teleports player to the selected stage");
-	RegConsoleCmd("sm_end", Command_ToEnd, "[surftimer] Teleports player to the end zone");
+    // Teleportation Commands
+    RegConsoleCmd("sm_stages", Command_SelectStage, "[surftimer] Opens up the stage selector");
+    RegConsoleCmd("sm_r", Command_Restart, "[surftimer] Teleports player back to the start");
+    RegConsoleCmd("sm_restart", Command_Restart, "[surftimer] Teleports player back to the start");
+    RegConsoleCmd("sm_start", Command_Restart, "[surftimer] Teleports player back to the start");
+    RegConsoleCmd("sm_b", Command_ToBonus, "[surftimer] Teleports player to the start of a bonus");
+    RegConsoleCmd("sm_bonus", Command_ToBonus, "[surftimer] Teleports player to the start of a bonus");
+    RegConsoleCmd("sm_bonuses", Command_ListBonuses, "[surftimer] Displays a list of bonuses in current map");
+    RegConsoleCmd("sm_s", Command_ToStage, "[surftimer] Teleports player to the selected stage");
+    RegConsoleCmd("sm_stage", Command_ToStage, "[surftimer] Teleports player to the selected stage");
+    RegConsoleCmd("sm_end", Command_ToEnd, "[surftimer] Teleports player to the end zone");
 
-	// MISC
-	RegConsoleCmd("sm_tier", Command_Tier, "[surftimer] Prints information on the current map");
-	RegConsoleCmd("sm_maptier", Command_Tier, "[surftimer] Prints information on the current map");
-	RegConsoleCmd("sm_mapinfo", Command_Tier, "[surftimer] Prints information on the current map");
-	RegConsoleCmd("sm_m", Command_Tier, "[surftimer] Prints information on the current map");
-	RegConsoleCmd("sm_difficulty", Command_Tier, "[surftimer] Prints information on the current map");
-	RegConsoleCmd("sm_howto", Command_HowTo, "[surftimer] Displays a youtube video on how to surf");
-
-
-	// Teleport to the start of the stage
-	RegConsoleCmd("sm_stuck", Command_Teleport, "[surftimer] Teleports player back to the start of the stage");
-	RegConsoleCmd("sm_back", Command_Teleport, "[surftimer] Teleports player back to the start of the stage");
-	RegConsoleCmd("sm_rs", Command_Teleport, "[surftimer] Teleports player back to the start of the stage");
-	RegConsoleCmd("sm_play", Command_Teleport, "[surftimer] Teleports player back to the start");
-	RegConsoleCmd("sm_spawn", Command_Teleport, "[surftimer] Teleports player back to the start");
-
-	// Player Checkpoints
-	RegConsoleCmd("sm_teleport", Command_goToPlayerCheckpoint, "[surftimer] Teleports player to his last checkpoint");
-	RegConsoleCmd("sm_tele", Command_goToPlayerCheckpoint, "[surftimer] Teleports player to his last checkpoint");
-	RegConsoleCmd("sm_prac", Command_goToPlayerCheckpoint, "[surftimer] Teleports player to his last checkpoint");
-	RegConsoleCmd("sm_practice", Command_goToPlayerCheckpoint, "[surftimer] Teleports player to his last checkpoint");
-	RegConsoleCmd("sm_loadloc", Command_goToPlayerCheckpoint, "[surftimer] Teleports player to his last checkpoint");
-	RegConsoleCmd("sm_cp", Command_createPlayerCheckpoint, "[surftimer] Creates a checkpoint, where the player can teleport back to");
-	RegConsoleCmd("sm_checkpoint", Command_createPlayerCheckpoint, "[surftimer] Creates a checkpoint, where the player can teleport back to");
-	RegConsoleCmd("sm_saveloc", Command_createPlayerCheckpoint, "[surftimer] Creates a checkpoint, where the player can teleport back to");
-	RegConsoleCmd("sm_savelocs", Command_SaveLocList);
-	RegConsoleCmd("sm_loclist", Command_SaveLocList);
-	RegConsoleCmd("sm_normal", Command_normalMode, "[surftimer] Switches player back to normal mode.");
-	RegConsoleCmd("sm_n", Command_normalMode, "[surftimer] Switches player back to normal mode.");
-	RegConsoleCmd("sm_clearsavelocs", Command_clearPlayerCheckpoints, "[surftimer] Clears the players savelocs");
-	RegConsoleCmd("sm_clearlocs", Command_clearPlayerCheckpoints, "[surftimer] Clears the players savelocs");
-	RegConsoleCmd("sm_addsaveloc", Command_recreatePlayerCheckpoint, "[surftimer] Recreates a saveloc with supplied information, where the player can teleport back to");
-	RegConsoleCmd("sm_addloc", Command_recreatePlayerCheckpoint, "[surftimer] Recreates a saveloc with supplied information, where the player can teleport back to");
-	RegConsoleCmd("sm_teleprev", Command_previousSaveloc, "[surftimer] Cycles backwards through created savelocs.");
-	RegConsoleCmd("sm_telenext", Command_nextSaveloc, "[surftimer] Cycles forwards through created savelocs.");
-
-	// Admin Commands
-	RegConsoleCmd("sm_ckadmin", Admin_ckPanel, "[surftimer] Displays the SurfTimer admin menu panel");
-	RegConsoleCmd("sm_refreshprofile", Admin_RefreshProfile, "[surftimer] Recalculates player profile for given steam id");
-	RegConsoleCmd("sm_clearassists", Admin_ClearAssists, "[surftimer] Clears assist points (map progress) from all players");// reload map
-	RegConsoleCmd("sm_refreshranks", Admin_RefreshPlayerRankTable, "[surftimer] Refresh player rank table");
-
-	// Zoning/Mapsetting Commands
-	RegConsoleCmd("sm_zones", Command_Zones, "[surftimer] [zoner] Opens up the zone creation menu.");
-	RegConsoleCmd("sm_hookzone", Command_HookZones, "[surftimer] [zoner] Opens up zone hook creation menu.");
-	RegConsoleCmd("sm_addmaptier", Admin_insertMapTier, "[surftimer] [zoner] Changes maps tier");
-	RegConsoleCmd("sm_amt", Admin_insertMapTier, "[surftimer] [zoner] Changes maps tier");
-	RegConsoleCmd("sm_amn", Admin_insertMapperName, "[surftimer] [zoner] Adds mapper name to DB.");
-	RegConsoleCmd("sm_addmappername", Admin_insertMapperName, "[surftimer] [zoner] Adds mapper name to DB.");
-	RegConsoleCmd("sm_addspawn", Admin_insertSpawnLocation, "[surftimer] [zoner] Changes the position !r takes players to");
-	RegConsoleCmd("sm_delspawn", Admin_deleteSpawnLocation, "[surftimer] [zoner] Removes custom !r position");
-	RegConsoleCmd("sm_mapsettings", Admin_MapSettings, "[surftimer] [zoner] Displays menu containing various options to change map settings");
-	RegConsoleCmd("sm_ms", Admin_MapSettings, "[surftimer] [zoner] Displays menu containing various options to change map settings");
-	RegConsoleCmd("sm_maxvelocity", Command_SetMaxVelocity, "[surftimer] [zoner] Set the current maps maxvelocity");
-	RegConsoleCmd("sm_mv", Command_SetMaxVelocity, "[surftimer] [zoner] Set the current maps max velocity");
-	RegConsoleCmd("sm_announcerecord", Command_SetAnnounceRecord, "[surftimer] [zoner] Set whether records will be announced on all finishes, pb only or client only");
-	RegConsoleCmd("sm_ar", Command_SetAnnounceRecord, "[surftimer] [zoner] Set whether records will be announced on all finishes, pb only or client only");
-	RegConsoleCmd("sm_gravityfix", Command_SetGravityFix, "[surftimer] [zoner] Toggle the gravity fix on the current map");
-	RegConsoleCmd("sm_gf", Command_SetGravityFix, "[surftimer] [zoner] Toggle the gravity fix on the current map");
-	RegConsoleCmd("sm_triggers", Command_ToggleTriggers, "[surftimer] [zoner] Toggle display of map triggers");
-	RegConsoleCmd("sm_noclipspeed", Command_NoclipSpeed, "[surftimer] [zoner] Changes the value of sv_noclipspeed");
-
-	// VIP Commands
-	RegAdminCmd("sm_fixbot", Admin_FixBot, g_VipFlag, "[surftimer] Toggles replay bots off and on");
-	RegAdminCmd("sm_fixbots", Admin_FixBot, g_VipFlag, "[surftimer] Toggles replay bots off and on");
-	RegAdminCmd("sm_fb", Admin_FixBot, g_VipFlag, "[surftimer] Toggles replay bots off and on");
-
-	RegConsoleCmd("sm_vip", Command_Vip, "[surftimer] [vip] Displays the VIP menu to client");
-	RegConsoleCmd("sm_mytitle", Command_PlayerTitle, "[surftimer] [vip] Displays a menu to the player showing their custom title and allowing them to change their colours");
-	RegConsoleCmd("sm_title", Command_PlayerTitle, "[surftimer] [vip] Displays a menu to the player showing their custom title and allowing them to change their colours");
-//	RegConsoleCmd("sm_customtitle", Command_SetDbTitle, "[surftimer] [vip] VIPs can set their own custom title into a db");
-	RegConsoleCmd("sm_namecolour", Command_SetDbNameColour, "[surftimer] [vip] VIPs can set their own custom name colour into the db");
-	RegConsoleCmd("sm_textcolour", Command_SetDbTextColour, "[surftimer] [vip] VIPs can set their own custom text colour into the db");
-	RegConsoleCmd("sm_ve", Command_VoteExtend, "[surftimer] [vip] Vote to extend the map");
-	RegConsoleCmd("sm_colours", Command_ListColours, "[surftimer] Lists available colours for sm_mytitle and sm_namecolour");
-	RegConsoleCmd("sm_colors", Command_ListColours, "[surftimer] Lists available colours for sm_mytitle and sm_namecolour");
-	RegConsoleCmd("sm_toggletitle", Command_ToggleTitle, "[surftimer] [vip] VIPs can toggle their title.");
-//	RegConsoleCmd("sm_joinmsg", Command_JoinMsg, "[surftimer] [vip] Allows a vip to set their join msg");
-	RegConsoleCmd("sm_vmute", Command_Vmute, "[ImperfectGamers] [vip] Toggle vmute on a player");
-	// IG give/remove titles commands
-	RegAdminCmd("sm_givetitle", Command_GiveTitle, ADMFLAG_CUSTOM3, "[ImperfectGamers] Grants a title to a player");
-	RegAdminCmd("sm_removetitle", Command_RemoveTitle, ADMFLAG_CUSTOM3, "[ImperfectGamers] Removes a title from a player");
-
-//	Add extendmap command for zoners - flag O
-	RegAdminCmd("sm_extendmap", Command_ExtendMap, ADMFLAG_CUSTOM1, "[IG] Extend the map by specified minutes");
-
-// Automatic Donate Commands - REMOVED give/remove VIP commands; we use SourceBans CUSTOM2 flag (flag p)
-//	RegAdminCmd("sm_givevip", VIP_GiveVip, ADMFLAG_ROOT, "[surftimer] Give a player VIP");
-//	RegAdminCmd("sm_removevip", VIP_RemoveVip, ADMFLAG_ROOT, "[surftimer] Remove a players VIP");
-	RegAdminCmd("sm_addcredits", VIP_GiveCredits, ADMFLAG_CUSTOM3, "[surftimer] Give a player credits");
-
-	// WRCPs
-	RegConsoleCmd("sm_wrcp", Client_Wrcp, "[surftimer] displays stage times for map");
-	RegConsoleCmd("sm_wrcps", Client_Wrcp, "[surftimer] displays stage times for map");
-	RegConsoleCmd("sm_srcp", Client_Wrcp, "[surftimer] displays stage times for map");
-	RegConsoleCmd("sm_srcps", Client_Wrcp, "[surftimer] displays stage times for map");
-
-	// QOL Commands
-	RegConsoleCmd("sm_gb", Command_GoBack, "[surftimer] Go back a stage");
-	RegConsoleCmd("sm_goback", Command_GoBack, "[surftimer] Go back a stage");
-	RegConsoleCmd("sm_mtop", Client_MapTop, "[surftimer] displays local map top for a given map");
-	RegConsoleCmd("sm_p", Client_Profile, "[surftimer] opens a player profile");
-	RegConsoleCmd("sm_timer", Client_OptionMenu, "[surftimer] opens options menu");
-	RegConsoleCmd("sm_toggletimer", Client_ToggleTimer, "[surftimer] toggles timer on and off");
-	RegConsoleCmd("sm_surftimer", Client_OptionMenu, "[surftimer] opens options menu");
-	RegConsoleCmd("sm_bhoptimer", Client_OptionMenu, "[surftimer] opens options menu");
-	RegConsoleCmd("sm_knife", Command_GiveKnife, "[surftimer] Give players a knife");
-	RegConsoleCmd("sm_prinfo_help", Command_PRinfo_help, "[surftimer] Show in console how to use the command");
-	RegConsoleCmd("sm_csd", Command_CenterSpeed, "[surftimer] [settings] on/off - toggle center speed display");
-	RegConsoleCmd("sm_style_acronyms", Client_StyleAcronyms, "[surftimer] shows every style format available");
-	RegConsoleCmd("sm_continent_acronyms", Client_ContinentAcronyms, "[surftimer] shows every continent format available");
+    // MISC
+    RegConsoleCmd("sm_tier", Command_Tier, "[surftimer] Prints information on the current map");
+    RegConsoleCmd("sm_maptier", Command_Tier, "[surftimer] Prints information on the current map");
+    RegConsoleCmd("sm_mapinfo", Command_Tier, "[surftimer] Prints information on the current map");
+    RegConsoleCmd("sm_m", Command_Tier, "[surftimer] Prints information on the current map");
+    RegConsoleCmd("sm_difficulty", Command_Tier, "[surftimer] Prints information on the current map");
+    RegConsoleCmd("sm_howto", Command_HowTo, "[surftimer] Displays a youtube video on how to surf");
 
 
-	// New Commands
-	RegConsoleCmd("sm_mrank", Command_SelectMapTime, "[surftimer] prints a players map record in chat.");
-	RegConsoleCmd("sm_brank", Command_SelectBonusTime, "[surftimer] prints a players bonus record in chat.");
-	RegConsoleCmd("sm_pr", Command_SelectPlayerPr, "[surftimer] Displays pr menu to client");
-	RegConsoleCmd("sm_togglemapfinish", Command_ToggleMapFinish, "[surftimer] Toggles whether a player will finish a map when entering the end zone.");
-	RegConsoleCmd("sm_tmf", Command_ToggleMapFinish, "[surfSurfTimertimer] Toggles whether a player will finish a map when entering the end zone.");
-	RegConsoleCmd("sm_repeat", Command_Repeat, "[surftimer] Toggles whether a player will keep repeating the same stage.");
-	RegConsoleCmd("sm_rank", Command_SelectRank, "[surftimer] Displays a players server rank in the chat");
-	RegConsoleCmd("sm_mi", Command_MapImprovement, "[surftimer] opens map improvement points panel for map");
-	RegConsoleCmd("sm_specbot", Command_SpecBot, "[surftimer] Spectate the map bot");
-	RegConsoleCmd("sm_specbotbonus", Command_SpecBonusBot, "[surftimer] Spectate the bonus bot");
-	RegConsoleCmd("sm_specbotb", Command_SpecBonusBot, "[surftimer] Spectate the bonus bot");
-	RegConsoleCmd("sm_showzones", Command_ShowZones, "[surftimer] Clients can toggle whether zones are visible for them");
-	RegConsoleCmd("sm_nextrank", Command_NextRank, "[surftimer] Displays the amount of points required to achieve next rank");
+    // Teleport to the start of the stage
+    RegConsoleCmd("sm_stuck", Command_Teleport, "[surftimer] Teleports player back to the start of the stage");
+    RegConsoleCmd("sm_back", Command_Teleport, "[surftimer] Teleports player back to the start of the stage");
+    RegConsoleCmd("sm_rs", Command_Teleport, "[surftimer] Teleports player back to the start of the stage");
+    RegConsoleCmd("sm_play", Command_Teleport, "[surftimer] Teleports player back to the start");
+    RegConsoleCmd("sm_spawn", Command_Teleport, "[surftimer] Teleports player back to the start");
 
-	// Styles
-	RegConsoleCmd("sm_style", Client_SelectStyle, "[surftimer] open style select menu.");
-	RegConsoleCmd("sm_styles", Client_SelectStyle, "[surftimer] open style select menu.");
+    // Player Checkpoints
+    RegConsoleCmd("sm_teleport", Command_goToPlayerCheckpoint, "[surftimer] Teleports player to his last checkpoint");
+    RegConsoleCmd("sm_tele", Command_goToPlayerCheckpoint, "[surftimer] Teleports player to his last checkpoint");
+    RegConsoleCmd("sm_prac", Command_goToPlayerCheckpoint, "[surftimer] Teleports player to his last checkpoint");
+    RegConsoleCmd("sm_practice", Command_goToPlayerCheckpoint, "[surftimer] Teleports player to his last checkpoint");
+    RegConsoleCmd("sm_loadloc", Command_goToPlayerCheckpoint, "[surftimer] Teleports player to his last checkpoint");
+    RegConsoleCmd("sm_cp", Command_createPlayerCheckpoint, "[surftimer] Creates a checkpoint, where the player can teleport back to");
+    RegConsoleCmd("sm_checkpoint", Command_createPlayerCheckpoint, "[surftimer] Creates a checkpoint, where the player can teleport back to");
+    RegConsoleCmd("sm_saveloc", Command_createPlayerCheckpoint, "[surftimer] Creates a checkpoint, where the player can teleport back to");
+    RegConsoleCmd("sm_savelocs", Command_SaveLocList);
+    RegConsoleCmd("sm_loclist", Command_SaveLocList);
+    RegConsoleCmd("sm_clearsavelocs", Command_clearPlayerCheckpoints, "[surftimer] Clears the players savelocs");
+    RegConsoleCmd("sm_clearlocs", Command_clearPlayerCheckpoints, "[surftimer] Clears the players savelocs");
+    RegConsoleCmd("sm_addsaveloc", Command_recreatePlayerCheckpoint, "[surftimer] Recreates a saveloc with supplied information, where the player can teleport back to");
+    RegConsoleCmd("sm_addloc", Command_recreatePlayerCheckpoint, "[surftimer] Recreates a saveloc with supplied information, where the player can teleport back to");
+    RegConsoleCmd("sm_teleprev", Command_previousSaveloc, "[surftimer] Cycles backwards through created savelocs.");
+    RegConsoleCmd("sm_telenext", Command_nextSaveloc, "[surftimer] Cycles forwards through created savelocs.");
 
-	// Test
-	RegAdminCmd("sm_test", sm_test, ADMFLAG_CUSTOM6);
-	RegAdminCmd("sm_vel", Client_GetVelocity, ADMFLAG_ROOT);
-	RegAdminCmd("sm_targetname", Client_TargetName, ADMFLAG_ROOT);
+    // Admin Commands
+    RegConsoleCmd("sm_ckadmin", Admin_ckPanel, "[surftimer] Displays the SurfTimer admin menu panel");
+    RegConsoleCmd("sm_refreshprofile", Admin_RefreshProfile, "[surftimer] Recalculates player profile for given steam id");
+    RegConsoleCmd("sm_clearassists", Admin_ClearAssists, "[surftimer] Clears assist points (map progress) from all players");// reload map
+    RegConsoleCmd("sm_refreshranks", Admin_RefreshPlayerRankTable, "[surftimer] Refresh player rank table");
 
-	// !Startpos -- Goose
-	RegConsoleCmd("sm_startpos", Command_Startpos, "[surftimer] Saves current location as new !r spawn.");
-	RegConsoleCmd("sm_sp", Command_Startpos, "[surftimer] Saves current location as new !r spawn.");
-	RegConsoleCmd("sm_resetstartpos", Command_ResetStartpos, "[surftimer] Removes custom !r spawn.");
-	RegConsoleCmd("sm_rsp", Command_ResetStartpos, "[surftimer] Removes custom !r spawn.");
+    // Zoning/Mapsetting Commands
+    RegConsoleCmd("sm_zones", Command_Zones, "[surftimer] [zoner] Opens up the zone creation menu.");
+    RegConsoleCmd("sm_hookzone", Command_HookZones, "[surftimer] [zoner] Opens up zone hook creation menu.");
+    RegConsoleCmd("sm_addmaptier", Admin_insertMapTier, "[surftimer] [zoner] Changes maps tier");
+    RegConsoleCmd("sm_amt", Admin_insertMapTier, "[surftimer] [zoner] Changes maps tier");
+    RegConsoleCmd("sm_amn", Admin_insertMapperName, "[surftimer] [zoner] Adds mapper name to DB.");
+    RegConsoleCmd("sm_addmappername", Admin_insertMapperName, "[surftimer] [zoner] Adds mapper name to DB.");
+    RegConsoleCmd("sm_addspawn", Admin_insertSpawnLocation, "[surftimer] [zoner] Changes the position !r takes players to");
+    RegConsoleCmd("sm_delspawn", Admin_deleteSpawnLocation, "[surftimer] [zoner] Removes custom !r position");
+    RegConsoleCmd("sm_mapsettings", Admin_MapSettings, "[surftimer] [zoner] Displays menu containing various options to change map settings");
+    RegConsoleCmd("sm_ms", Admin_MapSettings, "[surftimer] [zoner] Displays menu containing various options to change map settings");
+    RegConsoleCmd("sm_maxvelocity", Command_SetMaxVelocity, "[surftimer] [zoner] Set the current maps maxvelocity");
+    RegConsoleCmd("sm_mv", Command_SetMaxVelocity, "[surftimer] [zoner] Set the current maps max velocity");
+    RegConsoleCmd("sm_announcerecord", Command_SetAnnounceRecord, "[surftimer] [zoner] Set whether records will be announced on all finishes, pb only or client only");
+    RegConsoleCmd("sm_ar", Command_SetAnnounceRecord, "[surftimer] [zoner] Set whether records will be announced on all finishes, pb only or client only");
+    RegConsoleCmd("sm_gravityfix", Command_SetGravityFix, "[surftimer] [zoner] Toggle the gravity fix on the current map");
+    RegConsoleCmd("sm_gf", Command_SetGravityFix, "[surftimer] [zoner] Toggle the gravity fix on the current map");
+    RegConsoleCmd("sm_triggers", Command_ToggleTriggers, "[surftimer] [zoner] Toggle display of map triggers");
+    RegConsoleCmd("sm_noclipspeed", Command_NoclipSpeed, "[surftimer] [zoner] Changes the value of sv_noclipspeed");
 
-	// CPR
-	RegConsoleCmd("sm_cpr", Command_CPR, "[surftimer] Compare clients time to another clients time");
-	RegConsoleCmd("sm_prinfo", Command_PRinfo, "[surftimer] Information about personal info on a map");
-	
-	//CCP
-	RegConsoleCmd("sm_ccp", Command_CCP, "[surftimer] Information about checkpoints info on a map");
+    // VIP Commands
+    RegAdminCmd("sm_fixbot", Admin_FixBot, g_VipFlag, "[surftimer] Toggles replay bots off and on");
+    RegAdminCmd("sm_fixbots", Admin_FixBot, g_VipFlag, "[surftimer] Toggles replay bots off and on");
+    RegAdminCmd("sm_fb", Admin_FixBot, g_VipFlag, "[surftimer] Toggles replay bots off and on");
 
-	// reload map
-	RegAdminCmd("sm_rm", Command_ReloadMap, ADMFLAG_ROOT, "[surftimer] Reloads the current map");
+    RegConsoleCmd("sm_vip", Command_Vip, "[surftimer] [vip] Displays the VIP menu to client");
+    RegConsoleCmd("sm_mytitle", Command_PlayerTitle, "[surftimer] [vip] Displays a menu to the player showing their custom title and allowing them to change their colours");
+    RegConsoleCmd("sm_title", Command_PlayerTitle, "[surftimer] [vip] Displays a menu to the player showing their custom title and allowing them to change their colours");
+    //	RegConsoleCmd("sm_customtitle", Command_SetDbTitle, "[surftimer] [vip] VIPs can set their own custom title into a db");
+    RegConsoleCmd("sm_namecolour", Command_SetDbNameColour, "[surftimer] [vip] VIPs can set their own custom name colour into the db");
+    RegConsoleCmd("sm_textcolour", Command_SetDbTextColour, "[surftimer] [vip] VIPs can set their own custom text colour into the db");
+    RegConsoleCmd("sm_ve", Command_VoteExtend, "[surftimer] [vip] Vote to extend the map");
+    RegConsoleCmd("sm_colours", Command_ListColours, "[surftimer] Lists available colours for sm_mytitle and sm_namecolour");
+    RegConsoleCmd("sm_colors", Command_ListColours, "[surftimer] Lists available colours for sm_mytitle and sm_namecolour");
+    RegConsoleCmd("sm_toggletitle", Command_ToggleTitle, "[surftimer] [vip] VIPs can toggle their title.");
+    //	RegConsoleCmd("sm_joinmsg", Command_JoinMsg, "[surftimer] [vip] Allows a vip to set their join msg");
+    RegConsoleCmd("sm_vmute", Command_Vmute, "[ImperfectGamers] [vip] Toggle vmute on a player");
+    // IG give/remove titles commands
+    RegAdminCmd("sm_givetitle", Command_GiveTitle, ADMFLAG_CUSTOM3, "[ImperfectGamers] Grants a title to a player");
+    RegAdminCmd("sm_removetitle", Command_RemoveTitle, ADMFLAG_CUSTOM3, "[ImperfectGamers] Removes a title from a player");
 
-	// Play record
-	RegConsoleCmd("sm_replay", Command_PlayRecord, "[surftimer] Set the replay bot to replay a run");
-	RegConsoleCmd("sm_replays", Command_PlayRecord, "[surftimer] Set the replay bot to replay a run");
+    //	Add extendmap command for zoners - flag O
+    RegAdminCmd("sm_extendmap", Command_ExtendMap, ADMFLAG_CUSTOM1, "[IG] Extend the map by specified minutes");
 
-	// Delete records
-	RegAdminCmd("sm_deleterecords", Command_DeleteRecords, g_ZonerFlag, "[surftimer] [zoner] Delete records");
-	RegAdminCmd("sm_dr", Command_DeleteRecords, g_ZonerFlag, "[surftimer] [zoner] Delete records");
-	RegAdminCmd("sm_wipeplayer", Admin_ResetRecords, ADMFLAG_ROOT, "[surfTimer] Removes all database entries of the specific steamid - requires z flag");
+    // Automatic Donate Commands - REMOVED give/remove VIP commands; we use SourceBans CUSTOM2 flag (flag p)
+    //	RegAdminCmd("sm_givevip", VIP_GiveVip, ADMFLAG_ROOT, "[surftimer] Give a player VIP");
+    //	RegAdminCmd("sm_removevip", VIP_RemoveVip, ADMFLAG_ROOT, "[surftimer] Remove a players VIP");
+    RegAdminCmd("sm_addcredits", VIP_GiveCredits, ADMFLAG_CUSTOM3, "[surftimer] Give a player credits");
 
-	// Setting Commands
-	RegConsoleCmd("sm_pre", Command_Prestrafe, "[surftimer] [settings] Toggles prestrafe messages for player");
-	RegConsoleCmd("sm_prestrafe", Command_Prestrafe, "[surftimer] [settings] Toggles prestrafe messages for player");
-	RegConsoleCmd("sm_togglehints", Command_ToggleHints, "[surftimer] [settings] Toggles the hint messages");
-	RegConsoleCmd("sm_hints", Command_ToggleHints, "[surftimer] [settings] Toggles the hint messages");
-	RegConsoleCmd("sm_silentspec", Command_SilentSpec, "[surftimer] [settings] Toggles silent spectate for player");
-	RegConsoleCmd("sm_sspec", Command_SilentSpec, "[surftimer] [settings] Toggles silent spectate for player");
-	RegConsoleCmd("sm_togglewrcps", Command_ToggleWrcps, "[surftimer] [settings] on/off - Enable player checkpoints");
-	RegConsoleCmd("sm_togglecps", Command_ToggleCps, "[surftimer] [settings] on/off - Enable player checkpoints");
-	RegConsoleCmd("sm_quake", Command_ToggleQuake, "[surftimer] [settings] on/off - Enable sounds");
-	RegConsoleCmd("sm_startside", Command_ChangeStartSide, "[surftimer] [settings] left/right - change start side");
-	RegConsoleCmd("sm_speedgradient", Command_ChangeSpeedGradient, "[surftimer] [settings] white/green/rainbow/momentum - change speed gradient");
-	RegConsoleCmd("sm_speedmode", Command_ChangeSpeedMode, "[surftimer] [settings] xy/xyz/z - change speed mode");
-	RegConsoleCmd("sm_prespeedmode", Command_ChangePreSpeedMode, "[surftimer] [settings] xy/xyz/z - change prestrafe speed mode");
-	RegConsoleCmd("sm_centerspeed", Command_CenterSpeed, "[surftimer] [settings] on/off - toggle center speed display");
-	RegConsoleCmd("sm_nctriggers", Command_ToggleNcTriggers, "[surftimer] [settings] on/off - toggle triggers while noclipping");
-	RegConsoleCmd("sm_autoreset", Command_ToggleAutoReset, "[surftimer] [settings] on/off - toggle auto reset for your current map/bonus run if your above your pb");
+    // WRCPs
+    RegConsoleCmd("sm_wrcp", Client_Wrcp, "[surftimer] displays stage times for map");
+    RegConsoleCmd("sm_wrcps", Client_Wrcp, "[surftimer] displays stage times for map");
+    RegConsoleCmd("sm_srcp", Client_Wrcp, "[surftimer] displays stage times for map");
+    RegConsoleCmd("sm_srcps", Client_Wrcp, "[surftimer] displays stage times for map");
 
+    // QOL Commands
+    RegConsoleCmd("sm_gb", Command_GoBack, "[surftimer] Go back a stage");
+    RegConsoleCmd("sm_goback", Command_GoBack, "[surftimer] Go back a stage");
+    RegConsoleCmd("sm_mtop", Client_MapTop, "[surftimer] displays local map top for a given map");
+    RegConsoleCmd("sm_p", Client_Profile, "[surftimer] opens a player profile");
+    RegConsoleCmd("sm_timer", Client_OptionMenu, "[surftimer] opens options menu");
+    RegConsoleCmd("sm_toggletimer", Client_ToggleTimer, "[surftimer] toggles timer on and off");
+    RegConsoleCmd("sm_surftimer", Client_OptionMenu, "[surftimer] opens options menu");
+    RegConsoleCmd("sm_bhoptimer", Client_OptionMenu, "[surftimer] opens options menu");
+    RegConsoleCmd("sm_knife", Command_GiveKnife, "[surftimer] Give players a knife");
+    RegConsoleCmd("sm_prinfo_help", Command_PRinfo_help, "[surftimer] Show in console how to use the command");
+    RegConsoleCmd("sm_csd", Command_CenterSpeed, "[surftimer] [settings] on/off - toggle center speed display");
+    RegConsoleCmd("sm_style_acronyms", Client_StyleAcronyms, "[surftimer] shows every style format available");
+    RegConsoleCmd("sm_continent_acronyms", Client_ContinentAcronyms, "[surftimer] shows every continent format available");
+
+
+    // New Commands
+    RegConsoleCmd("sm_mrank", Command_SelectMapTime, "[surftimer] prints a players map record in chat.");
+    RegConsoleCmd("sm_brank", Command_SelectBonusTime, "[surftimer] prints a players bonus record in chat.");
+    RegConsoleCmd("sm_pr", Command_SelectPlayerPr, "[surftimer] Displays pr menu to client");
+    RegConsoleCmd("sm_togglemapfinish", Command_ToggleMapFinish, "[surftimer] Toggles whether a player will finish a map when entering the end zone.");
+    RegConsoleCmd("sm_tmf", Command_ToggleMapFinish, "[surfSurfTimertimer] Toggles whether a player will finish a map when entering the end zone.");
+    RegConsoleCmd("sm_repeat", Command_Repeat, "[surftimer] Toggles whether a player will keep repeating the same stage.");
+    RegConsoleCmd("sm_rank", Command_SelectRank, "[surftimer] Displays a players server rank in the chat");
+    RegConsoleCmd("sm_mi", Command_MapImprovement, "[surftimer] opens map improvement points panel for map");
+    RegConsoleCmd("sm_specbot", Command_SpecBot, "[surftimer] Spectate the map bot");
+    RegConsoleCmd("sm_specbotbonus", Command_SpecBonusBot, "[surftimer] Spectate the bonus bot");
+    RegConsoleCmd("sm_specbotb", Command_SpecBonusBot, "[surftimer] Spectate the bonus bot");
+    RegConsoleCmd("sm_showzones", Command_ShowZones, "[surftimer] Clients can toggle whether zones are visible for them");
+    RegConsoleCmd("sm_nextrank", Command_NextRank, "[surftimer] Displays the amount of points required to achieve next rank");
+
+    // Styles
+    RegConsoleCmd("sm_style", Client_SelectStyle, "[surftimer] open style select menu.");
+    RegConsoleCmd("sm_styles", Client_SelectStyle, "[surftimer] open style select menu.");
+
+    RegConsoleCmd("sm_normal", Command_normalMode, "[surftimer] Switches player back to normal mode.");
+    RegConsoleCmd("sm_n", Command_normalMode, "[surftimer] Switches player back to normal mode.");
+    RegConsoleCmd("sm_fastforward", Command_fastForwardMode, "[surftimer] Switches player to fast forward mode.");
+    RegConsoleCmd("sm_ff", Command_fastForwardMode, "[surftimer] Switches player to fast forward mode.");
+    RegConsoleCmd("sm_sideways", Command_sidewaysMode, "[surftimer] Switches player to sideways mode");
+    RegConsoleCmd("sm_sw", Command_sidewaysMode, "[surftimer] Switches player to sideways mode");
+    RegConsoleCmd("sm_halfSideways", Command_halfSidewaysMode, "[surftimer] Switches player to half-sideways mode");
+    RegConsoleCmd("sm_hsw", Command_halfSidewaysMode, "[surftimer] Switches player to half-sideways mode");
+    RegConsoleCmd("sm_backwards", Command_backwardsMode, "[surftimer] Switches player to backwards mode");
+    RegConsoleCmd("sm_bw", Command_backwardsMode, "[surftimer] Switches player to backwards mode");
+    RegConsoleCmd("sm_lowGrav", Command_lowGravityMode, "[surftimer] Switches player to low-gravity mode");
+    RegConsoleCmd("sm_lg", Command_lowGravityMode, "[surftimer] Switches player to low-gravity mode");
+    RegConsoleCmd("sm_slowMotion", Command_slowMotionMode, "[surftimer] Switches player to slow motion mode");
+    RegConsoleCmd("sm_slow", Command_slowMotionMode, "[surftimer] Switches player to slow motion mode");
+    RegConsoleCmd("sm_freestyle", Command_freestyleMode, "[surftimer] Switches player to freestyle mode");
+    RegConsoleCmd("sm_fs", Command_freestyleMode, "[surftimer] Switches player to freestyle mode");
+
+    // Test
+    RegAdminCmd("sm_test", sm_test, ADMFLAG_CUSTOM6);
+    RegAdminCmd("sm_vel", Client_GetVelocity, ADMFLAG_ROOT);
+    RegAdminCmd("sm_targetname", Client_TargetName, ADMFLAG_ROOT);
+
+    // !Startpos -- Goose
+    RegConsoleCmd("sm_startpos", Command_Startpos, "[surftimer] Saves current location as new !r spawn.");
+    RegConsoleCmd("sm_sp", Command_Startpos, "[surftimer] Saves current location as new !r spawn.");
+    RegConsoleCmd("sm_resetstartpos", Command_ResetStartpos, "[surftimer] Removes custom !r spawn.");
+    RegConsoleCmd("sm_rsp", Command_ResetStartpos, "[surftimer] Removes custom !r spawn.");
+
+    // CPR
+    RegConsoleCmd("sm_cpr", Command_CPR, "[surftimer] Compare clients time to another clients time");
+    RegConsoleCmd("sm_prinfo", Command_PRinfo, "[surftimer] Information about personal info on a map");
+
+    //CCP
+    RegConsoleCmd("sm_ccp", Command_CCP, "[surftimer] Information about checkpoints info on a map");
+
+    // reload map
+    RegAdminCmd("sm_rm", Command_ReloadMap, ADMFLAG_ROOT, "[surftimer] Reloads the current map");
+
+    // Play record
+    RegConsoleCmd("sm_replay", Command_PlayRecord, "[surftimer] Set the replay bot to replay a run");
+    RegConsoleCmd("sm_replays", Command_PlayRecord, "[surftimer] Set the replay bot to replay a run");
+
+    // Delete records
+    RegAdminCmd("sm_deleterecords", Command_DeleteRecords, g_ZonerFlag, "[surftimer] [zoner] Delete records");
+    RegAdminCmd("sm_dr", Command_DeleteRecords, g_ZonerFlag, "[surftimer] [zoner] Delete records");
+    RegAdminCmd("sm_wipeplayer", Admin_ResetRecords, ADMFLAG_ROOT, "[surfTimer] Removes all database entries of the specific steamid - requires z flag");
+
+    // Setting Commands
+    RegConsoleCmd("sm_pre", Command_Prestrafe, "[surftimer] [settings] Toggles prestrafe messages for player");
+    RegConsoleCmd("sm_prestrafe", Command_Prestrafe, "[surftimer] [settings] Toggles prestrafe messages for player");
+    RegConsoleCmd("sm_togglehints", Command_ToggleHints, "[surftimer] [settings] Toggles the hint messages");
+    RegConsoleCmd("sm_hints", Command_ToggleHints, "[surftimer] [settings] Toggles the hint messages");
+    RegConsoleCmd("sm_silentspec", Command_SilentSpec, "[surftimer] [settings] Toggles silent spectate for player");
+    RegConsoleCmd("sm_sspec", Command_SilentSpec, "[surftimer] [settings] Toggles silent spectate for player");
+    RegConsoleCmd("sm_togglewrcps", Command_ToggleWrcps, "[surftimer] [settings] on/off - Enable player checkpoints");
+    RegConsoleCmd("sm_togglecps", Command_ToggleCps, "[surftimer] [settings] on/off - Enable player checkpoints");
+    RegConsoleCmd("sm_quake", Command_ToggleQuake, "[surftimer] [settings] on/off - Enable sounds");
+    RegConsoleCmd("sm_startside", Command_ChangeStartSide, "[surftimer] [settings] left/right - change start side");
+    RegConsoleCmd("sm_speedgradient", Command_ChangeSpeedGradient, "[surftimer] [settings] white/green/rainbow/momentum - change speed gradient");
+    RegConsoleCmd("sm_speedmode", Command_ChangeSpeedMode, "[surftimer] [settings] xy/xyz/z - change speed mode");
+    RegConsoleCmd("sm_prespeedmode", Command_ChangePreSpeedMode, "[surftimer] [settings] xy/xyz/z - change prestrafe speed mode");
+    RegConsoleCmd("sm_centerspeed", Command_CenterSpeed, "[surftimer] [settings] on/off - toggle center speed display");
+    RegConsoleCmd("sm_nctriggers", Command_ToggleNcTriggers, "[surftimer] [settings] on/off - toggle triggers while noclipping");
+    RegConsoleCmd("sm_autoreset", Command_ToggleAutoReset, "[surftimer] [settings] on/off - toggle auto reset for your current map/bonus run if your above your pb");
 }
 
 public Action Command_ToggleAutoReset(int client, int args) {
@@ -683,30 +697,6 @@ public void VoteExtend(int client)
 	CPrintToChatAll("%t", "VoteStartedBy", g_szChatPrefix, szPlayerName);
 
 	return;
-}
-
-public Action Command_normalMode(int client, int args)
-{
-    if (!IsValidClient(client))
-        return Plugin_Handled;
-
-    Client_Stop(client, 1);
-
-    if (g_bPracticeMode[client])
-        g_bPracticeMode[client] = false;
-
-    // TODO: Create a function for each style to do this
-    g_iCurrentStyle[client] = 0;
-    g_iInitalStyle[client] = 0;
-    Format(g_szInitalStyle[client], 128, "Normal");
-    Format(g_szStyleHud[client], 32, "");
-    g_bRankedStyle[client] = true;
-    g_bFunStyle[client] = false;
-
-    Command_Restart(client, 1);
-
-    CPrintToChat(client, "%t", "PracticeNormal", g_szChatPrefix);
-    return Plugin_Handled;
 }
 
 public Action Command_createPlayerCheckpoint(int client, int args)
@@ -5003,10 +4993,191 @@ public Action Command_GoBack(int client, int args)
 }
 
 // Styles
+public void UpdateStyle(int client, int style)
+{
+    g_bPracticeMode[client] = false;
+    g_iCurrentStyle[client] = style;
+    g_iInitalStyle[client] = style;
+
+    switch (style)
+    {
+        case 0:
+        {
+            Format(g_szInitalStyle[client], 128, "Normal");
+            Format(g_szStyleHud[client], 32, "");
+            g_bRankedStyle[client] = true;
+            g_bFunStyle[client] = false;
+            CPrintToChat(client, "%t", "PracticeNormal", g_szChatPrefix);
+        }
+        case 1:
+        {
+            Format(g_szInitalStyle[client], 128, "Sideways");
+            Format(g_szStyleHud[client], 32, "[SW]");
+            g_bRankedStyle[client] = true;
+            g_bFunStyle[client] = false;
+            CPrintToChat(client, "%t", "PracticeSideways", g_szChatPrefix);
+        }
+        case 2:
+        {
+            Format(g_szInitalStyle[client], 128, "Half-Sideways");
+            Format(g_szStyleHud[client], 32, "[HSW]");
+            g_bRankedStyle[client] = true;
+            g_bFunStyle[client] = false;
+            CPrintToChat(client, "%t", "PracticeHalfSideways", g_szChatPrefix);
+        }
+        case 3:
+        {
+            Format(g_szInitalStyle[client], 128, "Backwards");
+            Format(g_szStyleHud[client], 32, "[BW]");
+            g_bRankedStyle[client] = true;
+            g_bFunStyle[client] = false;
+            CPrintToChat(client, "%t", "PracticeBackwards", g_szChatPrefix);
+        }
+        case 4:
+        {
+            Format(g_szInitalStyle[client], 128, "Low-Gravity");
+            Format(g_szStyleHud[client], 32, "[LG]");
+            SetEntityGravity(client, 0.5);
+            g_bRankedStyle[client] = false;
+            g_bFunStyle[client] = true;
+            CPrintToChat(client, "%t", "PracticeLowGrav", g_szChatPrefix);
+        }
+        case 5:
+        {
+            Format(g_szInitalStyle[client], 128, "Slow Motion");
+            Format(g_szStyleHud[client], 32, "[SM]");
+            SetEntPropFloat(client, Prop_Data, "m_flLaggedMovementValue", 0.5);
+            g_bRankedStyle[client] = false;
+            g_bFunStyle[client] = true;
+            CPrintToChat(client, "%t", "PracticeSlowMotion", g_szChatPrefix);
+        }
+        case 6:
+        {
+            Format(g_szInitalStyle[client], 128, "Fast Forward");
+            Format(g_szStyleHud[client], 32, "[FF]");
+            SetEntPropFloat(client, Prop_Data, "m_flLaggedMovementValue", 1.5);
+            g_bRankedStyle[client] = false;
+            g_bFunStyle[client] = true;
+            CPrintToChat(client, "%t", "PracticeFastForward", g_szChatPrefix);
+        }
+        case 7:
+        {
+            Format(g_szInitalStyle[client], 128, "Freestyle");
+            Format(g_szStyleHud[client], 32, "[FS]");
+            g_bRankedStyle[client] = false;
+            g_bFunStyle[client] = true;
+            g_bAutoBhop = true;
+            g_bAutoBhopClient[client] = true;
+            CPrintToChat(client, "%t", "PracticeFreestyle", g_szChatPrefix);
+        }
+        default:
+        {
+            CPrintToChat(client, "%s Invalid Style: %i", g_szChatPrefix, style);
+            LogWarning("%s Invalid Style: %i", g_szChatPrefix, style);
+        }
+    }
+
+    Client_Stop(client, 1);
+    Command_Restart(client, 1);
+}
+
+public Action Command_normalMode(int client, int args)
+{
+    if (!IsValidClient(client))
+    {
+        return Plugin_Handled;
+    }
+
+    UpdateStyle(client, 0);
+    return Plugin_Handled;
+}
+
+public Action Command_sidewaysMode(int client, int args)
+{
+    if (!IsValidClient(client))
+    {
+        return Plugin_Handled;
+    }
+
+    UpdateStyle(client, 1);
+    return Plugin_Handled;
+}
+
+public Action Command_halfSidewaysMode(int client, int args)
+{
+    if (!IsValidClient(client))
+    {
+        return Plugin_Handled;
+    }
+
+    UpdateStyle(client, 2);
+    return Plugin_Handled;
+}
+
+public Action Command_backwardsMode(int client, int args)
+{
+    if (!IsValidClient(client))
+    {
+        return Plugin_Handled;
+    }
+
+    UpdateStyle(client, 3);
+    return Plugin_Handled;
+}
+
+public Action Command_lowGravityMode(int client, int args)
+{
+    if (!IsValidClient(client))
+    {
+        return Plugin_Handled;
+    }
+
+    UpdateStyle(client, 4);
+    return Plugin_Handled;
+}
+
+public Action Command_slowMotionMode(int client, int args)
+{
+    if (!IsValidClient(client))
+    {
+        return Plugin_Handled;
+    }
+
+    UpdateStyle(client, 5);
+    return Plugin_Handled;
+}
+
+public Action Command_fastForwardMode(int client, int args)
+{
+    if (!IsValidClient(client))
+    {
+        return Plugin_Handled;
+    }
+
+    UpdateStyle(client, 6);
+    return Plugin_Handled;
+}
+
+public Action Command_freestyleMode(int client, int args)
+{
+    if (!IsValidClient(client))
+    {
+        return Plugin_Handled;
+    }
+
+    UpdateStyle(client, 7);
+    return Plugin_Handled;
+}
+
 public Action Client_SelectStyle(int client, int args)
 {
-	styleSelectMenu(client);
-	return Plugin_Handled;
+    if (!IsValidClient(client))
+    {
+        return Plugin_Handled;
+    }
+
+    styleSelectMenu(client);
+    return Plugin_Handled;
 }
 
 public void styleSelectMenu(int client)
@@ -5040,7 +5211,6 @@ public int StyleTypeSelectMenuHandler(Menu styleSelect, MenuAction action, int p
 			{
 				Menu styleSelect2 = CreateMenu(StyleSelectMenuHandler);
 				SetMenuTitle(styleSelect2, "Current Style: %s\n------------------------------\n", g_szInitalStyle[param1]);
-				AddMenuItem(styleSelect2, "0", "Normal - Ranked");
 				AddMenuItem(styleSelect2, "4", "Low-Gravity");
 				AddMenuItem(styleSelect2, "5", "Slow Motion");
 				AddMenuItem(styleSelect2, "6", "Fast Forward");
@@ -5056,101 +5226,25 @@ public int StyleTypeSelectMenuHandler(Menu styleSelect, MenuAction action, int p
 	return 0;
 }
 
-public int StyleSelectMenuHandler(Menu menu, MenuAction action, int param1, int param2)
+public int StyleSelectMenuHandler(Menu menu, MenuAction action, int client, int choice)
 {
-	if (action == MenuAction_Select)
-	{
-		char info[32];
-		GetMenuItem(menu, param2, info, sizeof(info));
-		if (StrContains(info, "1", false)!= -1)
-		{
-			g_iCurrentStyle[param1] = 1;
-			g_iInitalStyle[param1] = 1;
-			Format(g_szInitalStyle[param1], 128, "Sideways");
-			Format(g_szStyleHud[param1], 32, "[SW]");
-			g_bRankedStyle[param1] = true;
-			g_bFunStyle[param1] = false;
-		}
-		else if (StrContains(info, "2", false)!= -1)
-		{
-			g_iCurrentStyle[param1] = 2;
-			g_iInitalStyle[param1] = 2;
-			Format(g_szInitalStyle[param1], 128, "Half-Sideways");
-			Format(g_szStyleHud[param1], 32, "[HSW]");
-			g_bRankedStyle[param1] = true;
-			g_bFunStyle[param1] = false;
-		}
-		else if (StrContains(info, "3", false)!= -1)
-		{
-			g_iCurrentStyle[param1] = 3;
-			g_iInitalStyle[param1] = 3;
-			Format(g_szInitalStyle[param1], 128, "Backwards");
-			Format(g_szStyleHud[param1], 32, "[BW]");
-			g_bRankedStyle[param1] = true;
-			g_bFunStyle[param1] = false;
-		}
-		else if (StrContains(info, "4", false)!= -1)
-		{
-			g_iCurrentStyle[param1] = 4;
-			g_iInitalStyle[param1] = 4;
-			Format(g_szInitalStyle[param1], 128, "Low-Gravity");
-			Format(g_szStyleHud[param1], 32, "[LG]");
-			SetEntityGravity(param1, 0.5);
-			g_bRankedStyle[param1] = false;
-			g_bFunStyle[param1] = true;
-		}
-		else if (StrContains(info, "5", false)!= -1)
-		{
-			g_iCurrentStyle[param1] = 5;
-			g_iInitalStyle[param1] = 5;
-			Format(g_szInitalStyle[param1], 128, "Slow Motion");
-			Format(g_szStyleHud[param1], 32, "[SM]");
-			SetEntPropFloat(param1, Prop_Data, "m_flLaggedMovementValue", 0.5);
-			g_bRankedStyle[param1] = false;
-			g_bFunStyle[param1] = true;
-		}
-		else if (StrContains(info, "6", false)!= -1)
-		{
-			g_iCurrentStyle[param1] = 6;
-			g_iInitalStyle[param1] = 6;
-			Format(g_szInitalStyle[param1], 128, "Fast Forward");
-			Format(g_szStyleHud[param1], 32, "[FF]");
-			SetEntPropFloat(param1, Prop_Data, "m_flLaggedMovementValue", 1.5);
-			g_bRankedStyle[param1] = false;
-			g_bFunStyle[param1] = true;
-		}
-		else if (StrContains(info, "7", false) != -1)
-		{
-			g_iCurrentStyle[param1] = 7;
-			g_iInitalStyle[param1] = 7;
-			Format(g_szInitalStyle[param1], 128, "Freestyle");
-			Format(g_szStyleHud[param1], 32, "[FS]");
-			g_bRankedStyle[param1] = false;
-			g_bFunStyle[param1] = true;
-			g_bAutoBhop = true;
-			g_bAutoBhopClient[param1] = true;
-		}
-		else
-		{
-			g_iCurrentStyle[param1] = 0;
-			g_iInitalStyle[param1] = 0;
-			Format(g_szInitalStyle[param1], 128, "Normal");
-			Format(g_szStyleHud[param1], 32, "");
-			g_bRankedStyle[param1] = true;
-			g_bFunStyle[param1] = false;
-		}
+    if (action == MenuAction_Select)
+    {
+        char info[32];
+        GetMenuItem(menu, choice, info, sizeof(info));
+        int style = StringToInt(info);
+        UpdateStyle(client, style);
+    }
+    else if (action == MenuAction_Cancel)
+    {
+        styleSelectMenu(choice);
+    }
+    else if (action == MenuAction_End)
+    {
+        delete menu;
+    }
 
-		Command_Restart(param1, 1);
-	}
-	else
-	{
-		if (action == MenuAction_Cancel)
-			styleSelectMenu(param1);
-		if (action == MenuAction_End)
-			delete menu;
-	}
-
-	return 0;
+    return 0;
 }
 
 // Rate Limiting Command - Limits every 2 seconds
