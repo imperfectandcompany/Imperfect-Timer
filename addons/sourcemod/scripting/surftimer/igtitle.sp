@@ -151,9 +151,10 @@ public void SaveRawTitle(int client, char[] raw) {
             ON DUPLICATE KEY UPDATE title='%s' \
         ", sSteamID, rawEx, rawEx);
     SQL_TQuery(g_hDb, SaveRawTitle2, szQuery, client);
-    db_toggleCustomPlayerTitle(client);
 }
 
 public void SaveRawTitle2(Handle hDriver, Handle hResult, const char[] error, any client) {
     PrintToServer("Successfully updated custom title.");
+    g_bdbHasCustomTitle[client] = true;
+    g_bDbCustomTitleInUse[client] = false;
 }
