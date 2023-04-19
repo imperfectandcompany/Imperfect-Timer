@@ -77,6 +77,11 @@ public Action Event_OnFire(Handle event, const char[] name, bool dontBroadcast)
 public Action Event_OnPlayerSpawn(Handle event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
+
+	if (client > 0 && IsClientInGame(client) && !IsFakeClient(client)) {
+        SetEntProp(client, Prop_Send, "m_takedamage", 0);
+    }
+
 	if (client != 0)
 	{
 		g_SpecTarget[client] = -1;
