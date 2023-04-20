@@ -1137,6 +1137,8 @@ public bool Base_TraceFilter(int entity, int contentsMask, any data)
 
 public void SetClientDefaults(int client)
 {
+	g_bClientHooksCalled[client] = false;
+		
 	g_fLastCommandBack[client] = GetGameTime();
 	g_ClientSelectedZone[client] = -1;
 	g_Editing[client] = 0;
