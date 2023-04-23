@@ -494,6 +494,7 @@ public void OnClientPutInServer(int client)
 		if (!GetClientAuthId(client, AuthId_Steam2, g_szSteamID[client], sizeof(g_szSteamID[]), true))
 		{
 			RequestFrame(OnClientPutInServer, client);
+			g_bLoadingSettings[client] = true;
 			return;
 		}
 
@@ -503,6 +504,7 @@ public void OnClientPutInServer(int client)
 		if (g_szSteamID[client][6] == 'I' && g_szSteamID[client][7] == 'D')
 		{
 			RequestFrame(OnClientPutInServer, client);
+			g_bLoadingSettings[client] = true;
 			return;
 		}
 		g_MVPStars[client] = 0;
