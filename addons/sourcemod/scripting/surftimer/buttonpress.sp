@@ -1,16 +1,6 @@
 // Start Timer
 public void CL_OnStartTimerPress(int client)
 {
-	// Check if steamid has the value of "STEAM_ID_STOP_IGNORING_RETVALS"
-	// Reported here: https://github.com/surftimer/SurfTimer/issues/549
-	if (g_szSteamID[client][6] == 'I' && g_szSteamID[client][7] == 'D' && !IsFakeClient(client))
-	{
-		g_bTimerEnabled[client] = false;
-		CPrintToChat(client, "%s{red}There is a problem with your Steam ID, please wait or try reconnecting.", g_szChatPrefix);	
-		RequestFrame(OnClientPutInServer, client); 
-		return;
-	}
-
 	if (!IsFakeClient(client))
 	{
 		if (IsValidClient(client))
@@ -836,16 +826,6 @@ public void CL_OnEndTimerPress(int client)
 // Start Timer
 public void CL_OnStartWrcpTimerPress(int client)
 {
-	// Check if steamid has the value of "STEAM_ID_STOP_IGNORING_RETVALS"
-	// Reported here: https://github.com/surftimer/SurfTimer/issues/549
-	if (g_szSteamID[client][6] == 'I' && g_szSteamID[client][7] == 'D' && !IsFakeClient(client))
-	{
-		g_bTimerEnabled[client] = false;
-		CPrintToChat(client, "%s{red}There is a problem with your Steam ID, please wait or try reconnecting.", g_szChatPrefix);	
-		RequestFrame(OnClientPutInServer, client); 	
-		return;
-	}
-		
 	if (!g_bSpectate[client] && !g_bNoClip[client] && ((GetGameTime() - g_fLastTimeNoClipUsed[client]) > 2.0))
 	{
 		int zGroup = g_iClientInZone[client][2];
