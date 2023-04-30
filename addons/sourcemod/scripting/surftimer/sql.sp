@@ -10073,8 +10073,8 @@ public void SQL_insertCustomPlayerTitleCallback(Handle owner, Handle hndl, const
 
 public void db_updateCustomPlayerTitle(int client, char[] arg)
 {
-	char szQuery[512];
-	Format(szQuery, 512, "UPDATE `ck_vipadmins` SET `title` = '%s' WHERE `steamid` = '%s';", arg, g_szSteamID[client]);
+	char szQuery[MAX_TITLE_STRING_LENGTH + 64];
+	Format(szQuery, sizeof(szQuery), "UPDATE `ck_vipadmins` SET `title` = '%s' WHERE `steamid` = '%s';", arg, g_szSteamID[client]);
 	SQL_TQuery(g_hDb, SQL_updateCustomPlayerTitleCallback, szQuery, GetClientUserId(client), DBPrio_Low);
 }
 
@@ -10160,47 +10160,6 @@ public void SQL_toggleCustomPlayerTitleCallback(Handle owner, Handle hndl, const
 	}
 }
 
-/**
- * TODO: Use to create a query for retrieving a list of custom titles for the client.
- */
-public void db_viewCustomTitles(int client)
-{
-    char szQuery[728];
-    Format(szQuery, 728, "SELECT `title` FROM `ck_vipadmins` WHERE `steamid` = '%s'", g_szSteamID[client]);
-    SQL_TQuery(g_hDb, SQL_viewCustomTitlesCallback, szQuery, GetClientUserId(client), DBPrio_Low);
-}
-
-/**
- * TODO: Use to display a menu of available custom titles to the client and set a global variable for the choosen one.
- */
-public void SQL_viewCustomTitlesCallback(Handle owner, Handle hndl, const char[] error, int userid)
-{
-    int client = GetClientOfUserId(userid);
-
-    if (!client)
-    {
-        return;
-    }
-
-    if (hndl == INVALID_HANDLE)
-    {
-        LogError("[surftimer] SQL Error (SQL_viewCustomTitlesCallback): %s ", error);
-        if (!g_bSettingsLoaded[client])
-            LoadClientSetting(client, g_iSettingToLoad[client]);
-        return;
-    }
-
-    // TODO: Create a menu for choosing a custom title
-    // The selected title should update an index pointer to it
-    // This could be stored in another column or as the first item in the title column
-    CPrintToChat(client, "%t", "NotImplemented", g_szChatPrefix);
-
-    db_updateCustomTitle(client);
-}
-
-/**
- * TODO: Modify to not retrieve the title(s) but the index instead
- */
 public void db_updateCustomTitle(int client)
 {
 	char szQuery[728];
