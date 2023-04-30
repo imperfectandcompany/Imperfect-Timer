@@ -5491,46 +5491,76 @@ public void StringToTitles(int client, char[] titleString)
     getSteamIDFromClient(client, clientSteamID, sizeof(clientSteamID));
 
     // Create a buffer to store the comma seperated values from the string
-    char titleBuffer[MAX_TITLES + 1][MAX_TITLE_LENGTH];
-    int entries = ExplodeString(titleString, ",", titleBuffer, sizeof(titleBuffer) / sizeof(titleBuffer[]), sizeof(titleBuffer[]));
+    int titleCount = 0;
+    char titleIndex[MAX_TITLE_LENGTH];
+    char titleBuffer[MAX_TITLES][MAX_TITLE_LENGTH];
 
-    // Assume old title format or no titles if no commas are found
-    if (entries == 1)
+    // If a comma is found, it's the new format
+    if (StrContains(titleString, ",") != -1)
     {
-        // If old format, set the title index to 0
-        g_iCustomTitleIndex[client] = 0;
+        // Save the first entry as the titleIndex
+        int prevIndex = SplitString(titleString, ",", titleIndex, sizeof(titleIndex));
+
+        // Start finding titles
+        for (int i = 0; i < MAX_TITLES; i++)
+        {
+            // Start searching through the array
+            int currIndex = SplitString(titleString[prevIndex], ",", titleBuffer[i], sizeof(titleBuffer[]));
+
+            // Save the final string if no more commas are left
+            if (currIndex == -1)
+            {
+                // Don't increase titleCount if it's an empty string
+                if (StrEqual(titleString[prevIndex], ""))
+                {
+                    break;
+                }
+
+                strcopy(titleBuffer[i], sizeof(titleBuffer[]), titleString[prevIndex]);
+                titleCount += 1;
+                break;
+            }
+
+            // Update the position in the string
+            prevIndex += currIndex;
+            titleCount += 1;
+        }
     }
     else
     {
-        // If new format, the first item should be the title index integer
-        bool isNumeric = true;
-        char titleIndex[MAX_TITLE_LENGTH];
-        strcopy(titleIndex, sizeof(titleIndex), titleBuffer[0]);
+        // If no commas are found, it's the old format so add an index
+        strcopy(titleIndex, sizeof(titleIndex), "0");
+        strcopy(titleBuffer[0], sizeof(titleBuffer[]), titleString);
+        titleCount += 1;
+    }
 
-        // Check each character in the first entry to make sure it's an integer
-        for (int i = 0; i < strlen(titleIndex); i++)
+    // Check each character in the first entry to make sure it's an integer
+    for (int i = 0; i < strlen(titleIndex); i++)
+    {
+        // If it's not an integer, log a warning and set the title index to 0
+        if (!IsCharNumeric(titleIndex[i]))
         {
-            // If it's not an integer, log a warning and set the title index to 0
-            if (!IsCharNumeric(titleIndex[i]))
-            {
-                LogWarning("The user \"%s - %s\" has a non numeric title index. Setting to 0.", clientSteamID, clientName);
-                g_iCustomTitleIndex[client] = 0;
-                isNumeric = false;
-                break;
-            }
+            LogWarning("The user \"%s - %s\" has a non numeric title index. Setting to 0.", clientSteamID, clientName);
+            strcopy(titleIndex, sizeof(titleIndex), "0");
+            break;
         }
+    }
 
-        // If it is an integer, parse it
-        if (isNumeric)
-        {
-            g_iCustomTitleIndex[client] = StringToInt(titleIndex);
+    // Covert the titleIndex to a number
+    g_iCustomTitleIndex[client] = StringToInt(titleIndex);
 
-            if (g_iCustomTitleIndex[client] >= MAX_TITLES)
-            {
-                LogWarning("The user \"%s - %s\" has a title index that is too high. Setting to %i.", clientSteamID, clientName, MAX_TITLES - 1);
-                g_iCustomTitleIndex[client] = MAX_TITLES - 1;
-            }
-        }
+    // Limit count to titleCount
+    if (g_iCustomTitleIndex[client] >= titleCount)
+    {
+        LogWarning("The user \"%s - %s\" has a title index that is too high. Setting to %i.", clientSteamID, clientName, titleCount - 1);
+        g_iCustomTitleIndex[client] = titleCount - 1;
+    }
+
+    // Limit count to max titles just in case
+    if (g_iCustomTitleIndex[client] >= MAX_TITLES)
+    {
+        LogWarning("The user \"%s - %s\" has a title index that is too high. Setting to %i.", clientSteamID, clientName, MAX_TITLES - 1);
+        g_iCustomTitleIndex[client] = MAX_TITLES - 1;
     }
 
     // Now we need to update the titles
@@ -5538,7 +5568,7 @@ public void StringToTitles(int client, char[] titleString)
     {
         // Save a copy of the title
         char title[MAX_TITLE_LENGTH];
-        strcopy(title, sizeof(title), titleBuffer[i + 1]);
+        strcopy(title, sizeof(title), titleBuffer[i]);
 
         // Trim the title
         TrimString(title);
