@@ -5609,7 +5609,7 @@ public void TitlesToString(int client, char[] titleString, int titleStringLength
     getSteamIDFromClient(client, clientSteamID, sizeof(clientSteamID));
 
     // Determine how many titles the client has
-    int numberOfTitles = 0;
+    int titleCount = 0;
     for (int i = 0; i < MAX_TITLES; i++)
     {
         // If an empty title is found, assume no more titles follow
@@ -5619,38 +5619,27 @@ public void TitlesToString(int client, char[] titleString, int titleStringLength
         }
         
         // Otherwise, increase the count
-        numberOfTitles += 1;
+        titleCount += 1;
     }
 
     // User has index above total titles found
-    if (g_iCustomTitleIndex[client] > numberOfTitles)
+    if (g_iCustomTitleIndex[client] >= titleCount && titleCount > 0)
     {
         // Set index to total titles found
-        g_iCustomTitleIndex[client] = numberOfTitles;
+        g_iCustomTitleIndex[client] = titleCount - 1;
     }
 
-    // If no titles are found, just return the string for that
-    if (numberOfTitles == 0)
-    {
-        strcopy(titleString, titleStringLength, "0");
-    }
-
-    // Initialize a buffer to store all title information
-    // char[] titleBuffer = new char[numberOfTitles][MAX_TITLE_LENGTH]; // Dynamic not working
-    char titleBuffer[MAX_TITLES][MAX_TITLE_LENGTH];
-
-    // Set first item in buffer to the title index
+    // Convert the title index to a string
     char titleIndex[MAX_TITLE_LENGTH];
     IntToString(g_iCustomTitleIndex[client], titleIndex, sizeof(titleIndex));
-    strcopy(titleBuffer[0], sizeof(titleBuffer[]), titleIndex);
 
-    // Now we need to update the titles
-    for (int i = 0; i <= numberOfTitles; i++)
+    // Add the title index to the title string
+    StrCat(titleString, titleStringLength, titleIndex)
+
+    // Now we need to add the titles
+    for (int i = 0; i < titleCount; i++)
     {
-        // Copy over custom titles to buffer
-        strcopy(titleBuffer[i + 1], sizeof(titleBuffer[]), g_szCustomTitleColoured[client][i]);
+        StrCat(titleString, titleStringLength, ",");
+        StrCat(titleString, titleStringLength, g_szCustomTitleColoured[client][i]);
     }
-
-    // Join all strings together into a comma separated list
-    ImplodeStrings(titleBuffer, numberOfTitles, ",", titleString, titleStringLength);
 }
