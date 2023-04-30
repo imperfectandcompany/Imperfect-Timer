@@ -567,6 +567,13 @@ public void CustomTitleMenu(int client)
         return;
     }
 
+    // Reset global variable state
+    g_bFromCustomTitleMenu[client] = false;
+
+    // TODO: Move this to give and remove title functions, or find a way to delay
+    // Get most up to date global variables from db
+    db_updateCustomTitle(client);
+
     // Create the menu object
     Menu menu = CreateMenu(CustomTitleMenuHandler);
 
@@ -630,8 +637,6 @@ public int CustomTitleMenuHandler(Handle menu, MenuAction action, int client, in
         return 0;
     }
 
-    g_bFromCustomTitleMenu[client] = false;
-
     // If the client selected an option, process it
     if (action == MenuAction_Select)
     {
@@ -691,6 +696,12 @@ public void CustomTitleListMenu(int client)
         // If an empty title is found, assume no more titles follow
         if (StrEqual(g_szCustomTitle[client][i], ""))
         {
+            if (i == 0)
+            {
+                // Add info about missing titles
+                AddMenuItem(menu, "Invalid Title", "No Custom Titles");
+            }
+
             break;
         }
 
@@ -720,11 +731,18 @@ public int CustomTitleListMenuHandler(Handle menu, MenuAction action, int client
     // If the client selected an option, process it
     if (action == MenuAction_Select)
     {
+        char itemInfo[32];
+        GetMenuItem(menu, item, itemInfo, sizeof(itemInfo));
+
+        if (StrEqual(itemInfo, "Custom Title"))
+        {
+            g_iCustomTitleIndex[client] = item;
+        }
+
         g_bFromCustomTitleMenu[client] = true;
-        g_iCustomTitleIndex[client] = item;
         char titleString[MAX_TITLE_STRING_LENGTH];
         TitlesToString(client, titleString, sizeof(titleString));
-        db_updateCustomPlayerTitle(client, titleString)
+        db_updateCustomPlayerTitle(client, titleString);
     }
     else if (action == MenuAction_End)
     {
