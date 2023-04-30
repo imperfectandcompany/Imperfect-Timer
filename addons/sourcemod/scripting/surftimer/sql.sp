@@ -10220,6 +10220,13 @@ public void SQL_updateCustomTitleCallback(Handle owner, Handle hndl, const char[
         LogWarning("The user \"%s - %s\" has a color only title.", szSteamID, szName);
     }
 
+    // If a inuse is true but they have no titles, set inuse to false and try again
+    if (g_bDbCustomTitleInUse[client] && !g_bdbHasCustomTitle[client])
+    {
+        db_toggleCustomPlayerTitle(client);
+        return;
+    }
+
     // Trying to enable custom title
     if (g_bDbCustomTitleInUse[client] && g_bdbHasCustomTitle[client])
     {
