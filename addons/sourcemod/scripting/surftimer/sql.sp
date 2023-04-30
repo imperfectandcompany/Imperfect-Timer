@@ -10208,19 +10208,19 @@ public void db_updateCustomTitle(int client)
 	SQL_TQuery(g_hDb, SQL_updateCustomTitleCallback, szQuery, GetClientUserId(client), DBPrio_Low);
 }
 
-/**
- * TODO: Modify to use select the new title based on the index
- */
 public void SQL_updateCustomTitleCallback(Handle owner, Handle hndl, const char[] error, int userid) 
 {
+    // Get the client from the UserID
     int client = GetClientOfUserId(userid);
 
+    // Log an error and return if it's not a valid client
     if (!IsValidClient(client))
     {
         LogCritical("(SQL_updateCustomTitleCallback) Invalid Client: \"%s\"", client);
         return;
     }
 
+    // Log an error and return if the SQL handle is invalid
     if (hndl == INVALID_HANDLE)
     {
         LogCritical("(SQL_updateCustomTitleCallback) Invalid Handle: \"%s\"", error);
@@ -10241,18 +10241,24 @@ public void SQL_updateCustomTitleCallback(Handle owner, Handle hndl, const char[
     char szSteamID[64];
     getSteamIDFromClient(client, szSteamID, 64);
 
+    // Prepare to get title
+    char titleString[MAX_TITLE_STRING_LENGTH];
+
     // If no results are returned from the SQL request, the user doesn't have an entry so create one
     if (!SQL_HasResultSet(hndl) || !SQL_FetchRow(hndl))
     {
+        // Log a warning that the user doesn't have an entry
         LogWarning("The user \"%s - %s\" does not have a ck_vipadmins entry. Creating one now.", szSteamID, szName);
 
+        // Create a valid entry for the user
         char szQuery[512];
-        Format(szQuery, 512, "INSERT IGNORE INTO ck_vipadmins (steamid) VALUES ('%s')", szSteamID);
+        Format(szQuery, 512, "INSERT IGNORE INTO ck_vipadmins (steamid, title) VALUES ('%s', '0')", szSteamID);
         SQL_TQuery(g_hDb, SQL_InsertPlayerCallBack, szQuery, client, DBPrio_Low);
 
+        // Initialize variables
         g_iCustomColours[client][0] = 0;
         g_iCustomColours[client][1] = 0;
-        g_szCustomTitleColoured[client] = "0";
+        titleString = "0";
         g_bDbCustomTitleInUse[client] = false;
     }
     else
@@ -10261,27 +10267,25 @@ public void SQL_updateCustomTitleCallback(Handle owner, Handle hndl, const char[
         g_iCustomColours[client][0] = SQL_FetchInt(hndl, 1);
         g_iCustomColours[client][1] = SQL_FetchInt(hndl, 2);
 
-        // TODO: Modify to get title based on index instead of title query
-        SQL_FetchString(hndl, 0, g_szCustomTitleColoured[client], sizeof(g_szCustomTitleColoured[]));
+        // Fetch entire title string
+        SQL_FetchString(hndl, 0, titleString, sizeof(titleString));
 
         // Set the inuse state
         g_bDbCustomTitleInUse[client] = SQL_FetchInt(hndl, 3) ? true : false;
     }
 
-    char szTitle[1024];
-    TrimString(g_szCustomTitleColoured[client]);
-    Format(szTitle, 1024, "%s", g_szCustomTitleColoured[client]);
-    parseColorsFromString(szTitle, 1024);
-    Format(g_szCustomTitle[client], 1024, "%s", szTitle);
-    TrimString(g_szCustomTitle[client]);
+    // Populate global title variables
+    StringToTitles(client, titleString);
 
+    // Assume they have a custom title
     g_bdbHasCustomTitle[client] = true;
 
-    if (StrEqual(g_szCustomTitleColoured[client], "") || StrEqual(g_szCustomTitleColoured[client], "0"))
+    // If the first title is empty or a 0, they have no custom title
+    if (StrEqual(g_szCustomTitleColoured[client][0], "") || StrEqual(g_szCustomTitleColoured[client][0], "0"))
     {
         g_bdbHasCustomTitle[client] = false;
     }
-    else if (StrEqual(g_szCustomTitle[client], "") || StrEqual(g_szCustomTitle[client], "0"))
+    else if ((g_szCustomTitle[client][0], "") || StrEqual(g_szCustomTitle[client][0], "0"))
     {
         g_bdbHasCustomTitle[client] = false;
         LogWarning("The user \"%s - %s\" has a color only title.", szSteamID, szName);
@@ -10290,29 +10294,38 @@ public void SQL_updateCustomTitleCallback(Handle owner, Handle hndl, const char[
     // Trying to enable custom title
     if (g_bDbCustomTitleInUse[client] && g_bdbHasCustomTitle[client])
     {
+        // Get the clients previous rank
         char old_pr_rankname[1024];
         if (!StrEqual(g_pr_rankname[client], "", false))
         {
             Format(old_pr_rankname, 1024, "%s", g_pr_rankname[client]);
         }
 
-        Format(g_pr_chat_coloredrank[client], 1024, "%s", g_szCustomTitleColoured[client]);
-        Format(g_pr_chat_coloredrank_style[client], 1024, "%s", g_szCustomTitleColoured[client]);
-        
-        Format(g_pr_rankname[client], 1024, "%s", g_szCustomTitle[client]);
-        Format(g_pr_rankname_style[client], 1024, "%s", g_szCustomTitle[client]);
+        // Save the selected title index
+        int titleIndex = g_iCustomTitleIndex[client];
 
+        // Update chat colored rank
+        Format(g_pr_chat_coloredrank[client], 1024, "%s", g_szCustomTitleColoured[client][titleIndex]);
+        Format(g_pr_chat_coloredrank_style[client], 1024, "%s", g_szCustomTitleColoured[client][titleIndex]);
+        
+        // Update rank
+        Format(g_pr_rankname[client], 1024, "%s", g_szCustomTitle[client][titleIndex]);
+        Format(g_pr_rankname_style[client], 1024, "%s", g_szCustomTitle[client][titleIndex]);
+
+        // Let the user know if they changed ranks
         if (!StrEqual(g_pr_rankname[client], old_pr_rankname, false))
         {
             CPrintToChat(client, "%t", "CustomTitle", g_szChatPrefix, g_pr_chat_coloredrank[client]);
         }
     }
 
+    // Return to the Custom Title Menu if the client came from it
     if (g_bFromCustomTitleMenu[client])
     {
         CustomTitleMenu(client);
     }
 
+    // If these settings haven't been loaded before, note that they are now
     if (!g_bSettingsLoaded[client])
     {
         g_fTick[client][1] = GetGameTime();
