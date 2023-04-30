@@ -576,12 +576,12 @@ public void CustomTitleMenu(int client)
 
     // Create the menu title text
     char menuTitle[256];
-    Format(menuTitle, 256, "Custom Titles Menu");
+    Format(menuTitle, sizeof(menuTitle), "Custom Titles Menu");
     SetMenuTitle(menu, menuTitle);
 
     // Display the current title state
     char menuTitleEnabled[256];
-    Format(menuTitleEnabled, 256, "Enable Title: %s", g_bDbCustomTitleInUse[client] ? "True" : "False");
+    Format(menuTitleEnabled, sizeof(menuTitleEnabled), "Enable Title: %s", g_bDbCustomTitleInUse[client] ? "True" : "False");
     AddMenuItem(menu, "Enable Title", menuTitleEnabled);
 
     // Save the selected title index
@@ -589,7 +589,7 @@ public void CustomTitleMenu(int client)
 
     // Display the current title of the user
     char menuCurrentTitle[256];
-    Format(menuCurrentTitle, 256, "Current Title: %s", g_szCustomTitle[client][titleIndex]);
+    Format(menuCurrentTitle, sizeof(menuCurrentTitle), "Current Title: %s", g_szCustomTitle[client][titleIndex]);
     AddMenuItem(menu, "Current Title", menuCurrentTitle);
 
     // Only display colors if the user is a VIP
@@ -610,7 +610,7 @@ public void CustomTitleMenu(int client)
         getColorName(textColorName, sizeof(textColorName), textColorIndex);
 
         char menuTextColor[128];
-        Format(menuTextColor, 128, "Text Color: %s", textColorName);
+        Format(menuTextColor, sizeof(menuTextColor), "Text Color: %s", textColorName);
         AddMenuItem(menu, "Text Color", menuTextColor);
     }
 
@@ -682,7 +682,7 @@ public void CustomTitleListMenu(int client)
 
     // Create the menu title text
     char menuTitle[256];
-    Format(menuTitle, 256, "List of Custom Titles");
+    Format(menuTitle, sizeof(menuTitle), "List of Custom Titles");
     SetMenuTitle(menu, menuTitle);
 
     // Populate with a list of custom titles
