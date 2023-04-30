@@ -97,6 +97,11 @@
 // Maximum size of hints
 #define MAX_HINT_MESSAGES_SIZE 256
 
+// Custom Titles
+#define MAX_TITLES 32
+#define MAX_TITLE_LENGTH 128
+#define MAX_TITLE_STRING_LENGTH 4256
+
 /*====================================
 =            Enumerations            =
 ====================================*/
