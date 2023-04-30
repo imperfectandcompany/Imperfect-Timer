@@ -5494,7 +5494,7 @@ public void StringToTitles(int client, char[] titleString)
     char titleBuffer[MAX_TITLES + 1][MAX_TITLE_LENGTH];
     int entries = ExplodeString(titleString, ",", titleBuffer, sizeof(titleBuffer) / sizeof(titleBuffer[]), sizeof(titleBuffer[]));
 
-    // Assume old title format if no commas are found
+    // Assume old title format or no titles if no commas are found
     if (entries == 1)
     {
         // If old format, set the title index to 0
@@ -5591,6 +5591,12 @@ public void TitlesToString(int client, char[] titleString, int titleStringLength
     {
         // Set index to total titles found
         g_iCustomTitleIndex = numberOfTitles;
+    }
+
+    // If no titles are found, just return the string for that
+    if (numberOfTitles == 0)
+    {
+        return "0";
     }
 
     // Initialize a buffer to store all title information
