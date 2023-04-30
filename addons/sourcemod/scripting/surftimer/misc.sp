@@ -5587,16 +5587,16 @@ public void TitlesToString(int client, char[] titleString, int titleStringLength
     }
 
     // User has index above total titles found
-    if (g_iCustomTitleIndex > numberOfTitles)
+    if (g_iCustomTitleIndex[client] > numberOfTitles)
     {
         // Set index to total titles found
-        g_iCustomTitleIndex = numberOfTitles;
+        g_iCustomTitleIndex[client] = numberOfTitles;
     }
 
     // If no titles are found, just return the string for that
     if (numberOfTitles == 0)
     {
-        return "0";
+        strcopy(titleString, titleStringLength, "0");
     }
 
     // Initialize a buffer to store all title information
