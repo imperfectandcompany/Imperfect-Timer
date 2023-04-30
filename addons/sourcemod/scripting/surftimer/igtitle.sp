@@ -1,8 +1,8 @@
-#define MAX_TITLE_LENGTH 128
-#define MAX_TITLES 32
-#define MAX_RAWTITLE_LENGTH 1024
+// #define MAX_TITLE_LENGTH 128
+// #define MAX_TITLES 32
+// #define MAX_RAWTITLE_LENGTH 1024
 
-char g_szCustomTitleRaw[MAXPLAYERS + 1][MAX_RAWTITLE_LENGTH];
+char g_szCustomTitleRaw[MAXPLAYERS + 1][MAX_TITLE_LENGTH];
 
 /* for future reference with multiple titles
 void FormatTitle(int client, char[] raw, char[] out, int size) {
@@ -75,7 +75,7 @@ public void GiveTitle(int client, int target, const char[] title) {
             CReplyToCommand(client, "Player not yet loaded");
             return;
     }
-    char newTitle[MAX_RAWTITLE_LENGTH];
+    char newTitle[MAX_TITLE_LENGTH];
     Format(newTitle, sizeof(newTitle), "%s", title);
 
     /*  for future reference; multiple titles with delimiter
@@ -113,7 +113,7 @@ public void RemoveTitle(int client, int target, const char[] title) {
             CReplyToCommand(client, "Player not yet loaded");
             return;
     }
-    char newTitle[MAX_RAWTITLE_LENGTH] = "";
+    char newTitle[MAX_TITLE_LENGTH] = "";
     if (!StrEqual(title, "all")) {
             char parts[MAX_TITLES][MAX_TITLE_LENGTH];
             int numParts = ExplodeString(g_szCustomTitleRaw[target], "`", parts, sizeof(parts), sizeof(parts[]));
@@ -136,7 +136,7 @@ public void RemoveTitle(int client, int target, const char[] title) {
 }
 
 public void SaveRawTitle(int client, char[] raw) {
-    char rawEx[MAX_RAWTITLE_LENGTH*2+1];
+    char rawEx[MAX_TITLE_LENGTH*2+1];
     SQL_EscapeString(g_hDb, raw, rawEx, sizeof(rawEx));
 
     char sSteamID[32];
@@ -144,7 +144,7 @@ public void SaveRawTitle(int client, char[] raw) {
             return;
     }
 
-    char szQuery[MAX_RAWTITLE_LENGTH*4+100];
+    char szQuery[MAX_TITLE_LENGTH*4+100];
     Format(szQuery, sizeof(szQuery), " \
             INSERT INTO ck_vipadmins \
             SET steamid='%s', title='%s' \
