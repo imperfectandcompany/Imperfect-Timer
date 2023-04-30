@@ -4642,33 +4642,79 @@ public Action Command_PlayerTitle(int client, int args)
     return Plugin_Handled;
 }
 
-public Action Command_SetDbTitle(int client, int args)
+public Action Command_GiveTitle(int client, int args)
 {
-	if (!IsValidClient(client) || !IsPlayerVip(client, _, true))
-		return Plugin_Handled;
+    // Make sure the client is valid
+    if (!IsValidClient(client))
+    {
+        return Plugin_Handled;
+    }
 
-	char arg[256];
+    // Verify correct command syntax
+    if (args < 2)
+    {
+        CReplyToCommand(client, "Usage: /givetitle <username> <title>");
+        return Plugin_Handled;
+    }
 
-	if (args == 0)
-	{
-		if (g_bdbHasCustomTitle[client])
-		{
-			db_toggleCustomPlayerTitle(client);
-		}
-		else
-		{
-			CPrintToChat(client, "%t", "Commands40", g_szChatPrefix);
-		}
-	}
-	else
-	{
-		GetCmdArg(1, arg, 256);
-		char upperArg[256];
-		char noColoursArg[256];
-		upperArg = arg;
-		StringToUpper(upperArg);
-		noColoursArg = upperArg;
-		parseColorsFromString(noColoursArg, 256);
+    // Initialize strings to store command arguments
+    char username[MAX_NAME_LENGTH];
+    char title[MAX_TITLE_LENGTH];
+
+    // Save command arguments
+    GetCmdArg(1, username, sizeof(username));
+    GetCmdArg(2, title, sizeof(title));
+
+    // Try to find the intended client
+    int targetClient = FindTarget(client, username, true, false);
+
+    // Try to give the title to the targetClient
+    GiveTitle(client, targetClient, title);
+    return Plugin_Handled;
+}
+
+public void GiveTitle(int client, int targetClient, const char[] title) {
+    // Return if the targetClient is invalid
+    if (!IsValidClient(targetClient))
+    {
+        CReplyToCommand(client, "Invalid username.")
+        return;
+    }
+
+    // Save the name of the targetClient
+    char targetClientName[MAX_NAME_LENGTH];
+    GetClientName(targetClient, targetClientName, sizeof(targetClientName));
+
+    // Get the number of titles the targetClient has
+    int titleCount = GetClientTitleCount(targetClient);
+
+    // Don't allow more titles than the max
+    if (titleCount == MAX_TITLES)
+    {
+        CReplyToCommand(client, "That user already has the maximum number of titles.");
+        return;
+    }
+
+    // Make sure the targetClient doesn't already have the title
+    for (int i = 0; i < titleCount; i++)
+    {
+        if (StrEqual(g_szCustomTitleColoured[targetClient][i], title))
+        {
+            CReplyToCommand(client, "That user already has that title.");
+            return;
+        }
+    }
+
+    // Add the new title to targetClient's title list
+    strcopy(g_szCustomTitleColoured[targetClient][titleCount], sizeof(g_szCustomTitleColoured[][]), title);
+
+    // Update the db with the new title
+    char titleString[MAX_TITLE_STRING_LENGTH];
+    TitlesToString(client, titleString, sizeof(titleString));
+    db_updateTitle(targetClient, titleString);
+
+    CPrintToChatAll("%s was granted the title: %s", targetClientName, title);
+}
 
 		if (strlen(noColoursArg) > 20)
 		{
