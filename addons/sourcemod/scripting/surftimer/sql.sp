@@ -10209,16 +10209,16 @@ public void SQL_updateCustomTitleCallback(Handle owner, Handle hndl, const char[
         // Log a warning that the user doesn't have an entry
         LogWarning("The user \"%s - %s\" does not have a ck_vipadmins entry. Creating one now.", szSteamID, szName);
 
-        // Create a valid entry for the user
-        char szQuery[512];
-        Format(szQuery, 512, "INSERT IGNORE INTO ck_vipadmins (steamid, title) VALUES ('%s', '0')", szSteamID);
-        SQL_TQuery(g_hDb, SQL_InsertPlayerCallBack, szQuery, client, DBPrio_Low);
-
         // Initialize variables
         g_iCustomColours[client][0] = 0;
         g_iCustomColours[client][1] = 0;
         titleString = "0";
         g_bDbCustomTitleInUse[client] = false;
+
+        // Create a valid entry for the user
+        char szQuery[512];
+        Format(szQuery, 512, "INSERT IGNORE INTO ck_vipadmins (steamid, title) VALUES ('%s', '%s')", szSteamID, titleString);
+        SQL_TQuery(g_hDb, SQL_InsertPlayerCallBack, szQuery, client, DBPrio_Low);
     }
     else
     {
@@ -10240,11 +10240,11 @@ public void SQL_updateCustomTitleCallback(Handle owner, Handle hndl, const char[
     g_bdbHasCustomTitle[client] = true;
 
     // If the first title is empty or a 0, they have no custom title
-    if (StrEqual(g_szCustomTitleColoured[client][0], "") || StrEqual(g_szCustomTitleColoured[client][0], "0"))
+    if (StrEqual(g_szCustomTitleColoured[client][0], ""))
     {
         g_bdbHasCustomTitle[client] = false;
     }
-    else if ((g_szCustomTitle[client][0], "") || StrEqual(g_szCustomTitle[client][0], "0"))
+    else if (StrEqual(g_szCustomTitle[client][0], ""))
     {
         g_bdbHasCustomTitle[client] = false;
         LogWarning("The user \"%s - %s\" has a color only title.", szSteamID, szName);
