@@ -10011,39 +10011,18 @@ public void SQL_checkCustomPlayerTextColourCallback(Handle owner, Handle hndl, c
 	}
 }
 
-public void db_insertCustomPlayerTitle(int client, char[] arg)
+/**
+ * TITLES
+ */
+// Update DB Titles
+public void db_updateTitle(int client, char[] titleString)
 {
-
-	// Escape title to prevent mysql injection
-	int buffer_len = strlen(arg) * 2 + 1;
-	char[] new_arg = new char[buffer_len];
-	SQL_EscapeString(g_hDb, arg, new_arg, buffer_len);
-
-	char szQuery[512];
-	Format(szQuery, 512, "INSERT INTO `ck_vipadmins` (steamid, title, inuse) VALUES ('%s', '%s', 1);", g_szSteamID[client], new_arg);
-	SQL_TQuery(g_hDb, SQL_insertCustomPlayerTitleCallback, szQuery, GetClientUserId(client), DBPrio_Low);
+    char szQuery[MAX_TITLE_STRING_LENGTH + 128];
+    Format(szQuery, sizeof(szQuery), "UPDATE `ck_vipadmins` SET `title` = '%s' WHERE `steamid` = '%s';", titleString, g_szSteamID[client]);
+    SQL_TQuery(g_hDb, SQL_updateTitleCallback, szQuery, GetClientUserId(client), DBPrio_Low);
 }
 
-public void SQL_insertCustomPlayerTitleCallback(Handle owner, Handle hndl, const char[] error, int userid)
-{
-	PrintToServer("Successfully inserted custom title.");
-
-	int client = GetClientOfUserId(userid);
-
-	if (client)
-	{
-		db_updateCustomTitle(client);
-	}
-}
-
-public void db_updateCustomPlayerTitle(int client, char[] arg)
-{
-	char szQuery[MAX_TITLE_STRING_LENGTH + 64];
-	Format(szQuery, sizeof(szQuery), "UPDATE `ck_vipadmins` SET `title` = '%s' WHERE `steamid` = '%s';", arg, g_szSteamID[client]);
-	SQL_TQuery(g_hDb, SQL_updateCustomPlayerTitleCallback, szQuery, GetClientUserId(client), DBPrio_Low);
-}
-
-public void SQL_updateCustomPlayerTitleCallback(Handle owner, Handle hndl, const char[] error, int userid)
+public void SQL_updateTitleCallback(Handle owner, Handle hndl, const char[] error, int userid)
 {
 	int client = GetClientOfUserId(userid);
 
