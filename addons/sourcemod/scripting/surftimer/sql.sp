@@ -10230,26 +10230,23 @@ public void SQL_updateCustomTitleCallback(Handle owner, Handle hndl, const char[
     // Trying to enable custom title
     if (g_bDbCustomTitleInUse[client] && g_bdbHasCustomTitle[client])
     {
-        // Get the clients previous rank
-        char old_pr_rankname[1024];
-        if (!StrEqual(g_pr_rankname[client], "", false))
-        {
-            Format(old_pr_rankname, 1024, "%s", g_pr_rankname[client]);
-        }
+        // Get the clients previous chat color rank
+        char old_pr_chat_coloredrank[256];
+        strcopy(old_pr_chat_coloredrank, sizeof(old_pr_chat_coloredrank), g_pr_chat_coloredrank[client]);
 
         // Save the selected title index
         int titleIndex = g_iCustomTitleIndex[client];
-
+        
         // Update chat colored rank
-        Format(g_pr_chat_coloredrank[client], 1024, "%s", g_szCustomTitleColoured[client][titleIndex]);
-        Format(g_pr_chat_coloredrank_style[client], 1024, "%s", g_szCustomTitleColoured[client][titleIndex]);
+        strcopy(g_pr_chat_coloredrank[client], sizeof(g_pr_chat_coloredrank), g_szCustomTitleColoured[client][titleIndex]);
+        strcopy(g_pr_chat_coloredrank_style[client], sizeof(g_pr_chat_coloredrank_style), g_szCustomTitleColoured[client][titleIndex]);
         
         // Update rank
-        Format(g_pr_rankname[client], 1024, "%s", g_szCustomTitle[client][titleIndex]);
-        Format(g_pr_rankname_style[client], 1024, "%s", g_szCustomTitle[client][titleIndex]);
+        strcopy(g_pr_rankname[client], sizeof(g_pr_rankname), g_szCustomTitle[client][titleIndex]);
+        strcopy(g_pr_rankname_style[client], sizeof(g_pr_rankname_style), g_szCustomTitle[client][titleIndex]);
 
         // Let the user know if they changed ranks
-        if (!StrEqual(g_pr_rankname[client], old_pr_rankname, false))
+        if (!StrEqual(g_pr_chat_coloredrank[client], old_pr_chat_coloredrank))
         {
             CPrintToChat(client, "%t", "CustomTitle", g_szChatPrefix, g_pr_chat_coloredrank[client]);
         }
