@@ -4716,33 +4716,116 @@ public void GiveTitle(int client, int targetClient, const char[] title) {
     CPrintToChatAll("%s was granted the title: %s", targetClientName, title);
 }
 
-		if (strlen(noColoursArg) > 20)
-		{
-			CPrintToChat(client, "%t", "Commands41", g_szChatPrefix);
+public Action Command_RemoveTitle(int client, int args) {
+    // Make sure the client is valid
+    if (!IsValidClient(client))
+    {
+        return Plugin_Handled;
+    }
 
-			return Plugin_Handled;
-		}
-		else if (StrContains(upperArg, "{RED}") != -1)
-			ReplaceString(arg, 256, "{red}", "{lightred}", false);
-		else if (StrContains(upperArg, "{LIMEGREEN}") != -1)
-			ReplaceString(arg, 256, "{limegreen}", "{lime}");
-		else if (StrContains(upperArg, "{WHITE}") != -1)
-			ReplaceString(arg, 256, "{white}", "{default}", false);
+    // Verify correct command syntax
+    if (args < 2)
+    {
+        CReplyToCommand(client, "Usage: /removetitle <username> <title> <ignoreColors>=[T/(F)]");
+        return Plugin_Handled;
+    }
 
-		// Check if arg is in unallowed titles array
-		for (int i = 0; i < sizeof(UnallowedTitles); i++)
-		{
-			if (StrContains(UnallowedTitles[i], upperArg)!=-1)
-			{
-				arg = "{red}DISALLOWED";
-				break;
-			}
-		}
+    // Initialize strings to store command arguments
+    char username[MAX_NAME_LENGTH];
+    char title[MAX_TITLE_LENGTH];
+    bool ignoreColors = false;
 
-		db_checkCustomPlayerTitle(client, arg);
-	}
+    CPrintToChatAll("Args: %i", args);
 
-	return Plugin_Handled;
+    // Save command arguments
+    GetCmdArg(1, username, sizeof(username));
+    GetCmdArg(2, title, sizeof(title));
+
+    // User specified ignoreColors option
+    if (args == 3)
+    {
+        // Get the value specified by the user
+        char ignoreColorsString[2];
+        GetCmdArg(3, ignoreColorsString, sizeof(ignoreColorsString));
+        CPrintToChatAll("IgnoreColorsString: %s", ignoreColorsString);
+
+        // Check if the first letter is a t for true
+        ignoreColors = StrEqual(ignoreColorsString, "T", false);
+    }
+
+    // Try to find the intended client
+    int targetClient = FindTarget(client, username, true, false);
+
+    // Try to remove the title from the targetClient
+    RemoveTitle(client, targetClient, title, ignoreColors);
+    return Plugin_Handled;
+}
+
+public void RemoveTitle(int client, int targetClient, const char[] title, bool ignoreColors) {
+    // Return if the targetClient is invalid
+    if (!IsValidClient(targetClient))
+    {
+        CReplyToCommand(client, "Invalid username.")
+        return;
+    }
+
+    // Save the name of the targetClient
+    char targetClientName[MAX_NAME_LENGTH];
+    GetClientName(targetClient, targetClientName, sizeof(targetClientName));
+
+    // Get the number of titles the targetClient has
+    int titleCount = GetClientTitleCount(targetClient);
+
+    // No need to remove anything if the targetClient has no titles
+    if (titleCount == 0)
+    {
+        CReplyToCommand(client, "That user has no custom titles.");
+        return;
+    }
+
+    // Try to find the title
+    for (int i = 0; i < titleCount; i++)
+    {
+        // Intitialize a variable to store the current title being checked
+        char currentTitle[MAX_TITLE_LENGTH];
+
+
+        if (ignoreColors)
+        {
+            // Search for the colorless title if specified
+            strcopy(currentTitle, sizeof(currentTitle), g_szCustomTitle[targetClient][i]);
+        }
+        else
+        {
+            // Search for the colored title otherwise
+            strcopy(currentTitle, sizeof(currentTitle), g_szCustomTitleColoured[targetClient][i]);
+        }
+
+        CPrintToChatAll("IgnoreColors: %i, CurrentTitle: %s", ignoreColors, currentTitle);
+
+        // Check if we found the same title
+        if (StrEqual(currentTitle, title))
+        {
+            // Remove the currentTitle by shifting all remaining titles
+            for (int j = i; j < titleCount; j++)
+            {
+                // Replace the current title with the following title
+                strcopy(g_szCustomTitleColoured[targetClient][j], sizeof(g_szCustomTitleColoured[][]), g_szCustomTitleColoured[targetClient][j + 1]);
+            }
+
+            // Update the db with the new titles
+            char titleString[MAX_TITLE_STRING_LENGTH];
+            TitlesToString(targetClient, titleString, sizeof(titleString));
+            CPrintToChatAll("TitleString: %s", titleString);
+            db_updateTitle(targetClient, titleString);
+
+            CPrintToChatAll("%s was stripped of the title: %s", targetClientName, currentTitle);
+            return;
+        }
+    }
+
+    // Could only be here if we didn't find the title
+    CReplyToCommand(client, "That user doesn't have that title.");
 }
 
 public Action Command_JoinMsg(int client, int args)
