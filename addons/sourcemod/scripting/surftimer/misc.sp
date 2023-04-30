@@ -131,25 +131,25 @@ Zone types: 1 = Start zone,  >1 Stage zones.
 */
 public void teleportClient(int client, int zonegroup, int zone, bool stopTime)
 {
-	if (!IsValidClient(client))
-		return;
-	
-	// dpexx stop teleporting if in trigger_multiple
-	/* if (g_TeleInTriggerMultiple[client]){
-		PrintToChat(client, "Teleport blocked");
-		return;
-	} */
+    if (!IsValidClient(client))
+        return;
 
-	if (!IsValidZonegroup(zonegroup))
-	{
-		CPrintToChat(client, "%t", "Misc1", g_szChatPrefix);
-		return;
-	}
+    // dpexx stop teleporting if in trigger_multiple
+    /* if (g_TeleInTriggerMultiple[client]){
+        PrintToChat(client, "Teleport blocked");
+        return;
+    } */
 
-	// Set Defaults
+    if (!IsValidZonegroup(zonegroup))
+    {
+        CPrintToChat(client, "%t", "Misc1", g_szChatPrefix);
+        return;
+    }
 
-	// fluffys gravity
-	ResetGravity(client);
+    // Set Defaults
+
+    // fluffys gravity
+    ResetGravity(client);
 
     if (g_bPracticeMode[client])
     {
@@ -157,245 +157,245 @@ public void teleportClient(int client, int zonegroup, int zone, bool stopTime)
     }
 
     // Fix speed if not fast forward or slow mode
-	if (g_iInitalStyle[client] != 5 && g_iInitalStyle[client] != 6)
+    if (g_iInitalStyle[client] != 5 && g_iInitalStyle[client] != 6)
     {
-	 	SetEntPropFloat(client, Prop_Data, "m_flLaggedMovementValue", 1.0);
+        SetEntPropFloat(client, Prop_Data, "m_flLaggedMovementValue", 1.0);
     }
 
     g_bPracticeMode[client] = false;
-	g_bNotTeleporting[client] = false;
-	g_bInJump[client] = false;
-	g_bFirstJump[client] = false;
-	g_bLeftZone[client] = false;
-	g_bInBhop[client] = false;
-	g_iTicksOnGround[client] = 0;
-	g_bNewStage[client] = false;
+    g_bNotTeleporting[client] = false;
+    g_bInJump[client] = false;
+    g_bFirstJump[client] = false;
+    g_bLeftZone[client] = false;
+    g_bInBhop[client] = false;
+    g_iTicksOnGround[client] = 0;
+    g_bNewStage[client] = false;
 
-	// Check for spawn locations
-	int realZone;
-	if (zone < 0)
-		realZone = 0;
-	else
-		realZone = zone;
+    // Check for spawn locations
+    int realZone;
+    if (zone < 0)
+        realZone = 0;
+    else
+        realZone = zone;
 
-	if (realZone > 1)
-		g_bInStageZone[client] = true;
-	else if (realZone == 1)
-		g_bInStartZone[client] = true;
+    if (realZone > 1)
+        g_bInStageZone[client] = true;
+    else if (realZone == 1)
+        g_bInStartZone[client] = true;
 
-	// Check clients tele side
-	int teleside = g_iTeleSide[client];
+    // Check clients tele side
+    int teleside = g_iTeleSide[client];
 
-	int zoneID = getZoneID(zonegroup, zone);
+    int zoneID = getZoneID(zonegroup, zone);
 
-	// Check if requested zone teleport is valid (non-linear map)
-	if(zoneID == -1) {
-		CPrintToChat(client, "%T", "InvalidMapNoStages", client, g_szChatPrefix);
-		return;
-	}
+    // Check if requested zone teleport is valid (non-linear map)
+    if(zoneID == -1) {
+        CPrintToChat(client, "%T", "InvalidMapNoStages", client, g_szChatPrefix);
+        return;
+    }
 
-	if (g_bStartposUsed[client][zonegroup] && zone == 1)
-	{
-		if (GetClientTeam(client) == 1 || GetClientTeam(client) == 0) // Spectating
-		{
-			if (stopTime)
-				Client_Stop(client, 0);
+    if (g_bStartposUsed[client][zonegroup] && zone == 1)
+    {
+        if (GetClientTeam(client) == 1 || GetClientTeam(client) == 0) // Spectating
+        {
+            if (stopTime)
+                Client_Stop(client, 0);
 
-			Array_Copy(g_fStartposLocation[client][zonegroup], g_fTeleLocation[client], 3);
+            Array_Copy(g_fStartposLocation[client][zonegroup], g_fTeleLocation[client], 3);
 
-			g_specToStage[client] = true;
-			g_bRespawnPosition[client] = false;
+            g_specToStage[client] = true;
+            g_bRespawnPosition[client] = false;
 
-			TeamChangeActual(client, 0);
-			return;
-		}
-		else
-		{
-			// set client speed to 
-			RequestFrame(RequestFrame_StopVelocity, client);
+            TeamChangeActual(client, 0);
+            return;
+        }
+        else
+        {
+            // set client speed to 
+            RequestFrame(RequestFrame_StopVelocity, client);
 
-			// Hack fix for zoneid not being set with hooked zones
-			int zId = getZoneID(zonegroup, zone);
-			if (!StrEqual(g_mapZones[zId].HookName, "None"))
-				g_iTeleportingZoneId[client] = zId;
+            // Hack fix for zoneid not being set with hooked zones
+            int zId = getZoneID(zonegroup, zone);
+            if (!StrEqual(g_mapZones[zId].HookName, "None"))
+                g_iTeleportingZoneId[client] = zId;
 
-			teleportEntitySafe(client, g_fStartposLocation[client][zonegroup], g_fStartposAngle[client][zonegroup], view_as<float>( { 0.0, 0.0, 0.0 } ), stopTime);
-			
-			return;
-		}
-	}
-	else if (g_bGotSpawnLocation[zonegroup][realZone][teleside])
-	{
-		// Check if teleporting to bonus
-		if (zonegroup > 0)
-		{
-			// Set a bool to allow bonus zones to sit on top of start zones, e.g surf_aircontrol_ksf bonus 1
-			g_bInBonus[client] = true;
-			g_iInBonus[client] = zonegroup;
-		}
-		else
-		{
-			// Not teleporting to a bonus
-			g_bInBonus[client] = false;
-		}
+            teleportEntitySafe(client, g_fStartposLocation[client][zonegroup], g_fStartposAngle[client][zonegroup], view_as<float>( { 0.0, 0.0, 0.0 } ), stopTime);
+            
+            return;
+        }
+    }
+    else if (g_bGotSpawnLocation[zonegroup][realZone][teleside])
+    {
+        // Check if teleporting to bonus
+        if (zonegroup > 0)
+        {
+            // Set a bool to allow bonus zones to sit on top of start zones, e.g surf_aircontrol_ksf bonus 1
+            g_bInBonus[client] = true;
+            g_iInBonus[client] = zonegroup;
+        }
+        else
+        {
+            // Not teleporting to a bonus
+            g_bInBonus[client] = false;
+        }
 
-		if (GetClientTeam(client) == 1 || GetClientTeam(client) == 0) // Spectating
-		{
-			if (stopTime)
-				Client_Stop(client, 0);
+        if (GetClientTeam(client) == 1 || GetClientTeam(client) == 0) // Spectating
+        {
+            if (stopTime)
+                Client_Stop(client, 0);
 
-			Array_Copy(g_fSpawnLocation[zonegroup][realZone][teleside], g_fTeleLocation[client], 3);
+            Array_Copy(g_fSpawnLocation[zonegroup][realZone][teleside], g_fTeleLocation[client], 3);
 
-			g_specToStage[client] = true;
-			g_bRespawnPosition[client] = false;
+            g_specToStage[client] = true;
+            g_bRespawnPosition[client] = false;
 
-			TeamChangeActual(client, 0);
-			return;
-		}
-		else
-		{	
-			// set client speed to 0
-			RequestFrame(RequestFrame_StopVelocity, client);
+            TeamChangeActual(client, 0);
+            return;
+        }
+        else
+        {	
+            // set client speed to 0
+            RequestFrame(RequestFrame_StopVelocity, client);
 
-			// Hack fix for zoneid not being set with hooked zones
-			int zId = getZoneID(zonegroup, zone);
-			if (!StrEqual(g_mapZones[zId].HookName, "None"))
-				g_iTeleportingZoneId[client] = zId;
+            // Hack fix for zoneid not being set with hooked zones
+            int zId = getZoneID(zonegroup, zone);
+            if (!StrEqual(g_mapZones[zId].HookName, "None"))
+                g_iTeleportingZoneId[client] = zId;
 
-			if (realZone == 0)
-			{
-				g_bInStartZone[client] = false;
-				g_bInStageZone[client] = false;
-			}
+            if (realZone == 0)
+            {
+                g_bInStartZone[client] = false;
+                g_bInStageZone[client] = false;
+            }
 
-			teleportEntitySafe(client, g_fSpawnLocation[zonegroup][realZone][teleside], g_fSpawnAngle[zonegroup][realZone][teleside], g_fSpawnVelocity[zonegroup][realZone][teleside], stopTime);
+            teleportEntitySafe(client, g_fSpawnLocation[zonegroup][realZone][teleside], g_fSpawnAngle[zonegroup][realZone][teleside], g_fSpawnVelocity[zonegroup][realZone][teleside], stopTime);
 
-			return;
-		}
-	}
-	else
-	{
-		// Check if the map has zones
-		if (g_mapZonesCount > 0)
-		{	
-			// Search for the zoneid we're teleporting to:
-			int destinationZoneId;
-			destinationZoneId = getZoneID(zonegroup, zone);
+            return;
+        }
+    }
+    else
+    {
+        // Check if the map has zones
+        if (g_mapZonesCount > 0)
+        {	
+            // Search for the zoneid we're teleporting to:
+            int destinationZoneId;
+            destinationZoneId = getZoneID(zonegroup, zone);
 
-			g_iTeleportingZoneId[client] = destinationZoneId;
+            g_iTeleportingZoneId[client] = destinationZoneId;
 
-			// Check if zone was found
-			if (destinationZoneId > -1)
-			{
-				// Check if teleporting to bonus
-				if (zonegroup > 0)
-				{
-					// Set a bool to allow bonus zones to sit on top of start zones, e.g surf_aircontrol_ksf bonus 1
-					g_bInBonus[client] = true;
-					g_iInBonus[client] = zonegroup;
-				}
-				else
-				{
-					// Not teleporting to a bonus
-					g_bInBonus[client] = false;
-				}
-				
-				bool destinationFound = false;
-				int entity;
-				float origin[3];
-				float ang[3];
-				for (int i = 0; i < GetArraySize(g_hDestinations); i++)
-				{
-					entity = GetArrayCell(g_hDestinations, i);
-					GetEntPropVector(entity, Prop_Send, "m_vecOrigin", origin);
-					/**
-					*	Checks if coordinates are inside a zone
-					*	Return: zone id where location is in, or -1 if not inside a zone
-					**/
-					if (IsInsideZone(origin) == destinationZoneId)
-					{
-						destinationFound = true;
-						GetEntPropVector(entity, Prop_Send, "m_angRotation", ang);
-						break;
-					}
-				}
-				// Check if client is spectating, or not chosen a team yet
-				if (GetClientTeam(client) == 1 || GetClientTeam(client) == 0)
-				{
-					if (stopTime)
-						Client_Stop(client, 0);
+            // Check if zone was found
+            if (destinationZoneId > -1)
+            {
+                // Check if teleporting to bonus
+                if (zonegroup > 0)
+                {
+                    // Set a bool to allow bonus zones to sit on top of start zones, e.g surf_aircontrol_ksf bonus 1
+                    g_bInBonus[client] = true;
+                    g_iInBonus[client] = zonegroup;
+                }
+                else
+                {
+                    // Not teleporting to a bonus
+                    g_bInBonus[client] = false;
+                }
+                
+                bool destinationFound = false;
+                int entity;
+                float origin[3];
+                float ang[3];
+                for (int i = 0; i < GetArraySize(g_hDestinations); i++)
+                {
+                    entity = GetArrayCell(g_hDestinations, i);
+                    GetEntPropVector(entity, Prop_Send, "m_vecOrigin", origin);
+                    /**
+                    *	Checks if coordinates are inside a zone
+                    *	Return: zone id where location is in, or -1 if not inside a zone
+                    **/
+                    if (IsInsideZone(origin) == destinationZoneId)
+                    {
+                        destinationFound = true;
+                        GetEntPropVector(entity, Prop_Send, "m_angRotation", ang);
+                        break;
+                    }
+                }
+                // Check if client is spectating, or not chosen a team yet
+                if (GetClientTeam(client) == 1 || GetClientTeam(client) == 0)
+                {
+                    if (stopTime)
+                        Client_Stop(client, 0);
 
-					// Set spawn location to the destination zone:
-					//TP TO STAGE
-					if(zone > 1 && zonegroup == 0 && g_bStageStartposUsed[client][zone-2] && g_fCurrentRunTime[client] <= 0.0 && g_bTimerEnabled[client]){
-						Array_Copy(g_fStageStartposLocation[client][zone-2] , g_fTeleLocation[client], 3);
+                    // Set spawn location to the destination zone:
+                    //TP TO STAGE
+                    if(zone > 1 && zonegroup == 0 && g_bStageStartposUsed[client][zone-2] && g_fCurrentRunTime[client] <= 0.0 && g_bTimerEnabled[client]){
+                        Array_Copy(g_fStageStartposLocation[client][zone-2] , g_fTeleLocation[client], 3);
 
-						destinationFound = true;
-					}
-					//TP TO BONUSES
-					else
-						if (destinationFound)
-							Array_Copy(origin, g_fTeleLocation[client], 3);
-						else
-							Array_Copy(g_mapZones[destinationZoneId].CenterPoint, g_fTeleLocation[client], 3);
+                        destinationFound = true;
+                    }
+                    //TP TO BONUSES
+                    else
+                        if (destinationFound)
+                            Array_Copy(origin, g_fTeleLocation[client], 3);
+                        else
+                            Array_Copy(g_mapZones[destinationZoneId].CenterPoint, g_fTeleLocation[client], 3);
 
-					// Set specToStage flag
-					g_bRespawnPosition[client] = false;
-					g_specToStage[client] = true;
+                    // Set specToStage flag
+                    g_bRespawnPosition[client] = false;
+                    g_specToStage[client] = true;
 
-					// Spawn player
-					TeamChangeActual(client, 0);
+                    // Spawn player
+                    TeamChangeActual(client, 0);
 
-					if (realZone == 0)
-					{
-						g_bInStartZone[client] = false;
-						g_bInStageZone[client] = false;
-					}
-				}
-				else // Teleport normally
-				{
-					// Set client speed to 0
-					SetEntPropVector(client, Prop_Data, "m_vecVelocity", view_as<float>( { 0.0, 0.0, -100.0 } ));
+                    if (realZone == 0)
+                    {
+                        g_bInStartZone[client] = false;
+                        g_bInStageZone[client] = false;
+                    }
+                }
+                else // Teleport normally
+                {
+                    // Set client speed to 0
+                    SetEntPropVector(client, Prop_Data, "m_vecVelocity", view_as<float>( { 0.0, 0.0, -100.0 } ));
 
-					float fLocation[3];
-					//TP TO STAGE
-					if(zone > 1 && zonegroup == 0 && g_bStageStartposUsed[client][zone-2] && g_fCurrentRunTime[client] <= 0.0 && g_bTimerEnabled[client]){
-						Array_Copy(g_fStageStartposLocation[client][zone-2], fLocation, 3);
-						Array_Copy(g_fStageStartposAngle[client][zone-2], ang, 3);
+                    float fLocation[3];
+                    //TP TO STAGE
+                    if(zone > 1 && zonegroup == 0 && g_bStageStartposUsed[client][zone-2] && g_fCurrentRunTime[client] <= 0.0 && g_bTimerEnabled[client]){
+                        Array_Copy(g_fStageStartposLocation[client][zone-2], fLocation, 3);
+                        Array_Copy(g_fStageStartposAngle[client][zone-2], ang, 3);
 
-						destinationFound = true;
-					}
-					//TP TO BONUSES
-					else
-						if (destinationFound)
-							Array_Copy(origin, fLocation, 3);
-						else
-							Array_Copy(g_mapZones[destinationZoneId].CenterPoint, fLocation, 3);
+                        destinationFound = true;
+                    }
+                    //TP TO BONUSES
+                    else
+                        if (destinationFound)
+                            Array_Copy(origin, fLocation, 3);
+                        else
+                            Array_Copy(g_mapZones[destinationZoneId].CenterPoint, fLocation, 3);
 
-					// fluffys dont cheat wrcps!
-					g_bWrcpTimeractivated[client] = false;
+                    // fluffys dont cheat wrcps!
+                    g_bWrcpTimeractivated[client] = false;
 
-					if (realZone == 0)
-					{
-						g_bInStartZone[client] = false;
-						g_bInStageZone[client] = false;
-					}
+                    if (realZone == 0)
+                    {
+                        g_bInStartZone[client] = false;
+                        g_bInStageZone[client] = false;
+                    }
 
-					// Teleport
-					if (destinationFound)
-						teleportEntitySafe(client, fLocation, ang, view_as<float>( { 0.0, 0.0, -100.0 } ), stopTime);
-					else
-						teleportEntitySafe(client, fLocation, NULL_VECTOR, view_as<float>( { 0.0, 0.0, -100.0 } ), stopTime);
-				}
-			}
-			else
-				CPrintToChat(client, "%t", "Misc2", g_szChatPrefix);
-		}
-		else
-			CPrintToChat(client, "%t", "Misc3", g_szChatPrefix);
-	}
-	g_bNotTeleporting[client] = true;
-	return;
+                    // Teleport
+                    if (destinationFound)
+                        teleportEntitySafe(client, fLocation, ang, view_as<float>( { 0.0, 0.0, -100.0 } ), stopTime);
+                    else
+                        teleportEntitySafe(client, fLocation, NULL_VECTOR, view_as<float>( { 0.0, 0.0, -100.0 } ), stopTime);
+                }
+            }
+            else
+                CPrintToChat(client, "%t", "Misc2", g_szChatPrefix);
+        }
+        else
+            CPrintToChat(client, "%t", "Misc3", g_szChatPrefix);
+    }
+    g_bNotTeleporting[client] = true;
+    return;
 }
 
 public void RequestFrame_StopVelocity(int client)
