@@ -10129,10 +10129,11 @@ public void SQL_toggleCustomPlayerTitleCallback(Handle owner, Handle hndl, const
     db_updateCustomTitle(client);
 }
 
+// Get DB Title Related Values
 public void db_updateCustomTitle(int client)
 {
-	char szQuery[728];
-	Format(szQuery, 728, "SELECT `title`, `namecolour`, `textcolour`, `inuse`, `vip`, `zoner`, `joinmsg` FROM `ck_vipadmins` WHERE `steamid` = '%s'", g_szSteamID[client]);
+	char szQuery[128];
+	Format(szQuery, sizeof(szQuery), "SELECT `title`, `namecolour`, `textcolour`, `inuse` FROM `ck_vipadmins` WHERE `steamid` = '%s'", g_szSteamID[client]);
 	SQL_TQuery(g_hDb, SQL_updateCustomTitleCallback, szQuery, GetClientUserId(client), DBPrio_Low);
 }
 
