@@ -584,9 +584,12 @@ public void CustomTitleMenu(int client)
     Format(menuTitleEnabled, 256, "Enable Title: %s", g_bDbCustomTitleInUse[client] ? "True" : "False");
     AddMenuItem(menu, "Enable Title", menuTitleEnabled);
 
+    // Save the selected title index
+    int titleIndex = g_iCustomTitleIndex[client];
+
     // Display the current title of the user
     char menuCurrentTitle[256];
-    Format(menuCurrentTitle, 256, "Current Title: %s", g_szCustomTitle[client]);
+    Format(menuCurrentTitle, 256, "Current Title: %s", g_szCustomTitle[client][titleIndex]);
     AddMenuItem(menu, "Current Title", menuCurrentTitle);
 
     // Only display colors if the user is a VIP
