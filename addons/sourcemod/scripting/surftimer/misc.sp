@@ -5550,7 +5550,7 @@ public void StringToTitles(int client, char[] titleString)
     g_iCustomTitleIndex[client] = StringToInt(titleIndex);
 
     // Limit count to titleCount
-    if (g_iCustomTitleIndex[client] >= titleCount)
+    if (g_iCustomTitleIndex[client] >= titleCount && titleCount > 0)
     {
         LogWarning("The user \"%s - %s\" has a title index that is too high. Setting to %i.", clientSteamID, clientName, titleCount - 1);
         g_iCustomTitleIndex[client] = titleCount - 1;
@@ -5572,6 +5572,12 @@ public void StringToTitles(int client, char[] titleString)
 
         // Trim the title
         TrimString(title);
+
+        // Replace 0's with an empty string
+        if (StrEqual(titleBuffer[i], "0"))
+        {
+            strcopy(title, sizeof(title), "");
+        }
 
         // Copy over the formatted colored title
         strcopy(g_szCustomTitleColoured[client][i], sizeof(g_szCustomTitleColoured[][]), title);
