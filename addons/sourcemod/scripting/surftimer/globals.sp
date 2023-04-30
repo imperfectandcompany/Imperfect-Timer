@@ -425,8 +425,9 @@ char g_szCustomJoinMsg[MAXPLAYERS + 1][256];
 // char g_szCustomSounds[MAXPLAYERS + 1][3][256];
 
 /*----------  Custom Titles  ----------*/
-char g_szCustomTitleColoured[MAXPLAYERS + 1][1024];
-char g_szCustomTitle[MAXPLAYERS + 1][1024];
+int g_iCustomTitleIndex[MAXPLAYERS + 1];
+char g_szCustomTitleColoured[MAXPLAYERS + 1][MAX_TITLES][MAX_TITLE_LENGTH];
+char g_szCustomTitle[MAXPLAYERS + 1][MAX_TITLES][MAX_TITLE_LENGTH];
 bool g_bDbCustomTitleInUse[MAXPLAYERS + 1] = {false, ...};
 bool g_bdbHasCustomTitle[MAXPLAYERS + 1] = {false, ...};
 
