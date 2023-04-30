@@ -5472,3 +5472,85 @@ public void LogCritical(const char[] message, any ...)
     VFormat(sMessage, sizeof(sMessage), message, 2);
     LogToFileEx(g_szLogFile, "[CRITICAL] %s", sMessage);
 }
+
+public void StringToTitles(int client, char[] titleString)
+{
+    // Make sure the client is valid
+    if (!IsValidClient(client))
+    {
+        LogCritical("(StringToTitles) Invalid Client: \"%s\"", client);
+        return;
+    }
+
+    // Save the clients name
+    char clientName[64];
+    GetClientName(client, clientName, sizeof(clientName));
+
+    // Save the clients SteamID
+    char clientSteamID[64];
+    getSteamIDFromClient(client, clientSteamID, sizeof(clientSteamID));
+
+    // Create a buffer to store the comma seperated values from the string
+    char titleBuffer[MAX_TITLES + 1][MAX_TITLE_LENGTH];
+    int entries = ExplodeString(titleString, ",", titleBuffer, sizeof(titleBuffer) / sizeof(titleBuffer[]), sizeof(titleBuffer[]));
+
+    // Assume old title format if no commas are found
+    if (entries == 1)
+    {
+        // If old format, set the title index to 0
+        g_iCustomTitleIndex[client] = 0;
+    }
+    else
+    {
+        // If new format, the first item should be the title index integer
+        bool isNumeric = true;
+        char titleIndex[MAX_TITLE_LENGTH];
+        strcopy(titleIndex, sizeof(titleIndex), titleBuffer[0]);
+
+        // Check each character in the first entry to make sure it's an integer
+        for (int i = 0; i < strlen(titleIndex); i++)
+        {
+            // If it's not an integer, log a warning and set the title index to 0
+            if (!IsCharNumeric(titleIndex[i]))
+            {
+                LogWarning("The user \"%s - %s\" has a non numeric title index. Setting to 0.", clientSteamID, clientName);
+                g_iCustomTitleIndex[client] = 0;
+                isNumeric = false;
+                break;
+            }
+        }
+
+        // If it is an integer, parse it
+        if (isNumeric)
+        {
+            g_iCustomTitleIndex[client] = StringToInt(titleIndex);
+
+            if (g_iCustomTitleIndex[client] >= MAX_TITLES)
+            {
+                LogWarning("The user \"%s - %s\" has a title index that is too high. Setting to %i.", clientSteamID, clientName, MAX_TITLES - 1);
+                g_iCustomTitleIndex[client] = MAX_TITLES - 1;
+            }
+        }
+    }
+
+    // Now we need to update the titles
+    for (int i = 0; i < MAX_TITLES; i++)
+    {
+        // Save a copy of the title
+        char title[MAX_TITLE_LENGTH];
+        strcopy(title, sizeof(title), titleBuffer[i + 1]);
+
+        // Trim the title
+        TrimString(title);
+
+        // Copy over the formatted colored title
+        strcopy(g_szCustomTitleColoured[client][i], sizeof(g_szCustomTitleColoured[][]), title);
+
+        // Remove colors and trim the title
+        parseColorsFromString(title, sizeof(title));
+        TrimString(title);
+
+        // Copy over the formatted colorless title
+        strcopy(g_szCustomTitle[client][i], sizeof(g_szCustomTitle[][]), title);
+    }
+}
