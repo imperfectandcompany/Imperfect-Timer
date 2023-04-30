@@ -734,9 +734,11 @@ public int CustomTitleListMenuHandler(Handle menu, MenuAction action, int client
 
         // Set title index to selected item and update db entry
         g_iCustomTitleIndex[client] = item;
+
+        // Update titles on db with new globals (index)
         char titleString[MAX_TITLE_STRING_LENGTH];
         TitlesToString(client, titleString, sizeof(titleString));
-        db_updateCustomPlayerTitle(client, titleString);
+        db_updateTitle(client, titleString);
     }
     else if (action == MenuAction_End)
     {
