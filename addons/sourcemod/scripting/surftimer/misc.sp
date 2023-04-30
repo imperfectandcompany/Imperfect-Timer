@@ -5600,7 +5600,8 @@ public void TitlesToString(int client, char[] titleString, int titleStringLength
     }
 
     // Initialize a buffer to store all title information
-    char[] titleBuffer = new char[numberOfTitles][MAX_TITLE_LENGTH];
+    // char[] titleBuffer = new char[numberOfTitles][MAX_TITLE_LENGTH]; // Dynamic not working
+    char titleBuffer[MAX_TITLES][MAX_TITLE_LENGTH];
 
     // Set first item in buffer to the title index
     char titleIndex[MAX_TITLE_LENGTH];
