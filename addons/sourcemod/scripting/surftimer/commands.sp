@@ -617,7 +617,7 @@ public void CustomTitleMenu(int client)
         AddMenuItem(menu, "Text Color", menuTextColor);
     }
 
-    SetMenuOptionFlags(menu, MENUFLAG_BUTTON_EXIT);
+    SetMenuExitButton(menu, true);
     DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
 
@@ -710,7 +710,8 @@ public void CustomTitleListMenu(int client)
     }
 
     // Add a way to exit the menu and have no time limit
-    SetMenuOptionFlags(menu, MENUFLAG_BUTTON_EXIT);
+    SetMenuExitButton(menu, true);
+    SetMenuExitBackButton(menu, true);
     DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
 
@@ -739,6 +740,11 @@ public int CustomTitleListMenuHandler(Handle menu, MenuAction action, int client
         char titleString[MAX_TITLE_STRING_LENGTH];
         TitlesToString(client, titleString, sizeof(titleString));
         db_updateTitle(client, titleString);
+    }
+    else if (action == MenuAction_Cancel)
+    {
+        // Go back to the previous menu
+		CustomTitleMenu(client);
     }
     else if (action == MenuAction_End)
     {
@@ -4735,8 +4741,6 @@ public Action Command_RemoveTitle(int client, int args) {
     char title[MAX_TITLE_LENGTH];
     bool ignoreColors = false;
 
-    CPrintToChatAll("Args: %i", args);
-
     // Save command arguments
     GetCmdArg(1, username, sizeof(username));
     GetCmdArg(2, title, sizeof(title));
@@ -4801,8 +4805,6 @@ public void RemoveTitle(int client, int targetClient, const char[] title, bool i
             strcopy(currentTitle, sizeof(currentTitle), g_szCustomTitleColoured[targetClient][i]);
         }
 
-        CPrintToChatAll("IgnoreColors: %i, CurrentTitle: %s", ignoreColors, currentTitle);
-
         // Check if we found the same title
         if (StrEqual(currentTitle, title))
         {
@@ -4816,7 +4818,6 @@ public void RemoveTitle(int client, int targetClient, const char[] title, bool i
             // Update the db with the new titles
             char titleString[MAX_TITLE_STRING_LENGTH];
             TitlesToString(targetClient, titleString, sizeof(titleString));
-            CPrintToChatAll("TitleString: %s", titleString);
             db_updateTitle(targetClient, titleString);
 
             CPrintToChatAll("%s was stripped of the title: %s", targetClientName, currentTitle);
