@@ -570,10 +570,6 @@ public void CustomTitleMenu(int client)
     // Reset global variable state
     g_bFromCustomTitleMenu[client] = false;
 
-    // TODO: Move this to give and remove title functions, or find a way to delay
-    // Get most up to date global variables from db
-    db_updateCustomTitle(client);
-
     // Create the menu object
     Menu menu = CreateMenu(CustomTitleMenuHandler);
 
@@ -640,6 +636,7 @@ public int CustomTitleMenuHandler(Handle menu, MenuAction action, int client, in
     // If the client selected an option, process it
     if (action == MenuAction_Select)
     {
+        // Set variable to come back to menu after selection
         g_bFromCustomTitleMenu[client] = true;
 
         switch (item)
@@ -677,6 +674,9 @@ public void CustomTitleListMenu(int client)
     {
         return;
     }
+
+    // Reset global variable state
+    g_bFromCustomTitleMenu[client] = false;
 
     // Create the menu object
     Menu menu = CreateMenu(CustomTitleListMenuHandler);
@@ -726,20 +726,14 @@ public int CustomTitleListMenuHandler(Handle menu, MenuAction action, int client
         return 0;
     }
 
-    g_bFromCustomTitleMenu[client] = false;
-
     // If the client selected an option, process it
     if (action == MenuAction_Select)
     {
-        char itemInfo[32];
-        GetMenuItem(menu, item, itemInfo, sizeof(itemInfo));
-
-        if (StrEqual(itemInfo, "Custom Title"))
-        {
-            g_iCustomTitleIndex[client] = item;
-        }
-
+        // Set variable to come back to menu after selection
         g_bFromCustomTitleMenu[client] = true;
+
+        // Set title index to selected item and update db entry
+        g_iCustomTitleIndex[client] = item;
         char titleString[MAX_TITLE_STRING_LENGTH];
         TitlesToString(client, titleString, sizeof(titleString));
         db_updateCustomPlayerTitle(client, titleString);
