@@ -5473,6 +5473,26 @@ public void LogCritical(const char[] message, any ...)
     LogToFileEx(g_szLogFile, "[CRITICAL] %s", sMessage);
 }
 
+public int GetClientTitleCount(int client)
+{
+    int titleCount = 0;
+
+    // Count number of non empty titles for client
+    for (int i = 0; i < MAX_TITLES; i++)
+    {
+        // If an empty title is found, assume no more titles follow
+        if (StrEqual(g_szCustomTitleColoured[client][i], ""))
+        {
+            break;
+        }
+        
+        // Otherwise, increase the count
+        titleCount += 1;
+    }
+
+    return titleCount;
+}
+
 public void StringToTitles(int client, char[] titleString)
 {
     // Make sure the client is valid
@@ -5609,18 +5629,7 @@ public void TitlesToString(int client, char[] titleString, int titleStringLength
     getSteamIDFromClient(client, clientSteamID, sizeof(clientSteamID));
 
     // Determine how many titles the client has
-    int titleCount = 0;
-    for (int i = 0; i < MAX_TITLES; i++)
-    {
-        // If an empty title is found, assume no more titles follow
-        if (StrEqual(g_szCustomTitleColoured[client][i], ""))
-        {
-            break;
-        }
-        
-        // Otherwise, increase the count
-        titleCount += 1;
-    }
+    int titleCount = GetClientTitleCount(client);
 
     // User has index above total titles found
     if (g_iCustomTitleIndex[client] >= titleCount && titleCount > 0)
