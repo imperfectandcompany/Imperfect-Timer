@@ -10252,8 +10252,13 @@ public void SQL_updateCustomTitleCallback(Handle owner, Handle hndl, const char[
         }
     }
 
+    // Return to the Custom Title List Menu if the client came from it
+    if (g_bFromCustomTitleListMenu[client])
+    {
+        CustomTitleListMenu(client);
+    }
     // Return to the Custom Title Menu if the client came from it
-    if (g_bFromCustomTitleMenu[client])
+    else if (g_bFromCustomTitleMenu[client])
     {
         CustomTitleMenu(client);
     }
