@@ -5554,3 +5554,60 @@ public void StringToTitles(int client, char[] titleString)
         strcopy(g_szCustomTitle[client][i], sizeof(g_szCustomTitle[][]), title);
     }
 }
+
+public void TitlesToString(int client, char[] titleString, int titleStringLength)
+{
+    // Make sure the client is valid
+    if (!IsValidClient(client))
+    {
+        LogCritical("(TitlesToString) Invalid Client: \"%s\"", client);
+        return;
+    }
+
+    // Save the clients name
+    char clientName[64];
+    GetClientName(client, clientName, sizeof(clientName));
+
+    // Save the clients SteamID
+    char clientSteamID[64];
+    getSteamIDFromClient(client, clientSteamID, sizeof(clientSteamID));
+
+    // Determine how many titles the client has
+    int numberOfTitles = 0;
+    for (int i = 0; i < MAX_TITLES; i++)
+    {
+        // If an empty title is found, assume no more titles follow
+        if (StrEqual(g_szCustomTitleColoured[client][i], ""))
+        {
+            break;
+        }
+        
+        // Otherwise, increase the count
+        numberOfTitles += 1;
+    }
+
+    // User has index above total titles found
+    if (g_iCustomTitleIndex > numberOfTitles)
+    {
+        // Set index to total titles found
+        g_iCustomTitleIndex = numberOfTitles;
+    }
+
+    // Initialize a buffer to store all title information
+    char[] titleBuffer = new char[numberOfTitles][MAX_TITLE_LENGTH];
+
+    // Set first item in buffer to the title index
+    char titleIndex[MAX_TITLE_LENGTH];
+    IntToString(g_iCustomTitleIndex[client], titleIndex, sizeof(titleIndex));
+    strcopy(titleBuffer[0], sizeof(titleBuffer[]), titleIndex);
+
+    // Now we need to update the titles
+    for (int i = 0; i <= numberOfTitles; i++)
+    {
+        // Copy over custom titles to buffer
+        strcopy(titleBuffer[i + 1], sizeof(titleBuffer[]), g_szCustomTitleColoured[client][i]);
+    }
+
+    // Join all strings together into a comma separated list
+    ImplodeStrings(titleBuffer, numberOfTitles, ",", titleString, titleStringLength);
+}
