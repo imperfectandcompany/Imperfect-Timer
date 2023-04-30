@@ -10034,6 +10034,7 @@ public void SQL_updateTitleCallback(Handle owner, Handle hndl, const char[] erro
 	}
 }
 
+// Update DB Name Colors
 public void db_updateCustomPlayerNameColour(int client, char[] arg)
 {
 	char szQuery[512];
@@ -10053,6 +10054,7 @@ public void SQL_updateCustomPlayerNameColourCallback(Handle owner, Handle hndl, 
 	}
 }
 
+// Update DB Text Colors
 public void db_updateCustomPlayerTextColour(int client, char[] arg)
 {
 	char szQuery[512];
@@ -10072,6 +10074,7 @@ public void SQL_updateCustomPlayerTextColourCallback(Handle owner, Handle hndl, 
 	}
 }
 
+// Update DB Inuse
 public void db_toggleCustomPlayerTitle(int client)
 {
     // Let the user know if they don't have a custom title
@@ -10091,17 +10094,39 @@ public void db_toggleCustomPlayerTitle(int client)
         Format(szQuery, 512, "UPDATE `ck_vipadmins` SET `inuse` = '1' WHERE `steamid` = '%s';", g_szSteamID[client]);
     }
 
-    SQL_TQuery(g_hDb, SQL_insertCustomPlayerTitleCallback, szQuery, GetClientUserId(client), DBPrio_Low);
+    SQL_TQuery(g_hDb, SQL_toggleCustomPlayerTitleCallback, szQuery, GetClientUserId(client), DBPrio_Low);
 }
 
-public void SQL_toggleCustomPlayerTitleCallback(Handle owner, Handle hndl, const char[] error, int userid)
+public void SQL_toggleCustomPlayerTitleCallback(Handle owner, Handle hndl, const char[] error, int userid) 
 {
-	int client = GetClientOfUserId(userid);
+    // Get the client from the UserID
+    int client = GetClientOfUserId(userid);
 
-	if (client)
-	{
-		SetPlayerRank(client);
-	}
+    // Log an error and return if it's not a valid client
+    if (!IsValidClient(client))
+    {
+        LogCritical("(SQL_updateCustomTitleCallback) Invalid Client: \"%s\"", client);
+        return;
+    }
+
+    // Log an error and return if the SQL handle is invalid
+    if (hndl == INVALID_HANDLE)
+    {
+        LogCritical("(SQL_updateCustomTitleCallback) Invalid Handle: \"%s\"", error);
+
+        if (!g_bSettingsLoaded[client])
+        {
+            LoadClientSetting(client, g_iSettingToLoad[client]);
+        }
+
+        return;
+    }
+
+    // Log the update to the server
+    PrintToServer("Successfully updated inuse state.");
+
+    // Update globals with new database values
+    db_updateCustomTitle(client);
 }
 
 public void db_updateCustomTitle(int client)
