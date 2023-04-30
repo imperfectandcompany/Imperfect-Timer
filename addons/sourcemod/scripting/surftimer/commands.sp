@@ -642,13 +642,86 @@ public int CustomTitleMenuHandler(Handle menu, MenuAction action, int client, in
             }
             case 1:
             {
-                db_viewCustomTitles(client);
+                CustomTitleListMenu(client);
             }
             case 2, 3:
             {
                 db_viewPlayerColours(client, g_szSteamID[client], item - 2);
             }
         }
+    }
+    else if (action == MenuAction_End)
+    {
+        // Delete the menu object if the exit item is selected
+        delete menu;
+    }
+
+    return 0;
+}
+
+/**
+ * Creates the CustomTitleList Menu for the user.
+ */
+public void CustomTitleListMenu(int client)
+{
+    // Make sure the client is valid
+    if (!IsValidClient(client))
+    {
+        return;
+    }
+
+    // Create the menu object
+    Menu menu = CreateMenu(CustomTitleListMenuHandler);
+
+    // Get the clients name
+    char clientName[64];
+    GetClientName(client, clientName, 64);
+
+    // Create the menu title text
+    char menuTitle[256];
+    Format(menuTitle, 256, "List of Custom Titles");
+    SetMenuTitle(menu, menuTitle);
+
+    // Populate with a list of custom titles
+    for (int i = 0; i < MAX_TITLES; i++)
+    {
+        // If an empty title is found, assume no more titles follow
+        if (StrEqual(g_szCustomTitle[client][i], ""))
+        {
+            break;
+        }
+
+        // Add the custom title to the list
+        AddMenuItem(menu, "Custom Title", g_szCustomTitle[client][i])
+    }
+
+    // Add a way to exit the menu and have no time limit
+    SetMenuOptionFlags(menu, MENUFLAG_BUTTON_EXIT);
+    DisplayMenu(menu, client, MENU_TIME_FOREVER);
+}
+
+/**
+ * The handle for the CustomTitleList Menu.
+ */
+public int CustomTitleListMenuHandler(Handle menu, MenuAction action, int client, int item)
+{
+    // Make sure the client is valid
+    if (!IsValidClient(client))
+    {
+        delete menu;
+        return 0;
+    }
+
+    g_bFromCustomTitleMenu[client] = false;
+
+    // If the client selected an option, process it
+    if (action == MenuAction_Select)
+    {
+        g_bFromCustomTitleMenu[client] = true;
+        g_iCustomTitleIndex[client] = item;
+        char titleString[MAX_TITLE_STRING_LENGTH];
+        TitlesToString(client, titleString, sizeof(titleString));
+        db_updateCustomPlayerTitle(client, titleString)
     }
     else if (action == MenuAction_End)
     {
