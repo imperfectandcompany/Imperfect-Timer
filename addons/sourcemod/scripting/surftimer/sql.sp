@@ -9945,41 +9945,6 @@ public void SQL_InsertVipFromSourcebansCallback(Handle owner, Handle hndl, const
 	db_CheckVIPAdmin(client, szSteamId);
 }
 
-public void db_checkCustomPlayerTitle(int client, char[] arg)
-{
-	Handle pack = CreateDataPack();
-	WritePackCell(pack, client);
-	WritePackString(pack, arg);
-
-	char szQuery[512];
-	Format(szQuery, 512, "SELECT `steamid` FROM `ck_vipadmins` WHERE `steamid` = '%s';", g_szSteamID[client]);
-	SQL_TQuery(g_hDb, SQL_checkCustomPlayerTitleCallback, szQuery, pack, DBPrio_Low);
-
-}
-
-public void SQL_checkCustomPlayerTitleCallback(Handle owner, Handle hndl, const char[] error, any pack)
-{
-	ResetPack(pack);
-	int client = ReadPackCell(pack);
-	char arg[128];
-	ReadPackString(pack, arg, 128);
-	CloseHandle(pack);
-	
-	if (hndl == INVALID_HANDLE)
-	{
-		LogError("[surftimer] SQL Error (SQL_checkCustomPlayerTitleCallback): %s", error);
-		db_insertCustomPlayerTitle(client, arg);
-		return;
-	}
-
-	if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl))
-	{
-		db_updateCustomPlayerTitle(client, arg);
-	} else {
-		db_insertCustomPlayerTitle(client, arg);
-	}
-}
-
 public void db_checkCustomPlayerNameColour(int client, char[] arg)
 {
 	Handle pack = CreateDataPack();
