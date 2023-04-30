@@ -457,6 +457,7 @@ char g_szColors[16][32] = {
 // bool g_bHasCustomTextColour[MAXPLAYERS + 1] = {false, ...};
 bool g_bCustomTitleAccess[MAXPLAYERS + 1] = {false, ...};
 bool g_bFromCustomTitleMenu[MAXPLAYERS + 1];
+bool g_bFromCustomTitleListMenu[MAXPLAYERS + 1];
 // char g_szsText[MAXPLAYERS + 1];
 
 // to be used with sm_p, stage sr

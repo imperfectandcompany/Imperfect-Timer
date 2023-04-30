@@ -569,6 +569,7 @@ public void CustomTitleMenu(int client)
 
     // Reset global variable state
     g_bFromCustomTitleMenu[client] = false;
+    g_bFromCustomTitleListMenu[client] = false;
 
     // Create the menu object
     Menu menu = CreateMenu(CustomTitleMenuHandler);
@@ -676,7 +677,7 @@ public void CustomTitleListMenu(int client)
     }
 
     // Reset global variable state
-    g_bFromCustomTitleMenu[client] = false;
+    g_bFromCustomTitleListMenu[client] = false;
 
     // Create the menu object
     Menu menu = CreateMenu(CustomTitleListMenuHandler);
@@ -731,7 +732,7 @@ public int CustomTitleListMenuHandler(Handle menu, MenuAction action, int client
     if (action == MenuAction_Select)
     {
         // Set variable to come back to menu after selection
-        g_bFromCustomTitleMenu[client] = true;
+        g_bFromCustomTitleListMenu[client] = true;
 
         // Set title index to selected item and update db entry
         g_iCustomTitleIndex[client] = item;
