@@ -4717,7 +4717,7 @@ public void GiveTitle(int client, int targetClient, const char[] title) {
 
     // Update the db with the new title
     char titleString[MAX_TITLE_STRING_LENGTH];
-    TitlesToString(client, titleString, sizeof(titleString));
+    TitlesToString(targetClient, titleString, sizeof(titleString));
     db_updateTitle(targetClient, titleString);
 
     CPrintToChatAll("%s was granted the title: %s", targetClientName, title);
