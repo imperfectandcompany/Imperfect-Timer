@@ -4716,10 +4716,18 @@ public void GiveTitle(int client, int targetClient, const char[] title) {
         return;
     }
 
+    // Make a backup of the title
+    char colorlessTitle[MAX_TITLE_LENGTH];
+    strcopy(colorlessTitle, sizeof(colorlessTitle), title);
+
+    // Remove colors and trim the title
+    parseColorsFromString(colorlessTitle, sizeof(colorlessTitle));
+    TrimString(colorlessTitle);
+
     // Make sure the targetClient doesn't already have the title
     for (int i = 0; i < titleCount; i++)
     {
-        if (StrEqual(g_szCustomTitleColoured[targetClient][i], title))
+        if (StrEqual(g_szCustomTitle[targetClient][i], colorlessTitle))
         {
             CReplyToCommand(client, "That user already has that title.");
             return;
@@ -4747,40 +4755,27 @@ public Action Command_RemoveTitle(int client, int args) {
     // Verify correct command syntax
     if (args < 2)
     {
-        CReplyToCommand(client, "Usage: /removetitle <username> <title> <ignoreColors>=[T/(F)]");
+        CReplyToCommand(client, "Usage: /removetitle <username> <title>");
         return Plugin_Handled;
     }
 
     // Initialize strings to store command arguments
     char username[MAX_NAME_LENGTH];
     char title[MAX_TITLE_LENGTH];
-    bool ignoreColors = false;
 
     // Save command arguments
     GetCmdArg(1, username, sizeof(username));
     GetCmdArg(2, title, sizeof(title));
 
-    // User specified ignoreColors option
-    if (args == 3)
-    {
-        // Get the value specified by the user
-        char ignoreColorsString[2];
-        GetCmdArg(3, ignoreColorsString, sizeof(ignoreColorsString));
-        CPrintToChatAll("IgnoreColorsString: %s", ignoreColorsString);
-
-        // Check if the first letter is a t for true
-        ignoreColors = StrEqual(ignoreColorsString, "T", false);
-    }
-
     // Try to find the intended client
     int targetClient = FindTarget(client, username, true, false);
 
     // Try to remove the title from the targetClient
-    RemoveTitle(client, targetClient, title, ignoreColors);
+    RemoveTitle(client, targetClient, title);
     return Plugin_Handled;
 }
 
-public void RemoveTitle(int client, int targetClient, const char[] title, bool ignoreColors) {
+public void RemoveTitle(int client, int targetClient, const char[] title) {
     // Return if the targetClient is invalid
     if (!IsValidClient(targetClient))
     {
@@ -4808,17 +4803,8 @@ public void RemoveTitle(int client, int targetClient, const char[] title, bool i
         // Intitialize a variable to store the current title being checked
         char currentTitle[MAX_TITLE_LENGTH];
 
-
-        if (ignoreColors)
-        {
-            // Search for the colorless title if specified
-            strcopy(currentTitle, sizeof(currentTitle), g_szCustomTitle[targetClient][i]);
-        }
-        else
-        {
-            // Search for the colored title otherwise
-            strcopy(currentTitle, sizeof(currentTitle), g_szCustomTitleColoured[targetClient][i]);
-        }
+        // Search for the colorless title if specified
+        strcopy(currentTitle, sizeof(currentTitle), g_szCustomTitle[targetClient][i]);
 
         // Check if we found the same title
         if (StrEqual(currentTitle, title))
