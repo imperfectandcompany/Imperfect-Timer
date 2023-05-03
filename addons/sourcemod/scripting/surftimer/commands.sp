@@ -734,6 +734,20 @@ public int CustomTitleListMenuHandler(Handle menu, MenuAction action, int client
         // Set variable to come back to menu after selection
         g_bFromCustomTitleListMenu[client] = true;
 
+        // Selected new title but not being used
+        if (!g_bDbCustomTitleInUse[client])
+        {
+            // Variable of previous title index
+            int lastIndex = g_iCustomTitleIndex[client];
+
+            // If the new selection doesn't equal the old selection
+            if (!StrEqual(g_szCustomTitleColoured[client][item], g_szCustomTitleColoured[client][lastIndex]))
+            {
+                // Let the user know they don't have their titles enabled
+                CPrintToChat(client, "Switched title to \"%s{default}\" while disabled.", g_szCustomTitleColoured[client][item]);
+            }
+        }
+
         // Set title index to selected item and update db entry
         g_iCustomTitleIndex[client] = item;
 
