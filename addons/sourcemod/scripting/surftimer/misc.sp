@@ -5560,8 +5560,15 @@ public void StringToTitles(int client, char[] titleString)
         // If it's not an integer, log a warning and set the title index to 0
         if (!IsCharNumeric(titleIndex[i]))
         {
+            // Log a warning
             LogWarning("The user \"%s - %s\" has a non numeric title index. Setting to 0.", clientSteamID, clientName);
+
+            // Assume first item is actually a title if not a number and save it
+            strcopy(titleBuffer[0], sizeof(titleBuffer[]), titleIndex);
+
+            // Update index to zero
             strcopy(titleIndex, sizeof(titleIndex), "0");
+
             break;
         }
     }
