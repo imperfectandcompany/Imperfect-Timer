@@ -5516,16 +5516,16 @@ public void StringToTitles(int client, char[] titleString)
     char titleBuffer[MAX_TITLES][MAX_TITLE_LENGTH];
 
     // If a comma is found, it's the new format
-    if (StrContains(titleString, ",") != -1)
+    if (StrContains(titleString, "`") != -1)
     {
         // Save the first entry as the titleIndex
-        int prevIndex = SplitString(titleString, ",", titleIndex, sizeof(titleIndex));
+        int prevIndex = SplitString(titleString, "`", titleIndex, sizeof(titleIndex));
 
         // Start finding titles
         for (int i = 0; i < MAX_TITLES; i++)
         {
             // Start searching through the array
-            int currIndex = SplitString(titleString[prevIndex], ",", titleBuffer[i], sizeof(titleBuffer[]));
+            int currIndex = SplitString(titleString[prevIndex], "`", titleBuffer[i], sizeof(titleBuffer[]));
 
             // Save the final string if no more commas are left
             if (currIndex == -1)
@@ -5648,7 +5648,7 @@ public void TitlesToString(int client, char[] titleString, int titleStringLength
     // Now we need to add the titles
     for (int i = 0; i < titleCount; i++)
     {
-        StrCat(titleString, titleStringLength, ",");
+        StrCat(titleString, titleStringLength, "`");
         StrCat(titleString, titleStringLength, g_szCustomTitleColoured[client][i]);
     }
 }
