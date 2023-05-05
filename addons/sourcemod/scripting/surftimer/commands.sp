@@ -4716,18 +4716,24 @@ public void GiveTitle(int client, int targetClient, const char[] title) {
         return;
     }
 
-    // Make a backup of the title
+    // Make a colorless lowercase version of the title
     char colorlessTitle[MAX_TITLE_LENGTH];
     strcopy(colorlessTitle, sizeof(colorlessTitle), title);
-
-    // Remove colors and trim the title
     parseColorsFromString(colorlessTitle, sizeof(colorlessTitle));
+    String_ToLower(colorlessTitle, colorlessTitle, sizeof(colorlessTitle));
     TrimString(colorlessTitle);
 
     // Make sure the targetClient doesn't already have the title
     for (int i = 0; i < titleCount; i++)
     {
-        if (StrEqual(g_szCustomTitle[targetClient][i], colorlessTitle))
+        // Make a colorless lowercase version of the title
+        char currentColorlessTitle[MAX_TITLE_LENGTH];
+        strcopy(currentColorlessTitle, sizeof(currentColorlessTitle), g_szCustomTitle[targetClient][i]);
+        parseColorsFromString(currentColorlessTitle, sizeof(currentColorlessTitle));
+        String_ToLower(currentColorlessTitle, currentColorlessTitle, sizeof(currentColorlessTitle));
+        TrimString(currentColorlessTitle);
+
+        if (StrEqual(currentColorlessTitle, colorlessTitle))
         {
             CReplyToCommand(client, "That user already has that title.");
             return;
