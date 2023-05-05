@@ -4690,11 +4690,11 @@ public Action Command_GiveTitle(int client, int args)
     int targetClient = FindTarget(client, username, true, false);
 
     // Try to give the title to the targetClient
-    GiveTitle(client, targetClient, title);
+    GiveTitle(client, targetClient, title, sizeof(title));
     return Plugin_Handled;
 }
 
-public void GiveTitle(int client, int targetClient, const char[] title) {
+public void GiveTitle(int client, int targetClient, char[] title, int titleLength) {
     // Return if the targetClient is invalid
     if (!IsValidClient(targetClient))
     {
@@ -4738,6 +4738,39 @@ public void GiveTitle(int client, int targetClient, const char[] title) {
             CReplyToCommand(client, "That user already has that title.");
             return;
         }
+    }
+
+    // Format title if special title
+    if (StrEqual(colorlessTitle, "rapper"))
+    {
+        strcopy(title, titleLength, "{yellow}RAPPER");
+    }
+    else if (StrEqual(colorlessTitle, "beatboxer"))
+    {
+        strcopy(title, titleLength, "{yellow}BEATBOXER");
+    }
+    else if (StrEqual(colorlessTitle, "dj"))
+    {
+        strcopy(title, titleLength, "{yellow}DJ");
+    }
+    else if (StrEqual(colorlessTitle, "staff"))
+    {
+        if (CheckCommandAccess(targetClient, "", ADMFLAG_CUSTOM6))
+        {
+            strcopy(title, titleLength, "{red}STAFF");
+        }
+        else
+        {
+            strcopy(title, titleLength, "{yellow}STAFF");
+        }
+    }
+    else if (StrEqual(colorlessTitle, "vip"))
+    {
+        strcopy(title, titleLength, "{green}VIP");
+    }
+    else if (StrEqual(colorlessTitle, "surfer"))
+    {
+        strcopy(title, titleLength, "{orchid}SURFER");
     }
 
     // Add the new title to targetClient's title list
