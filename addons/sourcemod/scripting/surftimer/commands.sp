@@ -4741,6 +4741,10 @@ public void GiveTitle(int client, int targetClient, char[] title, int titleLengt
     {
         strcopy(title, titleLength, "{yellow}BEATBOXER");
     }
+    else if (StrEqual(colorlessTitle, "singer", false))
+    {
+        strcopy(title, titleLength, "{yellow}SINGER");
+    }
     else if (StrEqual(colorlessTitle, "dj", false))
     {
         strcopy(title, titleLength, "{yellow}DJ");
