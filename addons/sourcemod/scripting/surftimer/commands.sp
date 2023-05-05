@@ -4716,44 +4716,36 @@ public void GiveTitle(int client, int targetClient, char[] title, int titleLengt
         return;
     }
 
-    // Make a colorless lowercase version of the title
+    // Save a colorless version of the title
     char colorlessTitle[MAX_TITLE_LENGTH];
     strcopy(colorlessTitle, sizeof(colorlessTitle), title);
     parseColorsFromString(colorlessTitle, sizeof(colorlessTitle));
-    String_ToLower(colorlessTitle, colorlessTitle, sizeof(colorlessTitle));
     TrimString(colorlessTitle);
 
     // Make sure the targetClient doesn't already have the title
     for (int i = 0; i < titleCount; i++)
     {
-        // Make a colorless lowercase version of the title
-        char currentColorlessTitle[MAX_TITLE_LENGTH];
-        strcopy(currentColorlessTitle, sizeof(currentColorlessTitle), g_szCustomTitle[targetClient][i]);
-        parseColorsFromString(currentColorlessTitle, sizeof(currentColorlessTitle));
-        String_ToLower(currentColorlessTitle, currentColorlessTitle, sizeof(currentColorlessTitle));
-        TrimString(currentColorlessTitle);
-
-        if (StrEqual(currentColorlessTitle, colorlessTitle))
+        if (StrEqual(g_szCustomTitle[targetClient][i], colorlessTitle, false))
         {
             CReplyToCommand(client, "That user already has that title.");
             return;
         }
     }
 
-    // Format title if special title
-    if (StrEqual(colorlessTitle, "rapper"))
+    // Format the title if it's a special title
+    if (StrEqual(colorlessTitle, "rapper", false))
     {
         strcopy(title, titleLength, "{yellow}RAPPER");
     }
-    else if (StrEqual(colorlessTitle, "beatboxer"))
+    else if (StrEqual(colorlessTitle, "beatboxer", false))
     {
         strcopy(title, titleLength, "{yellow}BEATBOXER");
     }
-    else if (StrEqual(colorlessTitle, "dj"))
+    else if (StrEqual(colorlessTitle, "dj", false))
     {
         strcopy(title, titleLength, "{yellow}DJ");
     }
-    else if (StrEqual(colorlessTitle, "staff"))
+    else if (StrEqual(colorlessTitle, "staff", false))
     {
         if (CheckCommandAccess(targetClient, "", ADMFLAG_CUSTOM6))
         {
@@ -4764,11 +4756,11 @@ public void GiveTitle(int client, int targetClient, char[] title, int titleLengt
             strcopy(title, titleLength, "{yellow}STAFF");
         }
     }
-    else if (StrEqual(colorlessTitle, "vip"))
+    else if (StrEqual(colorlessTitle, "vip", false))
     {
         strcopy(title, titleLength, "{green}VIP");
     }
-    else if (StrEqual(colorlessTitle, "surfer"))
+    else if (StrEqual(colorlessTitle, "surfer", false))
     {
         strcopy(title, titleLength, "{orchid}SURFER");
     }
