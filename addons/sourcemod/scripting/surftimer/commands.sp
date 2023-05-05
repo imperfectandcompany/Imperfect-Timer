@@ -585,8 +585,8 @@ public void CustomTitleMenu(int client)
 
     // Display the current title state
     char menuTitleEnabled[256];
-    Format(menuTitleEnabled, sizeof(menuTitleEnabled), "Enable Title: %s", g_bDbCustomTitleInUse[client] ? "True" : "False");
-    AddMenuItem(menu, "Enable Title", menuTitleEnabled);
+    Format(menuTitleEnabled, sizeof(menuTitleEnabled), "Title Enabled: %s", g_bDbCustomTitleInUse[client] ? "True" : "False");
+    AddMenuItem(menu, "Title Enabled", menuTitleEnabled);
 
     // Save the selected title index
     int titleIndex = g_iCustomTitleIndex[client];
