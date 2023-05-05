@@ -679,6 +679,7 @@ public void parseColorsFromString(char[] ParseString, int size)
 	ReplaceString(ParseString, size, "{limegreen}", "", false);
 	ReplaceString(ParseString, size, "{orange}", "", false);
 	ReplaceString(ParseString, size, "{olive}", "", false);
+    ReplaceString(ParseString, size, "{orchid}", "", false);
 }
 
 public void checkSpawnPoints()
