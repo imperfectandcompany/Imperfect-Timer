@@ -4828,19 +4828,23 @@ public void RemoveTitle(int client, int targetClient, const char[] title) {
         return;
     }
 
+    // Save a colorless version of the title
+    char colorlessTitle[MAX_TITLE_LENGTH];
+    strcopy(colorlessTitle, sizeof(colorlessTitle), title);
+    parseColorsFromString(colorlessTitle, sizeof(colorlessTitle));
+    TrimString(colorlessTitle);
+
     // Try to find the title
     for (int i = 0; i < titleCount; i++)
     {
-        // Intitialize a variable to store the current title being checked
-        char currentTitle[MAX_TITLE_LENGTH];
-
-        // Search for the colorless title if specified
-        strcopy(currentTitle, sizeof(currentTitle), g_szCustomTitle[targetClient][i]);
-
         // Check if we found the same title
-        if (StrEqual(currentTitle, title))
+        if (StrEqual(colorlessTitle, g_szCustomTitle[targetClient][i], false))
         {
-            // Remove the currentTitle by shifting all remaining titles
+            // Intitialize a variable to store the current title being stripped
+            char strippedTitle[MAX_TITLE_LENGTH];
+            strcopy(strippedTitle, sizeof(strippedTitle), g_szCustomTitleColoured[targetClient][i]);
+
+            // Remove the strippedTitle by shifting all remaining titles
             for (int j = i; j < titleCount; j++)
             {
                 // Replace the current title with the following title
@@ -4852,7 +4856,7 @@ public void RemoveTitle(int client, int targetClient, const char[] title) {
             TitlesToString(targetClient, titleString, sizeof(titleString));
             db_updateTitle(targetClient, titleString);
 
-            CPrintToChatAll("%s was stripped of the title: %s", targetClientName, currentTitle);
+            CPrintToChatAll("%s was stripped of the title: %s", targetClientName, strippedTitle);
             return;
         }
     }
