@@ -5557,16 +5557,31 @@ public void StringToTitles(int client, char[] titleString)
     // Check each character in the first entry to make sure it's an integer
     for (int i = 0; i < strlen(titleIndex); i++)
     {
-        // If it's not an integer, log a warning and set the title index to 0
+        // If it's not an integer, it must be a title
         if (!IsCharNumeric(titleIndex[i]))
         {
-            // Log a warning
+            // Log a warning that the first item wasn't an index
             LogWarning("The user \"%s - %s\" has a non numeric title index. Setting to 0.", clientSteamID, clientName);
 
-            // Assume first item is actually a title if not a number and save it
+            // Shift all titles to the right to make room for the title thought to be an index
+            for (int j = titleCount; j > 0; j--)
+            {
+                // If they have 32 titles, remove the final title to make room
+                if (j == MAX_TITLES)
+                {
+                    // Log a warning
+                    LogWarning("Removing the title \"%s\" since there is no more room.", titleBuffer[j - 1])
+                    continue;
+                }
+
+                // Replace the following title with the current title
+                strcopy(titleBuffer[j], sizeof(titleBuffer[]), titleBuffer[j - 1]);
+            }
+
+            // Save the title mistaken for an index to the first slot
             strcopy(titleBuffer[0], sizeof(titleBuffer[]), titleIndex);
 
-            // Update index to zero
+            // Set the index to zero
             strcopy(titleIndex, sizeof(titleIndex), "0");
 
             break;
