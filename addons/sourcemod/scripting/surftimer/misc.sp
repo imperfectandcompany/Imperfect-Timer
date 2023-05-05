@@ -658,27 +658,27 @@ public void setColor(char[] buffer, int size, int colorIndex)
 
 public void parseColorsFromString(char[] ParseString, int size)
 {
-	ReplaceString(ParseString, size, "{default}", "", false);
-	ReplaceString(ParseString, size, "{white}", "", false);
-	ReplaceString(ParseString, size, "{darkred}", "", false);
-	ReplaceString(ParseString, size, "{green}", "", false);
-	ReplaceString(ParseString, size, "{lime}", "", false);
-	ReplaceString(ParseString, size, "{blue}", "", false);
-	ReplaceString(ParseString, size, "{lightgreen}", "", false);
-	ReplaceString(ParseString, size, "{red}", "", false);
-	ReplaceString(ParseString, size, "{grey}", "", false);
-	ReplaceString(ParseString, size, "{gray}", "", false);
-	ReplaceString(ParseString, size, "{yellow}", "", false);
-	ReplaceString(ParseString, size, "{lightblue}", "", false);
-	ReplaceString(ParseString, size, "{darkblue}", "", false);
-	ReplaceString(ParseString, size, "{pink}", "", false);
-	ReplaceString(ParseString, size, "{lightred}", "", false);
-	ReplaceString(ParseString, size, "{purple}", "", false);
-	ReplaceString(ParseString, size, "{darkgrey}", "", false);
-	ReplaceString(ParseString, size, "{darkgray}", "", false);
-	ReplaceString(ParseString, size, "{limegreen}", "", false);
-	ReplaceString(ParseString, size, "{orange}", "", false);
-	ReplaceString(ParseString, size, "{olive}", "", false);
+    ReplaceString(ParseString, size, "{default}", "", false);
+    ReplaceString(ParseString, size, "{white}", "", false);
+    ReplaceString(ParseString, size, "{darkred}", "", false);
+    ReplaceString(ParseString, size, "{green}", "", false);
+    ReplaceString(ParseString, size, "{lime}", "", false);
+    ReplaceString(ParseString, size, "{blue}", "", false);
+    ReplaceString(ParseString, size, "{lightgreen}", "", false);
+    ReplaceString(ParseString, size, "{red}", "", false);
+    ReplaceString(ParseString, size, "{grey}", "", false);
+    ReplaceString(ParseString, size, "{gray}", "", false);
+    ReplaceString(ParseString, size, "{yellow}", "", false);
+    ReplaceString(ParseString, size, "{lightblue}", "", false);
+    ReplaceString(ParseString, size, "{darkblue}", "", false);
+    ReplaceString(ParseString, size, "{pink}", "", false);
+    ReplaceString(ParseString, size, "{lightred}", "", false);
+    ReplaceString(ParseString, size, "{purple}", "", false);
+    ReplaceString(ParseString, size, "{darkgrey}", "", false);
+    ReplaceString(ParseString, size, "{darkgray}", "", false);
+    ReplaceString(ParseString, size, "{limegreen}", "", false);
+    ReplaceString(ParseString, size, "{orange}", "", false);
+    ReplaceString(ParseString, size, "{olive}", "", false);
     ReplaceString(ParseString, size, "{orchid}", "", false);
 }
 
