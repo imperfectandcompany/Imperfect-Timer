@@ -442,35 +442,20 @@ public void OnClientPutInServer(int client)
 	{
 		return;
 	}
-	
-	// SDKHooks
-	if (g_bClientHooksCalled[client] == false)
-	{
-		SDKHook(client, SDKHook_SetTransmit, Hook_SetTransmit);
-		SDKHook(client, SDKHook_PostThinkPost, Hook_PostThinkPost);
-		SDKHook(client, SDKHook_OnTakeDamage, Hook_OnTakeDamage);
-		SDKHook(client, SDKHook_PreThink, OnPlayerThink);
-		g_bClientHooksCalled[client] = true;
-	}
-
-	// Get SteamID
-	if (!GetClientAuthId(client, AuthId_Steam2, g_szSteamID[client], sizeof(g_szSteamID[]), true))
-	{
-		RequestFrame(OnClientPutInServer, client);
-		return;
-	}
-
-	// Check if steamid has the value of "STEAM_ID_STOP_IGNORING_RETVALS"
-	// Reported here: https://github.com/surftimer/SurfTimer/issues/549
-	if (g_szSteamID[client][6] == 'I' && g_szSteamID[client][7] == 'D')
-	{
-		RequestFrame(OnClientPutInServer, client);
-		return;
-	}
 
 	// Defaults
 	SetClientDefaults(client);
 	Command_Restart(client, 1);
+
+	// SDKHooks
+	SDKHook(client, SDKHook_SetTransmit, Hook_SetTransmit);
+	SDKHook(client, SDKHook_PostThinkPost, Hook_PostThinkPost);
+	SDKHook(client, SDKHook_OnTakeDamage, Hook_OnTakeDamage);
+	SDKHook(client, SDKHook_PreThink, OnPlayerThink);
+	SDKHook(client, SDKHook_PreThinkPost, OnPlayerThink);
+	SDKHook(client, SDKHook_Think, OnPlayerThink);
+	SDKHook(client, SDKHook_PostThink, OnPlayerThink);
+	SDKHook(client, SDKHook_PostThinkPost, OnPlayerThink);
 
 	if (!IsFakeClient(client))
 	{
@@ -499,6 +484,9 @@ public void OnClientPutInServer(int client)
 
 	if (LibraryExists("dhooks"))
 		DHookEntity(g_hTeleport, false, client);
+
+	// Get SteamID
+	GetClientAuthId(client, AuthId_Steam2, g_szSteamID[client], MAX_NAME_LENGTH, true);
 
 	// char fix
 	FixPlayerName(client);
