@@ -97,6 +97,11 @@
 // Maximum size of hints
 #define MAX_HINT_MESSAGES_SIZE 256
 
+// Custom Titles
+#define MAX_TITLES 32
+#define MAX_TITLE_LENGTH 128
+#define MAX_TITLE_STRING_LENGTH 4256
+
 /*====================================
 =            Enumerations            =
 ====================================*/
@@ -420,8 +425,9 @@ char g_szCustomJoinMsg[MAXPLAYERS + 1][256];
 // char g_szCustomSounds[MAXPLAYERS + 1][3][256];
 
 /*----------  Custom Titles  ----------*/
-char g_szCustomTitleColoured[MAXPLAYERS + 1][1024];
-char g_szCustomTitle[MAXPLAYERS + 1][1024];
+int g_iCustomTitleIndex[MAXPLAYERS + 1];
+char g_szCustomTitleColoured[MAXPLAYERS + 1][MAX_TITLES][MAX_TITLE_LENGTH];
+char g_szCustomTitle[MAXPLAYERS + 1][MAX_TITLES][MAX_TITLE_LENGTH];
 bool g_bDbCustomTitleInUse[MAXPLAYERS + 1] = {false, ...};
 bool g_bdbHasCustomTitle[MAXPLAYERS + 1] = {false, ...};
 
@@ -451,6 +457,7 @@ char g_szColors[16][32] = {
 // bool g_bHasCustomTextColour[MAXPLAYERS + 1] = {false, ...};
 bool g_bCustomTitleAccess[MAXPLAYERS + 1] = {false, ...};
 bool g_bFromCustomTitleMenu[MAXPLAYERS + 1];
+bool g_bFromCustomTitleListMenu[MAXPLAYERS + 1];
 // char g_szsText[MAXPLAYERS + 1];
 
 // to be used with sm_p, stage sr
@@ -1485,52 +1492,52 @@ Handle HUD_Handle;
 =         Predefined Arrays         =
 ===================================*/
 
-char UnallowedTitles[][] =
-{
-	"NEWBIE",
-	"LEARNING",
-	"NOVICE",
-	"BEGINNER",
-	"ROOKIE",
-	"AVERAGE",
-	"CASUAL",
-	"ADVANCED",
-	"SKILLED",
-	"EXCEPTIONAL",
-	"AMAZING",
-	"PRO",
-	"VETERAN",
-	"EXPERT",
-	"ELITE",
-	"MASTER",
-	"LEGENDARY",
-	"GODLY",
-	"KING",
-	"ADMIN",
-	"ADMLN",
-	"HEAD ADMIN",
-	"HEADADMIN",
-	"MODERATOR",
-	"M0DERATOR",
-	"M0DERAT0R",
-	"MODERAT0R",
-	"OWNER",
-	"0WNER",
-	"ZTS",
-	"MOD",
-	"M0D",
-	"CKSURF",
-	"STAFF",
-	"BIGDICKCLUB",
-	"BIG DICK CLUB",
-	"BIGDICK CLUB",
-	"BIG DICKCLUB",
-	"B DC",
-	"BD C",
-	"B D C",
-	"VIP",
-	"SUPER VIP"
-};
+// char UnallowedTitles[][] =
+// {
+// 	"NEWBIE",
+// 	"LEARNING",
+// 	"NOVICE",
+// 	"BEGINNER",
+// 	"ROOKIE",
+// 	"AVERAGE",
+// 	"CASUAL",
+// 	"ADVANCED",
+// 	"SKILLED",
+// 	"EXCEPTIONAL",
+// 	"AMAZING",
+// 	"PRO",
+// 	"VETERAN",
+// 	"EXPERT",
+// 	"ELITE",
+// 	"MASTER",
+// 	"LEGENDARY",
+// 	"GODLY",
+// 	"KING",
+// 	"ADMIN",
+// 	"ADMLN",
+// 	"HEAD ADMIN",
+// 	"HEADADMIN",
+// 	"MODERATOR",
+// 	"M0DERATOR",
+// 	"M0DERAT0R",
+// 	"MODERAT0R",
+// 	"OWNER",
+// 	"0WNER",
+// 	"ZTS",
+// 	"MOD",
+// 	"M0D",
+// 	"CKSURF",
+// 	"STAFF",
+// 	"BIGDICKCLUB",
+// 	"BIG DICK CLUB",
+// 	"BIGDICK CLUB",
+// 	"BIG DICKCLUB",
+// 	"B DC",
+// 	"BD C",
+// 	"B D C",
+// 	"VIP",
+// 	"SUPER VIP"
+// };
 
 char g_szStyleRecordPrint[][] =
 {

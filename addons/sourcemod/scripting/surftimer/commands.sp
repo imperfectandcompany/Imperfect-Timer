@@ -567,6 +567,10 @@ public void CustomTitleMenu(int client)
         return;
     }
 
+    // Reset global variable state
+    g_bFromCustomTitleMenu[client] = false;
+    g_bFromCustomTitleListMenu[client] = false;
+
     // Create the menu object
     Menu menu = CreateMenu(CustomTitleMenuHandler);
 
@@ -576,17 +580,20 @@ public void CustomTitleMenu(int client)
 
     // Create the menu title text
     char menuTitle[256];
-    Format(menuTitle, 256, "Custom Titles Menu");
+    Format(menuTitle, sizeof(menuTitle), "Custom Titles Menu");
     SetMenuTitle(menu, menuTitle);
 
     // Display the current title state
     char menuTitleEnabled[256];
-    Format(menuTitleEnabled, 256, "Enable Title: %s", g_bDbCustomTitleInUse[client] ? "True" : "False");
-    AddMenuItem(menu, "Enable Title", menuTitleEnabled);
+    Format(menuTitleEnabled, sizeof(menuTitleEnabled), "Title Enabled: %s", g_bDbCustomTitleInUse[client] ? "True" : "False");
+    AddMenuItem(menu, "Title Enabled", menuTitleEnabled);
+
+    // Save the selected title index
+    int titleIndex = g_iCustomTitleIndex[client];
 
     // Display the current title of the user
     char menuCurrentTitle[256];
-    Format(menuCurrentTitle, 256, "Current Title: %s", g_szCustomTitle[client]);
+    Format(menuCurrentTitle, sizeof(menuCurrentTitle), "Current Title: %s", g_szCustomTitle[client][titleIndex]);
     AddMenuItem(menu, "Current Title", menuCurrentTitle);
 
     // Only display colors if the user is a VIP
@@ -607,11 +614,11 @@ public void CustomTitleMenu(int client)
         getColorName(textColorName, sizeof(textColorName), textColorIndex);
 
         char menuTextColor[128];
-        Format(menuTextColor, 128, "Text Color: %s", textColorName);
+        Format(menuTextColor, sizeof(menuTextColor), "Text Color: %s", textColorName);
         AddMenuItem(menu, "Text Color", menuTextColor);
     }
 
-    SetMenuOptionFlags(menu, MENUFLAG_BUTTON_EXIT);
+    SetMenuExitButton(menu, true);
     DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
 
@@ -627,11 +634,10 @@ public int CustomTitleMenuHandler(Handle menu, MenuAction action, int client, in
         return 0;
     }
 
-    g_bFromCustomTitleMenu[client] = false;
-
     // If the client selected an option, process it
     if (action == MenuAction_Select)
     {
+        // Set variable to come back to menu after selection
         g_bFromCustomTitleMenu[client] = true;
 
         switch (item)
@@ -642,13 +648,118 @@ public int CustomTitleMenuHandler(Handle menu, MenuAction action, int client, in
             }
             case 1:
             {
-                db_viewCustomTitles(client);
+                CustomTitleListMenu(client);
             }
             case 2, 3:
             {
                 db_viewPlayerColours(client, g_szSteamID[client], item - 2);
             }
         }
+    }
+    else if (action == MenuAction_End)
+    {
+        // Delete the menu object if the exit item is selected
+        delete menu;
+    }
+
+    return 0;
+}
+
+/**
+ * Creates the CustomTitleList Menu for the user.
+ */
+public void CustomTitleListMenu(int client)
+{
+    // Make sure the client is valid
+    if (!IsValidClient(client))
+    {
+        return;
+    }
+
+    // Reset global variable state
+    g_bFromCustomTitleListMenu[client] = false;
+
+    // Create the menu object
+    Menu menu = CreateMenu(CustomTitleListMenuHandler);
+
+    // Get the clients name
+    char clientName[64];
+    GetClientName(client, clientName, 64);
+
+    // Create the menu title text
+    char menuTitle[256];
+    Format(menuTitle, sizeof(menuTitle), "List of Custom Titles");
+    SetMenuTitle(menu, menuTitle);
+
+    // Populate with a list of custom titles
+    for (int i = 0; i < MAX_TITLES; i++)
+    {
+        // If an empty title is found, assume no more titles follow
+        if (StrEqual(g_szCustomTitle[client][i], ""))
+        {
+            if (i == 0)
+            {
+                // Add info about missing titles
+                AddMenuItem(menu, "Invalid Title", "No Custom Titles");
+            }
+
+            break;
+        }
+
+        // Add the custom title to the list
+        AddMenuItem(menu, "Custom Title", g_szCustomTitle[client][i])
+    }
+
+    // Add a way to exit the menu and have no time limit
+    SetMenuExitButton(menu, true);
+    SetMenuExitBackButton(menu, true);
+    DisplayMenu(menu, client, MENU_TIME_FOREVER);
+}
+
+/**
+ * The handle for the CustomTitleList Menu.
+ */
+public int CustomTitleListMenuHandler(Handle menu, MenuAction action, int client, int item)
+{
+    // Make sure the client is valid
+    if (!IsValidClient(client))
+    {
+        delete menu;
+        return 0;
+    }
+
+    // If the client selected an option, process it
+    if (action == MenuAction_Select)
+    {
+        // Set variable to come back to menu after selection
+        g_bFromCustomTitleListMenu[client] = true;
+
+        // Selected new title but not being used
+        if (!g_bDbCustomTitleInUse[client])
+        {
+            // Variable of previous title index
+            int lastIndex = g_iCustomTitleIndex[client];
+
+            // If the new selection doesn't equal the old selection
+            if (!StrEqual(g_szCustomTitleColoured[client][item], g_szCustomTitleColoured[client][lastIndex]))
+            {
+                // Let the user know they don't have their titles enabled
+                CPrintToChat(client, "Switched title to \"%s{default}\" while disabled.", g_szCustomTitleColoured[client][item]);
+            }
+        }
+
+        // Set title index to selected item and update db entry
+        g_iCustomTitleIndex[client] = item;
+
+        // Update titles on db with new globals (index)
+        char titleString[MAX_TITLE_STRING_LENGTH];
+        TitlesToString(client, titleString, sizeof(titleString));
+        db_updateTitle(client, titleString);
+    }
+    else if (action == MenuAction_Cancel)
+    {
+        // Go back to the previous menu
+		CustomTitleMenu(client);
     }
     else if (action == MenuAction_End)
     {
@@ -4552,61 +4663,210 @@ public Action Command_PlayerTitle(int client, int args)
     return Plugin_Handled;
 }
 
-public Action Command_SetDbTitle(int client, int args)
+public Action Command_GiveTitle(int client, int args)
 {
-	if (!IsValidClient(client) || !IsPlayerVip(client, _, true))
-		return Plugin_Handled;
+    // Make sure the client is valid
+    if (!IsValidClient(client))
+    {
+        return Plugin_Handled;
+    }
 
-	char arg[256];
+    // Verify correct command syntax
+    if (args < 2)
+    {
+        CReplyToCommand(client, "Usage: /givetitle <username> <title>");
+        return Plugin_Handled;
+    }
 
-	if (args == 0)
-	{
-		if (g_bdbHasCustomTitle[client])
-		{
-			db_toggleCustomPlayerTitle(client);
-		}
-		else
-		{
-			CPrintToChat(client, "%t", "Commands40", g_szChatPrefix);
-		}
-	}
-	else
-	{
-		GetCmdArg(1, arg, 256);
-		char upperArg[256];
-		char noColoursArg[256];
-		upperArg = arg;
-		StringToUpper(upperArg);
-		noColoursArg = upperArg;
-		parseColorsFromString(noColoursArg, 256);
+    // Initialize strings to store command arguments
+    char username[MAX_NAME_LENGTH];
+    char title[MAX_TITLE_LENGTH];
 
-		if (strlen(noColoursArg) > 20)
-		{
-			CPrintToChat(client, "%t", "Commands41", g_szChatPrefix);
+    // Save command arguments
+    GetCmdArg(1, username, sizeof(username));
+    GetCmdArg(2, title, sizeof(title));
 
-			return Plugin_Handled;
-		}
-		else if (StrContains(upperArg, "{RED}") != -1)
-			ReplaceString(arg, 256, "{red}", "{lightred}", false);
-		else if (StrContains(upperArg, "{LIMEGREEN}") != -1)
-			ReplaceString(arg, 256, "{limegreen}", "{lime}");
-		else if (StrContains(upperArg, "{WHITE}") != -1)
-			ReplaceString(arg, 256, "{white}", "{default}", false);
+    // Try to find the intended client
+    int targetClient = FindTarget(client, username, true, false);
 
-		// Check if arg is in unallowed titles array
-		for (int i = 0; i < sizeof(UnallowedTitles); i++)
-		{
-			if (StrContains(UnallowedTitles[i], upperArg)!=-1)
-			{
-				arg = "{red}DISALLOWED";
-				break;
-			}
-		}
+    // Try to give the title to the targetClient
+    GiveTitle(client, targetClient, title, sizeof(title));
+    return Plugin_Handled;
+}
 
-		db_checkCustomPlayerTitle(client, arg);
-	}
+public void GiveTitle(int client, int targetClient, char[] title, int titleLength) {
+    // Return if the targetClient is invalid
+    if (!IsValidClient(targetClient))
+    {
+        CReplyToCommand(client, "Invalid username.")
+        return;
+    }
 
-	return Plugin_Handled;
+    // Save the name of the targetClient
+    char targetClientName[MAX_NAME_LENGTH];
+    GetClientName(targetClient, targetClientName, sizeof(targetClientName));
+
+    // Get the number of titles the targetClient has
+    int titleCount = GetClientTitleCount(targetClient);
+
+    // Don't allow more titles than the max
+    if (titleCount == MAX_TITLES)
+    {
+        CReplyToCommand(client, "That user already has the maximum number of titles.");
+        return;
+    }
+
+    // Save a colorless version of the title
+    char colorlessTitle[MAX_TITLE_LENGTH];
+    strcopy(colorlessTitle, sizeof(colorlessTitle), title);
+    parseColorsFromString(colorlessTitle, sizeof(colorlessTitle));
+    TrimString(colorlessTitle);
+
+    // Make sure the targetClient doesn't already have the title
+    for (int i = 0; i < titleCount; i++)
+    {
+        if (StrEqual(g_szCustomTitle[targetClient][i], colorlessTitle, false))
+        {
+            CReplyToCommand(client, "That user already has that title.");
+            return;
+        }
+    }
+
+    // Format the title if it's a special title
+    if (StrEqual(colorlessTitle, "rapper", false))
+    {
+        strcopy(title, titleLength, "{yellow}RAPPER");
+    }
+    else if (StrEqual(colorlessTitle, "beatboxer", false))
+    {
+        strcopy(title, titleLength, "{yellow}BEATBOXER");
+    }
+    else if (StrEqual(colorlessTitle, "singer", false))
+    {
+        strcopy(title, titleLength, "{yellow}SINGER");
+    }
+    else if (StrEqual(colorlessTitle, "dj", false))
+    {
+        strcopy(title, titleLength, "{yellow}DJ");
+    }
+    else if (StrEqual(colorlessTitle, "staff", false))
+    {
+        if (CheckCommandAccess(targetClient, "", ADMFLAG_CUSTOM6))
+        {
+            strcopy(title, titleLength, "{red}STAFF");
+        }
+        else
+        {
+            strcopy(title, titleLength, "{yellow}STAFF");
+        }
+    }
+    else if (StrEqual(colorlessTitle, "vip", false))
+    {
+        strcopy(title, titleLength, "{green}VIP");
+    }
+    else if (StrEqual(colorlessTitle, "surfer", false))
+    {
+        strcopy(title, titleLength, "{orchid}SURFER");
+    }
+
+    // Add the new title to targetClient's title list
+    strcopy(g_szCustomTitleColoured[targetClient][titleCount], sizeof(g_szCustomTitleColoured[][]), title);
+
+    // Update the db with the new title
+    char titleString[MAX_TITLE_STRING_LENGTH];
+    TitlesToString(targetClient, titleString, sizeof(titleString));
+    db_updateTitle(targetClient, titleString);
+
+    CPrintToChatAll("%s was granted the title: %s", targetClientName, title);
+}
+
+public Action Command_RemoveTitle(int client, int args) {
+    // Make sure the client is valid
+    if (!IsValidClient(client))
+    {
+        return Plugin_Handled;
+    }
+
+    // Verify correct command syntax
+    if (args < 2)
+    {
+        CReplyToCommand(client, "Usage: /removetitle <username> <title>");
+        return Plugin_Handled;
+    }
+
+    // Initialize strings to store command arguments
+    char username[MAX_NAME_LENGTH];
+    char title[MAX_TITLE_LENGTH];
+
+    // Save command arguments
+    GetCmdArg(1, username, sizeof(username));
+    GetCmdArg(2, title, sizeof(title));
+
+    // Try to find the intended client
+    int targetClient = FindTarget(client, username, true, false);
+
+    // Try to remove the title from the targetClient
+    RemoveTitle(client, targetClient, title);
+    return Plugin_Handled;
+}
+
+public void RemoveTitle(int client, int targetClient, const char[] title) {
+    // Return if the targetClient is invalid
+    if (!IsValidClient(targetClient))
+    {
+        CReplyToCommand(client, "Invalid username.")
+        return;
+    }
+
+    // Save the name of the targetClient
+    char targetClientName[MAX_NAME_LENGTH];
+    GetClientName(targetClient, targetClientName, sizeof(targetClientName));
+
+    // Get the number of titles the targetClient has
+    int titleCount = GetClientTitleCount(targetClient);
+
+    // No need to remove anything if the targetClient has no titles
+    if (titleCount == 0)
+    {
+        CReplyToCommand(client, "That user has no custom titles.");
+        return;
+    }
+
+    // Save a colorless version of the title
+    char colorlessTitle[MAX_TITLE_LENGTH];
+    strcopy(colorlessTitle, sizeof(colorlessTitle), title);
+    parseColorsFromString(colorlessTitle, sizeof(colorlessTitle));
+    TrimString(colorlessTitle);
+
+    // Try to find the title
+    for (int i = 0; i < titleCount; i++)
+    {
+        // Check if we found the same title
+        if (StrEqual(colorlessTitle, g_szCustomTitle[targetClient][i], false))
+        {
+            // Intitialize a variable to store the current title being stripped
+            char strippedTitle[MAX_TITLE_LENGTH];
+            strcopy(strippedTitle, sizeof(strippedTitle), g_szCustomTitleColoured[targetClient][i]);
+
+            // Remove the strippedTitle by shifting all remaining titles
+            for (int j = i; j < titleCount; j++)
+            {
+                // Replace the current title with the following title
+                strcopy(g_szCustomTitleColoured[targetClient][j], sizeof(g_szCustomTitleColoured[][]), g_szCustomTitleColoured[targetClient][j + 1]);
+            }
+
+            // Update the db with the new titles
+            char titleString[MAX_TITLE_STRING_LENGTH];
+            TitlesToString(targetClient, titleString, sizeof(titleString));
+            db_updateTitle(targetClient, titleString);
+
+            CPrintToChatAll("%s was stripped of the title: %s", targetClientName, strippedTitle);
+            return;
+        }
+    }
+
+    // Could only be here if we didn't find the title
+    CReplyToCommand(client, "That user doesn't have that title.");
 }
 
 public Action Command_JoinMsg(int client, int args)

@@ -56,8 +56,6 @@
 #include "surftimer/mapsettings.sp"
 #include "surftimer/cvote.sp"
 #include "surftimer/vip.sp"
-// include the igtitle.sp
-#include "surftimer/igtitle.sp"
 
 /*====================================
 =               Events               =

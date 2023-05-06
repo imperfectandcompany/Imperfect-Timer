@@ -131,25 +131,25 @@ Zone types: 1 = Start zone,  >1 Stage zones.
 */
 public void teleportClient(int client, int zonegroup, int zone, bool stopTime)
 {
-	if (!IsValidClient(client))
-		return;
-	
-	// dpexx stop teleporting if in trigger_multiple
-	/* if (g_TeleInTriggerMultiple[client]){
-		PrintToChat(client, "Teleport blocked");
-		return;
-	} */
+    if (!IsValidClient(client))
+        return;
 
-	if (!IsValidZonegroup(zonegroup))
-	{
-		CPrintToChat(client, "%t", "Misc1", g_szChatPrefix);
-		return;
-	}
+    // dpexx stop teleporting if in trigger_multiple
+    /* if (g_TeleInTriggerMultiple[client]){
+        PrintToChat(client, "Teleport blocked");
+        return;
+    } */
 
-	// Set Defaults
+    if (!IsValidZonegroup(zonegroup))
+    {
+        CPrintToChat(client, "%t", "Misc1", g_szChatPrefix);
+        return;
+    }
 
-	// fluffys gravity
-	ResetGravity(client);
+    // Set Defaults
+
+    // fluffys gravity
+    ResetGravity(client);
 
     if (g_bPracticeMode[client])
     {
@@ -157,245 +157,245 @@ public void teleportClient(int client, int zonegroup, int zone, bool stopTime)
     }
 
     // Fix speed if not fast forward or slow mode
-	if (g_iInitalStyle[client] != 5 && g_iInitalStyle[client] != 6)
+    if (g_iInitalStyle[client] != 5 && g_iInitalStyle[client] != 6)
     {
-	 	SetEntPropFloat(client, Prop_Data, "m_flLaggedMovementValue", 1.0);
+        SetEntPropFloat(client, Prop_Data, "m_flLaggedMovementValue", 1.0);
     }
 
     g_bPracticeMode[client] = false;
-	g_bNotTeleporting[client] = false;
-	g_bInJump[client] = false;
-	g_bFirstJump[client] = false;
-	g_bLeftZone[client] = false;
-	g_bInBhop[client] = false;
-	g_iTicksOnGround[client] = 0;
-	g_bNewStage[client] = false;
+    g_bNotTeleporting[client] = false;
+    g_bInJump[client] = false;
+    g_bFirstJump[client] = false;
+    g_bLeftZone[client] = false;
+    g_bInBhop[client] = false;
+    g_iTicksOnGround[client] = 0;
+    g_bNewStage[client] = false;
 
-	// Check for spawn locations
-	int realZone;
-	if (zone < 0)
-		realZone = 0;
-	else
-		realZone = zone;
+    // Check for spawn locations
+    int realZone;
+    if (zone < 0)
+        realZone = 0;
+    else
+        realZone = zone;
 
-	if (realZone > 1)
-		g_bInStageZone[client] = true;
-	else if (realZone == 1)
-		g_bInStartZone[client] = true;
+    if (realZone > 1)
+        g_bInStageZone[client] = true;
+    else if (realZone == 1)
+        g_bInStartZone[client] = true;
 
-	// Check clients tele side
-	int teleside = g_iTeleSide[client];
+    // Check clients tele side
+    int teleside = g_iTeleSide[client];
 
-	int zoneID = getZoneID(zonegroup, zone);
+    int zoneID = getZoneID(zonegroup, zone);
 
-	// Check if requested zone teleport is valid (non-linear map)
-	if(zoneID == -1) {
-		CPrintToChat(client, "%T", "InvalidMapNoStages", client, g_szChatPrefix);
-		return;
-	}
+    // Check if requested zone teleport is valid (non-linear map)
+    if(zoneID == -1) {
+        CPrintToChat(client, "%T", "InvalidMapNoStages", client, g_szChatPrefix);
+        return;
+    }
 
-	if (g_bStartposUsed[client][zonegroup] && zone == 1)
-	{
-		if (GetClientTeam(client) == 1 || GetClientTeam(client) == 0) // Spectating
-		{
-			if (stopTime)
-				Client_Stop(client, 0);
+    if (g_bStartposUsed[client][zonegroup] && zone == 1)
+    {
+        if (GetClientTeam(client) == 1 || GetClientTeam(client) == 0) // Spectating
+        {
+            if (stopTime)
+                Client_Stop(client, 0);
 
-			Array_Copy(g_fStartposLocation[client][zonegroup], g_fTeleLocation[client], 3);
+            Array_Copy(g_fStartposLocation[client][zonegroup], g_fTeleLocation[client], 3);
 
-			g_specToStage[client] = true;
-			g_bRespawnPosition[client] = false;
+            g_specToStage[client] = true;
+            g_bRespawnPosition[client] = false;
 
-			TeamChangeActual(client, 0);
-			return;
-		}
-		else
-		{
-			// set client speed to 
-			RequestFrame(RequestFrame_StopVelocity, client);
+            TeamChangeActual(client, 0);
+            return;
+        }
+        else
+        {
+            // set client speed to 
+            RequestFrame(RequestFrame_StopVelocity, client);
 
-			// Hack fix for zoneid not being set with hooked zones
-			int zId = getZoneID(zonegroup, zone);
-			if (!StrEqual(g_mapZones[zId].HookName, "None"))
-				g_iTeleportingZoneId[client] = zId;
+            // Hack fix for zoneid not being set with hooked zones
+            int zId = getZoneID(zonegroup, zone);
+            if (!StrEqual(g_mapZones[zId].HookName, "None"))
+                g_iTeleportingZoneId[client] = zId;
 
-			teleportEntitySafe(client, g_fStartposLocation[client][zonegroup], g_fStartposAngle[client][zonegroup], view_as<float>( { 0.0, 0.0, 0.0 } ), stopTime);
-			
-			return;
-		}
-	}
-	else if (g_bGotSpawnLocation[zonegroup][realZone][teleside])
-	{
-		// Check if teleporting to bonus
-		if (zonegroup > 0)
-		{
-			// Set a bool to allow bonus zones to sit on top of start zones, e.g surf_aircontrol_ksf bonus 1
-			g_bInBonus[client] = true;
-			g_iInBonus[client] = zonegroup;
-		}
-		else
-		{
-			// Not teleporting to a bonus
-			g_bInBonus[client] = false;
-		}
+            teleportEntitySafe(client, g_fStartposLocation[client][zonegroup], g_fStartposAngle[client][zonegroup], view_as<float>( { 0.0, 0.0, 0.0 } ), stopTime);
+            
+            return;
+        }
+    }
+    else if (g_bGotSpawnLocation[zonegroup][realZone][teleside])
+    {
+        // Check if teleporting to bonus
+        if (zonegroup > 0)
+        {
+            // Set a bool to allow bonus zones to sit on top of start zones, e.g surf_aircontrol_ksf bonus 1
+            g_bInBonus[client] = true;
+            g_iInBonus[client] = zonegroup;
+        }
+        else
+        {
+            // Not teleporting to a bonus
+            g_bInBonus[client] = false;
+        }
 
-		if (GetClientTeam(client) == 1 || GetClientTeam(client) == 0) // Spectating
-		{
-			if (stopTime)
-				Client_Stop(client, 0);
+        if (GetClientTeam(client) == 1 || GetClientTeam(client) == 0) // Spectating
+        {
+            if (stopTime)
+                Client_Stop(client, 0);
 
-			Array_Copy(g_fSpawnLocation[zonegroup][realZone][teleside], g_fTeleLocation[client], 3);
+            Array_Copy(g_fSpawnLocation[zonegroup][realZone][teleside], g_fTeleLocation[client], 3);
 
-			g_specToStage[client] = true;
-			g_bRespawnPosition[client] = false;
+            g_specToStage[client] = true;
+            g_bRespawnPosition[client] = false;
 
-			TeamChangeActual(client, 0);
-			return;
-		}
-		else
-		{	
-			// set client speed to 0
-			RequestFrame(RequestFrame_StopVelocity, client);
+            TeamChangeActual(client, 0);
+            return;
+        }
+        else
+        {	
+            // set client speed to 0
+            RequestFrame(RequestFrame_StopVelocity, client);
 
-			// Hack fix for zoneid not being set with hooked zones
-			int zId = getZoneID(zonegroup, zone);
-			if (!StrEqual(g_mapZones[zId].HookName, "None"))
-				g_iTeleportingZoneId[client] = zId;
+            // Hack fix for zoneid not being set with hooked zones
+            int zId = getZoneID(zonegroup, zone);
+            if (!StrEqual(g_mapZones[zId].HookName, "None"))
+                g_iTeleportingZoneId[client] = zId;
 
-			if (realZone == 0)
-			{
-				g_bInStartZone[client] = false;
-				g_bInStageZone[client] = false;
-			}
+            if (realZone == 0)
+            {
+                g_bInStartZone[client] = false;
+                g_bInStageZone[client] = false;
+            }
 
-			teleportEntitySafe(client, g_fSpawnLocation[zonegroup][realZone][teleside], g_fSpawnAngle[zonegroup][realZone][teleside], g_fSpawnVelocity[zonegroup][realZone][teleside], stopTime);
+            teleportEntitySafe(client, g_fSpawnLocation[zonegroup][realZone][teleside], g_fSpawnAngle[zonegroup][realZone][teleside], g_fSpawnVelocity[zonegroup][realZone][teleside], stopTime);
 
-			return;
-		}
-	}
-	else
-	{
-		// Check if the map has zones
-		if (g_mapZonesCount > 0)
-		{	
-			// Search for the zoneid we're teleporting to:
-			int destinationZoneId;
-			destinationZoneId = getZoneID(zonegroup, zone);
+            return;
+        }
+    }
+    else
+    {
+        // Check if the map has zones
+        if (g_mapZonesCount > 0)
+        {	
+            // Search for the zoneid we're teleporting to:
+            int destinationZoneId;
+            destinationZoneId = getZoneID(zonegroup, zone);
 
-			g_iTeleportingZoneId[client] = destinationZoneId;
+            g_iTeleportingZoneId[client] = destinationZoneId;
 
-			// Check if zone was found
-			if (destinationZoneId > -1)
-			{
-				// Check if teleporting to bonus
-				if (zonegroup > 0)
-				{
-					// Set a bool to allow bonus zones to sit on top of start zones, e.g surf_aircontrol_ksf bonus 1
-					g_bInBonus[client] = true;
-					g_iInBonus[client] = zonegroup;
-				}
-				else
-				{
-					// Not teleporting to a bonus
-					g_bInBonus[client] = false;
-				}
-				
-				bool destinationFound = false;
-				int entity;
-				float origin[3];
-				float ang[3];
-				for (int i = 0; i < GetArraySize(g_hDestinations); i++)
-				{
-					entity = GetArrayCell(g_hDestinations, i);
-					GetEntPropVector(entity, Prop_Send, "m_vecOrigin", origin);
-					/**
-					*	Checks if coordinates are inside a zone
-					*	Return: zone id where location is in, or -1 if not inside a zone
-					**/
-					if (IsInsideZone(origin) == destinationZoneId)
-					{
-						destinationFound = true;
-						GetEntPropVector(entity, Prop_Send, "m_angRotation", ang);
-						break;
-					}
-				}
-				// Check if client is spectating, or not chosen a team yet
-				if (GetClientTeam(client) == 1 || GetClientTeam(client) == 0)
-				{
-					if (stopTime)
-						Client_Stop(client, 0);
+            // Check if zone was found
+            if (destinationZoneId > -1)
+            {
+                // Check if teleporting to bonus
+                if (zonegroup > 0)
+                {
+                    // Set a bool to allow bonus zones to sit on top of start zones, e.g surf_aircontrol_ksf bonus 1
+                    g_bInBonus[client] = true;
+                    g_iInBonus[client] = zonegroup;
+                }
+                else
+                {
+                    // Not teleporting to a bonus
+                    g_bInBonus[client] = false;
+                }
+                
+                bool destinationFound = false;
+                int entity;
+                float origin[3];
+                float ang[3];
+                for (int i = 0; i < GetArraySize(g_hDestinations); i++)
+                {
+                    entity = GetArrayCell(g_hDestinations, i);
+                    GetEntPropVector(entity, Prop_Send, "m_vecOrigin", origin);
+                    /**
+                    *	Checks if coordinates are inside a zone
+                    *	Return: zone id where location is in, or -1 if not inside a zone
+                    **/
+                    if (IsInsideZone(origin) == destinationZoneId)
+                    {
+                        destinationFound = true;
+                        GetEntPropVector(entity, Prop_Send, "m_angRotation", ang);
+                        break;
+                    }
+                }
+                // Check if client is spectating, or not chosen a team yet
+                if (GetClientTeam(client) == 1 || GetClientTeam(client) == 0)
+                {
+                    if (stopTime)
+                        Client_Stop(client, 0);
 
-					// Set spawn location to the destination zone:
-					//TP TO STAGE
-					if(zone > 1 && zonegroup == 0 && g_bStageStartposUsed[client][zone-2] && g_fCurrentRunTime[client] <= 0.0 && g_bTimerEnabled[client]){
-						Array_Copy(g_fStageStartposLocation[client][zone-2] , g_fTeleLocation[client], 3);
+                    // Set spawn location to the destination zone:
+                    //TP TO STAGE
+                    if(zone > 1 && zonegroup == 0 && g_bStageStartposUsed[client][zone-2] && g_fCurrentRunTime[client] <= 0.0 && g_bTimerEnabled[client]){
+                        Array_Copy(g_fStageStartposLocation[client][zone-2] , g_fTeleLocation[client], 3);
 
-						destinationFound = true;
-					}
-					//TP TO BONUSES
-					else
-						if (destinationFound)
-							Array_Copy(origin, g_fTeleLocation[client], 3);
-						else
-							Array_Copy(g_mapZones[destinationZoneId].CenterPoint, g_fTeleLocation[client], 3);
+                        destinationFound = true;
+                    }
+                    //TP TO BONUSES
+                    else
+                        if (destinationFound)
+                            Array_Copy(origin, g_fTeleLocation[client], 3);
+                        else
+                            Array_Copy(g_mapZones[destinationZoneId].CenterPoint, g_fTeleLocation[client], 3);
 
-					// Set specToStage flag
-					g_bRespawnPosition[client] = false;
-					g_specToStage[client] = true;
+                    // Set specToStage flag
+                    g_bRespawnPosition[client] = false;
+                    g_specToStage[client] = true;
 
-					// Spawn player
-					TeamChangeActual(client, 0);
+                    // Spawn player
+                    TeamChangeActual(client, 0);
 
-					if (realZone == 0)
-					{
-						g_bInStartZone[client] = false;
-						g_bInStageZone[client] = false;
-					}
-				}
-				else // Teleport normally
-				{
-					// Set client speed to 0
-					SetEntPropVector(client, Prop_Data, "m_vecVelocity", view_as<float>( { 0.0, 0.0, -100.0 } ));
+                    if (realZone == 0)
+                    {
+                        g_bInStartZone[client] = false;
+                        g_bInStageZone[client] = false;
+                    }
+                }
+                else // Teleport normally
+                {
+                    // Set client speed to 0
+                    SetEntPropVector(client, Prop_Data, "m_vecVelocity", view_as<float>( { 0.0, 0.0, -100.0 } ));
 
-					float fLocation[3];
-					//TP TO STAGE
-					if(zone > 1 && zonegroup == 0 && g_bStageStartposUsed[client][zone-2] && g_fCurrentRunTime[client] <= 0.0 && g_bTimerEnabled[client]){
-						Array_Copy(g_fStageStartposLocation[client][zone-2], fLocation, 3);
-						Array_Copy(g_fStageStartposAngle[client][zone-2], ang, 3);
+                    float fLocation[3];
+                    //TP TO STAGE
+                    if(zone > 1 && zonegroup == 0 && g_bStageStartposUsed[client][zone-2] && g_fCurrentRunTime[client] <= 0.0 && g_bTimerEnabled[client]){
+                        Array_Copy(g_fStageStartposLocation[client][zone-2], fLocation, 3);
+                        Array_Copy(g_fStageStartposAngle[client][zone-2], ang, 3);
 
-						destinationFound = true;
-					}
-					//TP TO BONUSES
-					else
-						if (destinationFound)
-							Array_Copy(origin, fLocation, 3);
-						else
-							Array_Copy(g_mapZones[destinationZoneId].CenterPoint, fLocation, 3);
+                        destinationFound = true;
+                    }
+                    //TP TO BONUSES
+                    else
+                        if (destinationFound)
+                            Array_Copy(origin, fLocation, 3);
+                        else
+                            Array_Copy(g_mapZones[destinationZoneId].CenterPoint, fLocation, 3);
 
-					// fluffys dont cheat wrcps!
-					g_bWrcpTimeractivated[client] = false;
+                    // fluffys dont cheat wrcps!
+                    g_bWrcpTimeractivated[client] = false;
 
-					if (realZone == 0)
-					{
-						g_bInStartZone[client] = false;
-						g_bInStageZone[client] = false;
-					}
+                    if (realZone == 0)
+                    {
+                        g_bInStartZone[client] = false;
+                        g_bInStageZone[client] = false;
+                    }
 
-					// Teleport
-					if (destinationFound)
-						teleportEntitySafe(client, fLocation, ang, view_as<float>( { 0.0, 0.0, -100.0 } ), stopTime);
-					else
-						teleportEntitySafe(client, fLocation, NULL_VECTOR, view_as<float>( { 0.0, 0.0, -100.0 } ), stopTime);
-				}
-			}
-			else
-				CPrintToChat(client, "%t", "Misc2", g_szChatPrefix);
-		}
-		else
-			CPrintToChat(client, "%t", "Misc3", g_szChatPrefix);
-	}
-	g_bNotTeleporting[client] = true;
-	return;
+                    // Teleport
+                    if (destinationFound)
+                        teleportEntitySafe(client, fLocation, ang, view_as<float>( { 0.0, 0.0, -100.0 } ), stopTime);
+                    else
+                        teleportEntitySafe(client, fLocation, NULL_VECTOR, view_as<float>( { 0.0, 0.0, -100.0 } ), stopTime);
+                }
+            }
+            else
+                CPrintToChat(client, "%t", "Misc2", g_szChatPrefix);
+        }
+        else
+            CPrintToChat(client, "%t", "Misc3", g_szChatPrefix);
+    }
+    g_bNotTeleporting[client] = true;
+    return;
 }
 
 public void RequestFrame_StopVelocity(int client)
@@ -658,27 +658,28 @@ public void setColor(char[] buffer, int size, int colorIndex)
 
 public void parseColorsFromString(char[] ParseString, int size)
 {
-	ReplaceString(ParseString, size, "{default}", "", false);
-	ReplaceString(ParseString, size, "{white}", "", false);
-	ReplaceString(ParseString, size, "{darkred}", "", false);
-	ReplaceString(ParseString, size, "{green}", "", false);
-	ReplaceString(ParseString, size, "{lime}", "", false);
-	ReplaceString(ParseString, size, "{blue}", "", false);
-	ReplaceString(ParseString, size, "{lightgreen}", "", false);
-	ReplaceString(ParseString, size, "{red}", "", false);
-	ReplaceString(ParseString, size, "{grey}", "", false);
-	ReplaceString(ParseString, size, "{gray}", "", false);
-	ReplaceString(ParseString, size, "{yellow}", "", false);
-	ReplaceString(ParseString, size, "{lightblue}", "", false);
-	ReplaceString(ParseString, size, "{darkblue}", "", false);
-	ReplaceString(ParseString, size, "{pink}", "", false);
-	ReplaceString(ParseString, size, "{lightred}", "", false);
-	ReplaceString(ParseString, size, "{purple}", "", false);
-	ReplaceString(ParseString, size, "{darkgrey}", "", false);
-	ReplaceString(ParseString, size, "{darkgray}", "", false);
-	ReplaceString(ParseString, size, "{limegreen}", "", false);
-	ReplaceString(ParseString, size, "{orange}", "", false);
-	ReplaceString(ParseString, size, "{olive}", "", false);
+    ReplaceString(ParseString, size, "{default}", "", false);
+    ReplaceString(ParseString, size, "{white}", "", false);
+    ReplaceString(ParseString, size, "{darkred}", "", false);
+    ReplaceString(ParseString, size, "{green}", "", false);
+    ReplaceString(ParseString, size, "{lime}", "", false);
+    ReplaceString(ParseString, size, "{blue}", "", false);
+    ReplaceString(ParseString, size, "{lightgreen}", "", false);
+    ReplaceString(ParseString, size, "{red}", "", false);
+    ReplaceString(ParseString, size, "{grey}", "", false);
+    ReplaceString(ParseString, size, "{gray}", "", false);
+    ReplaceString(ParseString, size, "{yellow}", "", false);
+    ReplaceString(ParseString, size, "{lightblue}", "", false);
+    ReplaceString(ParseString, size, "{darkblue}", "", false);
+    ReplaceString(ParseString, size, "{pink}", "", false);
+    ReplaceString(ParseString, size, "{lightred}", "", false);
+    ReplaceString(ParseString, size, "{purple}", "", false);
+    ReplaceString(ParseString, size, "{darkgrey}", "", false);
+    ReplaceString(ParseString, size, "{darkgray}", "", false);
+    ReplaceString(ParseString, size, "{limegreen}", "", false);
+    ReplaceString(ParseString, size, "{orange}", "", false);
+    ReplaceString(ParseString, size, "{olive}", "", false);
+    ReplaceString(ParseString, size, "{orchid}", "", false);
 }
 
 public void checkSpawnPoints()
@@ -5471,4 +5472,206 @@ public void LogCritical(const char[] message, any ...)
     char sMessage[512];
     VFormat(sMessage, sizeof(sMessage), message, 2);
     LogToFileEx(g_szLogFile, "[CRITICAL] %s", sMessage);
+}
+
+public int GetClientTitleCount(int client)
+{
+    int titleCount = 0;
+
+    // Count number of non empty titles for client
+    for (int i = 0; i < MAX_TITLES; i++)
+    {
+        // If an empty title is found, assume no more titles follow
+        if (StrEqual(g_szCustomTitleColoured[client][i], ""))
+        {
+            break;
+        }
+        
+        // Otherwise, increase the count
+        titleCount += 1;
+    }
+
+    return titleCount;
+}
+
+public void StringToTitles(int client, char[] titleString)
+{
+    // Make sure the client is valid
+    if (!IsValidClient(client))
+    {
+        LogCritical("(StringToTitles) Invalid Client: \"%s\"", client);
+        return;
+    }
+
+    // Save the clients name
+    char clientName[64];
+    GetClientName(client, clientName, sizeof(clientName));
+
+    // Save the clients SteamID
+    char clientSteamID[64];
+    getSteamIDFromClient(client, clientSteamID, sizeof(clientSteamID));
+
+    // Create a buffer to store the comma seperated values from the string
+    int titleCount = 0;
+    char titleIndex[MAX_TITLE_LENGTH];
+    char titleBuffer[MAX_TITLES][MAX_TITLE_LENGTH];
+
+    // If a comma is found, it's the new format
+    if (StrContains(titleString, "`") != -1)
+    {
+        // Save the first entry as the titleIndex
+        int prevIndex = SplitString(titleString, "`", titleIndex, sizeof(titleIndex));
+
+        // Start finding titles
+        for (int i = 0; i < MAX_TITLES; i++)
+        {
+            // Start searching through the array
+            int currIndex = SplitString(titleString[prevIndex], "`", titleBuffer[i], sizeof(titleBuffer[]));
+
+            // Save the final string if no more commas are left
+            if (currIndex == -1)
+            {
+                // Don't increase titleCount if it's an empty string
+                if (StrEqual(titleString[prevIndex], ""))
+                {
+                    break;
+                }
+
+                strcopy(titleBuffer[i], sizeof(titleBuffer[]), titleString[prevIndex]);
+                titleCount += 1;
+                break;
+            }
+
+            // Update the position in the string
+            prevIndex += currIndex;
+            titleCount += 1;
+        }
+    }
+    else
+    {
+        // If no commas are found, it's the old format so add an index
+        strcopy(titleIndex, sizeof(titleIndex), "0");
+        strcopy(titleBuffer[0], sizeof(titleBuffer[]), titleString);
+        titleCount += 1;
+    }
+
+    // Check each character in the first entry to make sure it's an integer
+    for (int i = 0; i < strlen(titleIndex); i++)
+    {
+        // If it's not an integer, it must be a title
+        if (!IsCharNumeric(titleIndex[i]))
+        {
+            // Log a warning that the first item wasn't an index
+            LogWarning("The user \"%s - %s\" has a non numeric title index. Setting to 0.", clientSteamID, clientName);
+
+            // Shift all titles to the right to make room for the title thought to be an index
+            for (int j = titleCount; j > 0; j--)
+            {
+                // If they have 32 titles, remove the final title to make room
+                if (j == MAX_TITLES)
+                {
+                    // Log a warning
+                    LogWarning("Removing the title \"%s\" since there is no more room.", titleBuffer[j - 1])
+                    continue;
+                }
+
+                // Replace the following title with the current title
+                strcopy(titleBuffer[j], sizeof(titleBuffer[]), titleBuffer[j - 1]);
+            }
+
+            // Save the title mistaken for an index to the first slot
+            strcopy(titleBuffer[0], sizeof(titleBuffer[]), titleIndex);
+
+            // Set the index to zero
+            strcopy(titleIndex, sizeof(titleIndex), "0");
+
+            break;
+        }
+    }
+
+    // Covert the titleIndex to a number
+    g_iCustomTitleIndex[client] = StringToInt(titleIndex);
+
+    // Limit count to titleCount
+    if (g_iCustomTitleIndex[client] >= titleCount && titleCount > 0)
+    {
+        LogWarning("The user \"%s - %s\" has a title index that is too high. Setting to %i.", clientSteamID, clientName, titleCount - 1);
+        g_iCustomTitleIndex[client] = titleCount - 1;
+    }
+
+    // Limit count to max titles just in case
+    if (g_iCustomTitleIndex[client] >= MAX_TITLES)
+    {
+        LogWarning("The user \"%s - %s\" has a title index that is too high. Setting to %i.", clientSteamID, clientName, MAX_TITLES - 1);
+        g_iCustomTitleIndex[client] = MAX_TITLES - 1;
+    }
+
+    // Now we need to update the titles
+    for (int i = 0; i < MAX_TITLES; i++)
+    {
+        // Save a copy of the title
+        char title[MAX_TITLE_LENGTH];
+        strcopy(title, sizeof(title), titleBuffer[i]);
+
+        // Trim the title
+        TrimString(title);
+
+        // Replace 0's with an empty string
+        if (StrEqual(titleBuffer[i], "0"))
+        {
+            strcopy(title, sizeof(title), "");
+        }
+
+        // Copy over the formatted colored title
+        strcopy(g_szCustomTitleColoured[client][i], sizeof(g_szCustomTitleColoured[][]), title);
+
+        // Remove colors and trim the title
+        parseColorsFromString(title, sizeof(title));
+        TrimString(title);
+
+        // Copy over the formatted colorless title
+        strcopy(g_szCustomTitle[client][i], sizeof(g_szCustomTitle[][]), title);
+    }
+}
+
+public void TitlesToString(int client, char[] titleString, int titleStringLength)
+{
+    // Make sure the client is valid
+    if (!IsValidClient(client))
+    {
+        LogCritical("(TitlesToString) Invalid Client: \"%s\"", client);
+        return;
+    }
+
+    // Save the clients name
+    char clientName[64];
+    GetClientName(client, clientName, sizeof(clientName));
+
+    // Save the clients SteamID
+    char clientSteamID[64];
+    getSteamIDFromClient(client, clientSteamID, sizeof(clientSteamID));
+
+    // Determine how many titles the client has
+    int titleCount = GetClientTitleCount(client);
+
+    // User has index above total titles found
+    if (g_iCustomTitleIndex[client] >= titleCount && titleCount > 0)
+    {
+        // Set index to total titles found
+        g_iCustomTitleIndex[client] = titleCount - 1;
+    }
+
+    // Convert the title index to a string
+    char titleIndex[MAX_TITLE_LENGTH];
+    IntToString(g_iCustomTitleIndex[client], titleIndex, sizeof(titleIndex));
+
+    // Add the title index to the title string
+    StrCat(titleString, titleStringLength, titleIndex)
+
+    // Now we need to add the titles
+    for (int i = 0; i < titleCount; i++)
+    {
+        StrCat(titleString, titleStringLength, "`");
+        StrCat(titleString, titleStringLength, g_szCustomTitleColoured[client][i]);
+    }
 }
