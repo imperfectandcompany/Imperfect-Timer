@@ -434,7 +434,7 @@ public void db_selectSpawnLocations()
 
 public void db_selectSpawnLocationsCallback(Handle owner, Handle hndl, const char[] error, float time)
 {
-	LogDebug("Finished db_selectSpawnLocationsCallback in: %f", GetGameTime() - time);
+	// LogDebug("Finished db_selectSpawnLocationsCallback in: %f", GetGameTime() - time);
 	
 	if (hndl == null)
 	{
@@ -483,7 +483,7 @@ public void db_viewMapProRankCount()
 
 public void sql_selectPlayerProCountCallback(Handle owner, Handle hndl, const char[] error, float time)
 {
-	LogDebug("Finished sql_selectPlayerProCountCallback in: %f", GetGameTime() - time);
+	// LogDebug("Finished sql_selectPlayerProCountCallback in: %f", GetGameTime() - time);
 	
 	if (hndl == null)
 	{
@@ -1508,7 +1508,7 @@ public void db_viewPlayerPointsCallback(Handle owner, Handle hndl, const char[] 
         float tick = g_fTick[client][1] - g_fTick[client][0];
         char szName[32];
         GetClientName(client, szName, sizeof(szName));
-        LogDebug("Finished db_viewPlayerPointsCallback for \"%s - %s\" in: %f", g_szSteamID[client], szName, tick);
+        // LogDebug("Finished db_viewPlayerPointsCallback for \"%s - %s\" in: %f", g_szSteamID[client], szName, tick);
         g_fTick[client][0] = GetGameTime();
         
         // Count players rank
@@ -1547,7 +1547,7 @@ public void db_viewPlayerPointsCallback(Handle owner, Handle hndl, const char[] 
             g_fTick[client][1] = GetGameTime();
             float tick = g_fTick[client][1] - g_fTick[client][0];
             GetClientName(client, szName, sizeof(szName));
-            LogDebug("Finished db_viewPlayerPointsCallback for \"%s - %s\" in: %f", g_szSteamID[client], szName, tick);
+            // LogDebug("Finished db_viewPlayerPointsCallback for \"%s - %s\" in: %f", g_szSteamID[client], szName, tick);
             g_fTick[client][0] = GetGameTime();
 
             // Count players rank
@@ -1636,7 +1636,7 @@ public void sql_selectRankedPlayersRankCallback(Handle owner, Handle hndl, const
         float tick = g_fTick[client][1] - g_fTick[client][0];
         char szName[32];
         GetClientName(client, szName, sizeof(szName));
-        LogDebug("Finished sql_selectRankedPlayersRankCallback for \"%s - %s\" in: %f", g_szSteamID[client], szName, tick);
+        // LogDebug("Finished sql_selectRankedPlayersRankCallback for \"%s - %s\" in: %f", g_szSteamID[client], szName, tick);
         g_fTick[client][0] = GetGameTime();
 
         LoadClientSetting(client, g_iSettingToLoad[client]);
@@ -2017,7 +2017,7 @@ public void db_GetMapRecord_Pro()
 
 public void sql_selectMapRecordCallback(Handle owner, Handle hndl, const char[] error, float time)
 {
-	LogDebug("Finished sql_selectMapRecordCallback in: %f", GetGameTime() - time);
+	// LogDebug("Finished sql_selectMapRecordCallback in: %f", GetGameTime() - time);
 	
 	if (hndl == null)
 	{
@@ -3177,7 +3177,7 @@ public void SQL_selectPersonalRecordsCallback(Handle owner, Handle hndl, const c
         float tick = g_fTick[client][1] - g_fTick[client][0];
         char szName[32];
         GetClientName(client, szName, sizeof(szName));
-        LogDebug("Finished SQL_selectPersonalRecordsCallback for \"%s - %s\" in: %f", g_szSteamID[client], szName, tick);
+        // LogDebug("Finished SQL_selectPersonalRecordsCallback for \"%s - %s\" in: %f", g_szSteamID[client], szName, tick);
         g_fTick[client][0] = GetGameTime();
 
         LoadClientSetting(client, g_iSettingToLoad[client]);
@@ -3297,7 +3297,7 @@ public void db_viewRecordCheckpointInMap()
 
 public void sql_selectRecordCheckpointsCallback(Handle owner, Handle hndl, const char[] error, float time)
 {
-	LogDebug("Finished sql_selectRecordCheckpointsCallback in: %f", GetGameTime() - time);
+	// LogDebug("Finished sql_selectRecordCheckpointsCallback in: %f", GetGameTime() - time);
 	
 	if (hndl == null)
 	{
@@ -3374,7 +3374,7 @@ public void SQL_selectCheckpointsCallback(Handle owner, Handle hndl, const char[
         float tick = g_fTick[client][1] - g_fTick[client][0];
         char szName[32];
         GetClientName(client, szName, sizeof(szName));
-        LogDebug("Finished SQL_selectCheckpointsCallback for \"%s - %s\" in: %f", g_szSteamID[client], szName, tick);
+        // LogDebug("Finished SQL_selectCheckpointsCallback for \"%s - %s\" in: %f", g_szSteamID[client], szName, tick);
         g_fTick[client][0] = GetGameTime();
 
         LoadClientSetting(client, g_iSettingToLoad[client]);
@@ -3459,7 +3459,7 @@ public void SQL_LoadStageAttemptsCallback(Handle owner, Handle hndl, const char[
         float tick = g_fTick[client][1] - g_fTick[client][0];
         char szName[32];
         GetClientName(client, szName, sizeof(szName));
-        LogDebug("Finished SQL_LoadStageAttemptsCallback for \"%s - %s\" in: %f", g_szSteamID[client], szName, tick);
+        // LogDebug("Finished SQL_LoadStageAttemptsCallback for \"%s - %s\" in: %f", g_szSteamID[client], szName, tick);
         g_fTick[client][0] = GetGameTime();
 
         LoadClientSetting(client, g_iSettingToLoad[client]);
@@ -3488,7 +3488,7 @@ public void SQL_selectReplayCPTicksCallback(Handle owner, Handle hndl, const cha
 	float fTime = pack.ReadFloat();
 	delete pack;
 
-	LogDebug("Finished SQL_selectReplayCPTicksCallback for %s in: %f", g_EditStyles[iStyle], GetGameTime() - fTime);
+	// LogDebug("Finished SQL_selectReplayCPTicksCallback for %s in: %f", g_EditStyles[iStyle], GetGameTime() - fTime);
 
 	// fluffys come back
 	if (hndl == null)
@@ -3753,7 +3753,7 @@ public void db_viewPRinfoCallback(Handle owner, Handle hndl, const char[] error,
             float tick = g_fTick[client][1] - g_fTick[client][0];
             char szName[32];
             GetClientName(client, szName, sizeof(szName));
-            LogDebug("Finished db_viewPRinfoCallback for \"%s - %s\" in: %f", g_szSteamID[client], szName, tick);
+            // LogDebug("Finished db_viewPRinfoCallback for \"%s - %s\" in: %f", g_szSteamID[client], szName, tick);
             g_fTick[client][0] = GetGameTime();
 
             // Print a VIP's custom join msg to all
@@ -3926,7 +3926,7 @@ public void db_viewBonusPRinfoCallback(Handle owner, Handle hndl, const char[] e
         float tick = g_fTick[client][1] - g_fTick[client][0];
         char szName[32];
         GetClientName(client, szName, sizeof(szName));
-        LogDebug("Finished db_viewBonusPRinfoCallback for \"%s - %s\" in: %f", g_szSteamID[client], szName, tick);
+        // LogDebug("Finished db_viewBonusPRinfoCallback for \"%s - %s\" in: %f", g_szSteamID[client], szName, tick);
         g_fTick[client][0] = GetGameTime();
 
         // Print a VIP's custom join msg to all
@@ -4174,7 +4174,7 @@ public void db_selectMapTier()
 
 public void SQL_selectMapTierCallback(Handle owner, Handle hndl, const char[] error, float time)
 {
-    LogDebug("Finished SQL_selectMapTierCallback in: %f", GetGameTime() - time);
+    // LogDebug("Finished SQL_selectMapTierCallback in: %f", GetGameTime() - time);
 
     if (hndl == null)
     {
@@ -4450,7 +4450,7 @@ public void SQL_selectPersonalBonusRecordsCallback(Handle owner, Handle hndl, co
         float tick = g_fTick[client][1] - g_fTick[client][0];
         char szName[32];
         GetClientName(client, szName, sizeof(szName));
-        LogDebug("Finished SQL_selectPersonalBonusRecordsCallback for \"%s - %s\" in: %f", g_szSteamID[client], szName, tick);
+        // LogDebug("Finished SQL_selectPersonalBonusRecordsCallback for \"%s - %s\" in: %f", g_szSteamID[client], szName, tick);
         g_fTick[client][0] = GetGameTime();
 
         LoadClientSetting(client, g_iSettingToLoad[client]);
@@ -4469,7 +4469,7 @@ public void db_viewFastestBonus()
 
 public void SQL_selectFastestBonusCallback(Handle owner, Handle hndl, const char[] error, float time)
 {
-	LogDebug("Finished SQL_selectFastestBonusCallback in: %f", GetGameTime() - time);
+	// LogDebug("Finished SQL_selectFastestBonusCallback in: %f", GetGameTime() - time);
 
 	if (hndl == null)
 	{
@@ -4564,7 +4564,7 @@ public void db_viewBonusTotalCount()
 
 public void SQL_selectBonusTotalCountCallback(Handle owner, Handle hndl, const char[] error, float time)
 {
-    LogDebug("Finished SQL_selectBonusTotalCountCallback in: %f", GetGameTime() - time);
+    // LogDebug("Finished SQL_selectBonusTotalCountCallback in: %f", GetGameTime() - time);
 
     if (hndl == null)
     {
@@ -5198,7 +5198,7 @@ public void db_selectMapZones()
 
 public void SQL_selectMapZonesCallback(Handle owner, Handle hndl, const char[] error, float time)
 {
-    LogDebug("Finished SQL_selectMapZonesCallback in: %f", GetGameTime() - time);
+    // LogDebug("Finished SQL_selectMapZonesCallback in: %f", GetGameTime() - time);
 
     if (hndl == null)
     {
@@ -5689,7 +5689,7 @@ public void db_CalcAvgRunTime()
 
 public void SQL_db_CalcAvgRunTimeCallback(Handle owner, Handle hndl, const char[] error, float time)
 {
-    LogDebug("Finished SQL_db_CalcAvgRunTimeCallback in: %f", GetGameTime() - time);
+    // LogDebug("Finished SQL_db_CalcAvgRunTimeCallback in: %f", GetGameTime() - time);
 
     if (hndl == null)
     {
@@ -5740,7 +5740,7 @@ public void db_CalcAvgRunTimeBonus()
 
 public void SQL_db_CalcAvgRunBonusTimeCallback(Handle owner, Handle hndl, const char[] error, float time)
 {
-    LogDebug("Finished SQL_db_CalcAvgRunBonusTimeCallback in: %f", GetGameTime() - time);
+    // LogDebug("Finished SQL_db_CalcAvgRunBonusTimeCallback in: %f", GetGameTime() - time);
 
     if (hndl == null)
     {
@@ -5793,7 +5793,7 @@ public void db_GetDynamicTimelimit()
 
 public void SQL_db_GetDynamicTimelimitCallback(Handle owner, Handle hndl, const char[] error, float time)
 {
-    LogDebug("Finished SQL_db_GetDynamicTimelimitCallback in: %f", GetGameTime() - time);
+    // LogDebug("Finished SQL_db_GetDynamicTimelimitCallback in: %f", GetGameTime() - time);
 
     if (hndl == null)
     {
@@ -5885,7 +5885,7 @@ public void sql_CountRankedPlayersCallback(Handle owner, Handle hndl, const char
     float time = pack.ReadFloat();
     delete pack;
 
-    LogDebug("Finished sql_CountRankedPlayersCallback in: %f", GetGameTime() - time);
+    // LogDebug("Finished sql_CountRankedPlayersCallback in: %f", GetGameTime() - time);
 
     if (hndl == null)
     {
@@ -5914,7 +5914,7 @@ public void sql_CountRankedPlayers2Callback(Handle owner, Handle hndl, const cha
     float time = pack.ReadFloat();
     delete pack;
 
-    LogDebug("Finished sql_CountRankedPlayers2Callback in: %f", GetGameTime() - time);
+    // LogDebug("Finished sql_CountRankedPlayers2Callback in: %f", GetGameTime() - time);
 
     if (hndl == null)
     {
@@ -6375,7 +6375,7 @@ public void db_viewPlayerOptionsCallback(Handle owner, Handle hndl, const char[]
         float tick = g_fTick[client][1] - g_fTick[client][0];
         char szName[32];
         GetClientName(client, szName, sizeof(szName));
-        LogDebug("Finished db_viewPlayerOptionsCallback for \"%s - %s\" in: %f", g_szSteamID[client], szName, tick);
+        // LogDebug("Finished db_viewPlayerOptionsCallback for \"%s - %s\" in: %f", g_szSteamID[client], szName, tick);
         g_fTick[client][0] = GetGameTime();
 
         LoadClientSetting(client, g_iSettingToLoad[client]);
@@ -6574,7 +6574,7 @@ public void db_selectTotalBonusCount()
 
 public void sql_selectTotalBonusCountCallback(Handle owner, Handle hndl, const char[] error, float time)
 {
-    LogDebug("Finished sql_selectTotalBonusCountCallback in: %f", GetGameTime() - time);
+    // LogDebug("Finished sql_selectTotalBonusCountCallback in: %f", GetGameTime() - time);
 
     if (hndl == null)
     {
@@ -6603,7 +6603,7 @@ public void db_selectTotalStageCount()
 
 public void sql_selectTotalStageCountCallback(Handle owner, Handle hndl, const char[] error, float time)
 {
-    LogDebug("Finished sql_selectTotalStageCountCallback in: %f", GetGameTime() - time);
+    // LogDebug("Finished sql_selectTotalStageCountCallback in: %f", GetGameTime() - time);
 
     if (hndl == null)
     {
@@ -7068,7 +7068,7 @@ public void db_viewPersonalStageRecords(int client, char szSteamId[32])
 {
 	if (!g_bSettingsLoaded[client] && !g_bhasStages)
 	{
-		LogDebug("Skipping db_viewPersonalStageRecords (linear map) for \"%s\".", g_szSteamID[client]);
+		// LogDebug("Skipping db_viewPersonalStageRecords (linear map) for \"%s\".", g_szSteamID[client]);
 		LoadClientSetting(client, 3);
 		return;
 	}
@@ -7127,7 +7127,7 @@ public void SQL_selectPersonalStageRecordsCallback(Handle owner, Handle hndl, co
         float tick = g_fTick[client][1] - g_fTick[client][0];
         char szName[32];
         GetClientName(client, szName, sizeof(szName));
-        LogDebug("Finished sql_selectRankedPlayersRankCallback for \"%s - %s\" in: %f", g_szSteamID[client], szName, tick);
+        // LogDebug("Finished sql_selectRankedPlayersRankCallback for \"%s - %s\" in: %f", g_szSteamID[client], szName, tick);
         g_fTick[client][0] = GetGameTime();
 
         LoadClientSetting(client, g_iSettingToLoad[client]);
@@ -7244,7 +7244,7 @@ public void SQL_selectPersonalPrestrafeSpeeds_MapCallback(Handle owner, Handle h
             float tick = g_fTick[client][1] - g_fTick[client][0];
             char szName[32];
             GetClientName(client, szName, sizeof(szName));
-            LogDebug("Finished SQL_selectPersonalPrestrafeSpeeds_MapCallback for \"%s - %s\" in: %f", g_szSteamID[client], szName, tick);
+            // LogDebug("Finished SQL_selectPersonalPrestrafeSpeeds_MapCallback for \"%s - %s\" in: %f", g_szSteamID[client], szName, tick);
             g_fTick[client][0] = GetGameTime();
 
             LoadClientSetting(client, g_iSettingToLoad[client]);
@@ -7393,7 +7393,7 @@ public void db_GetTotalStages()
 
 public void db_GetTotalStagesCallback(Handle owner, Handle hndl, const char[] error, float time)
 {
-    LogDebug("Finished db_GetTotalStagesCallback in: %f", GetGameTime() - time);
+    // LogDebug("Finished db_GetTotalStagesCallback in: %f", GetGameTime() - time);
 
     if (hndl == null)
     {
@@ -7629,7 +7629,7 @@ public void db_viewStageRecords()
 
 public void sql_viewStageRecordsCallback(Handle owner, Handle hndl, const char[] error, float time)
 {
-    LogDebug("Finished sql_viewStageRecordsCallback in: %f", GetGameTime() - time);
+    // LogDebug("Finished sql_viewStageRecordsCallback in: %f", GetGameTime() - time);
 
     if (hndl == null)
     {
@@ -7725,7 +7725,7 @@ public void db_viewTotalStageRecords()
 
 public void sql_viewTotalStageRecordsCallback(Handle owner, Handle hndl, const char[] error, float time)
 {
-    LogDebug("Finished sql_viewTotalStageRecordsCallback in: %f", GetGameTime() - time);
+    // LogDebug("Finished sql_viewTotalStageRecordsCallback in: %f", GetGameTime() - time);
 
     if (hndl == null)
     {
@@ -9364,7 +9364,7 @@ public void db_selectCurrentMapImprovement()
 
 public void db_selectMapCurrentImprovementCallback(Handle owner, Handle hndl, const char[] error, float time)
 {
-    LogDebug("Finished db_selectMapCurrentImprovementCallback in: %f", GetGameTime() - time);
+    // LogDebug("Finished db_selectMapCurrentImprovementCallback in: %f", GetGameTime() - time);
 
     if (hndl == null)
     {
@@ -9925,7 +9925,7 @@ public void SQL_CheckVIPAdminCallback(Handle owner, Handle hndl, const char[] er
         float tick = g_fTick[client][1] - g_fTick[client][0];
         char szName[32];
         GetClientName(client, szName, sizeof(szName));
-        LogDebug("Finished SQL_CheckVIPAdminCallback for \"%s - %s\" in: %f", g_szSteamID[client], szName, tick);
+        // LogDebug("Finished SQL_CheckVIPAdminCallback for \"%s - %s\" in: %f", g_szSteamID[client], szName, tick);
         g_fTick[client][0] = GetGameTime();
 
         LoadClientSetting(client, g_iSettingToLoad[client]);
@@ -10269,7 +10269,7 @@ public void SQL_updateCustomTitleCallback(Handle owner, Handle hndl, const char[
         g_fTick[client][1] = GetGameTime();
         float tick = g_fTick[client][1] - g_fTick[client][0];
         GetClientName(client, szName, sizeof(szName));
-        LogDebug("Finished SQL_updateCustomTitleCallback for \"%s - %s\" in: %f", g_szSteamID[client], szName, tick);
+        // LogDebug("Finished SQL_updateCustomTitleCallback for \"%s - %s\" in: %f", g_szSteamID[client], szName, tick);
         g_fTick[client][0] = GetGameTime();
 
         LoadClientSetting(client, g_iSettingToLoad[client]);
@@ -10409,7 +10409,7 @@ public void db_selectAnnouncements()
 
 public void SQL_SelectAnnouncementsCallback(Handle owner, Handle hndl, const char[] error, float time)
 {
-    LogDebug("Finished SQL_SelectAnnouncementsCallback in: %f", GetGameTime() - time);
+    // LogDebug("Finished SQL_SelectAnnouncementsCallback in: %f", GetGameTime() - time);
 
     if (hndl == null)
     {
