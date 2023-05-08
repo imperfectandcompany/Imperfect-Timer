@@ -141,7 +141,7 @@ void CreateCommands()
     // IG give/remove titles commands
     RegAdminCmd("sm_givetitle", Command_GiveTitle, ADMFLAG_CUSTOM3, "[ImperfectGamers] Grants a title to a player");
     RegAdminCmd("sm_removetitle", Command_RemoveTitle, ADMFLAG_CUSTOM3, "[ImperfectGamers] Removes a title from a player");
-	RegAdminCmd("sm_listtitles", Command_ListTitles, ADMFLAG_CUSTOM3, "[ImperfectGamers] Lists titles for a player");
+    RegAdminCmd("sm_listtitles", Command_ListTitles, ADMFLAG_CUSTOM3, "[ImperfectGamers] Lists titles for a player");
 
     //	Add extendmap command for zoners - flag O
     RegAdminCmd("sm_extendmap", Command_ExtendMap, ADMFLAG_CUSTOM1, "[IG] Extend the map by specified minutes");
@@ -4874,6 +4874,76 @@ public void RemoveTitle(int client, int targetClient, const char[] title) {
     CReplyToCommand(client, "That user doesn't have that title.");
 }
 
+public Action Command_ListTitles(int client, int args) {
+    // Make sure the client is valid
+    if (!IsValidClient(client))
+    {
+        return Plugin_Handled;
+    }
+
+    // Verify correct command syntax
+    if (args < 1)
+    {
+        CReplyToCommand(client, "Usage: /listtitles <username>");
+        return Plugin_Handled;
+    }
+
+    // Initialize strings to store command arguments
+    char username[MAX_NAME_LENGTH];
+
+    // Save command arguments
+    GetCmdArg(1, username, sizeof(username));
+
+    // Try to find the intended client
+    int targetClient = FindTarget(client, username, true, false);
+
+    // Try to list all titles for the targetClient
+    ListTitles(client, targetClient);
+    return Plugin_Handled;
+}
+
+public void ListTitles(int client, int targetClient) {
+    // Return if the targetClient is invalid
+    if (!IsValidClient(targetClient))
+    {
+        CReplyToCommand(client, "Invalid username.")
+        return;
+    }
+
+    // Save the name of the targetClient
+    char targetClientName[MAX_NAME_LENGTH];
+    GetClientName(targetClient, targetClientName, sizeof(targetClientName));
+
+    // Get the number of titles the targetClient has
+    int titleCount = GetClientTitleCount(targetClient);
+
+    // No need to remove anything if the targetClient has no titles
+    if (titleCount == 0)
+    {
+        CReplyToCommand(client, "That user has no custom titles.");
+        return;
+    }
+
+    // Create a buffer for the final message
+    char outputString[MAX_TITLE_STRING_LENGTH];
+
+    // Initialize buffer with title message
+    Format(outputString, sizeof(outputString), "\"%s\" Titles: ", targetClientName)
+
+    // Concat multiple titles in the message
+    for (int i = 0; i < titleCount - 1; i++)
+    {
+        StrCat(outputString, sizeof(outputString), g_szCustomTitleColoured[targetClient][i])
+        StrCat(outputString, sizeof(outputString), "{default}, ")
+    }
+
+    // Don't add a comma if it's the final title
+    StrCat(outputString, sizeof(outputString), g_szCustomTitleColoured[targetClient][titleCount - 1])
+
+    // Show the final message to the requesting user
+    CReplyToCommand(client, outputString);
+}
+
 public Action Command_JoinMsg(int client, int args)
 {
 	if (!IsValidClient(client) || !IsPlayerVip(client, _, true))
@@ -7162,40 +7232,4 @@ public Action Command_ExtendMap(int client, int args)
 	return Plugin_Handled;
 }
 
-public Action Command_ListTitles(int client, int args) {
-	if (!IsValidClient(client))
-		return Plugin_Handled;
-	if (args < 1) {
-		CReplyToCommand(client, "Usage: <name>");
-		return Plugin_Handled;
-	}
-	char targetStr[MAX_NAME_LENGTH];
-	GetCmdArg(1, targetStr, sizeof(targetStr));
-	int target = FindTarget(client, targetStr, true, false);
-	ListTitles(client, target);
-	return Plugin_Handled;
-}
 
-public void ListTitles(int client, int target) {
-		if (!IsValidClient(target)) {
-				CReplyToCommand(client, "Player not yet loaded");
-				return;
-		}
-		char parts[MAX_TITLES][MAX_TITLE_LENGTH];
-		char out[MAX_TITLE_STRING_LENGTH];
-		if (client == target) {
-				out = "You have these titles: ";
-		} else {
-				char targetNamed[MAX_NAME_LENGTH];
-				GetClientName(target, targetNamed, sizeof(targetNamed));
-				Format(out, sizeof(out), "%s has these titles: ", targetNamed);
-		}
-		int numParts = ExplodeString(g_szCustomTitleRaw[target], "`", parts, sizeof(parts), sizeof(parts[]));
-		for (int i = 1; i < numParts; i++) {
-				StrCat(out, sizeof(out), parts[i]);
-				if (i != numParts-1) {
-						StrCat(out, sizeof(out), ", ");
-				}
-		}
-		PrintToChat(client, out);
-}
