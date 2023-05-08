@@ -141,6 +141,7 @@ void CreateCommands()
     // IG give/remove titles commands
     RegAdminCmd("sm_givetitle", Command_GiveTitle, ADMFLAG_CUSTOM3, "[ImperfectGamers] Grants a title to a player");
     RegAdminCmd("sm_removetitle", Command_RemoveTitle, ADMFLAG_CUSTOM3, "[ImperfectGamers] Removes a title from a player");
+	RegAdminCmd("sm_listtitles", Command_ListTitles, ADMFLAG_CUSTOM3, "[ImperfectGamers] Lists titles for a player");
 
     //	Add extendmap command for zoners - flag O
     RegAdminCmd("sm_extendmap", Command_ExtendMap, ADMFLAG_CUSTOM1, "[IG] Extend the map by specified minutes");
@@ -4768,6 +4769,10 @@ public void GiveTitle(int client, int targetClient, char[] title, int titleLengt
     {
         strcopy(title, titleLength, "{orchid}SURFER");
     }
+	else if (StrEqual(colorlessTitle, "420", false))
+    {
+        strcopy(title, titleLength, "{green}420");
+    }
 
     // Add the new title to targetClient's title list
     strcopy(g_szCustomTitleColoured[targetClient][titleCount], sizeof(g_szCustomTitleColoured[][]), title);
@@ -7155,4 +7160,42 @@ public Action Command_ExtendMap(int client, int args)
 	}
 
 	return Plugin_Handled;
+}
+
+public Action Command_ListTitles(int client, int args) {
+	if (!IsValidClient(client))
+		return Plugin_Handled;
+	if (args < 1) {
+		CReplyToCommand(client, "Usage: <name>");
+		return Plugin_Handled;
+	}
+	char targetStr[MAX_NAME_LENGTH];
+	GetCmdArg(1, targetStr, sizeof(targetStr));
+	int target = FindTarget(client, targetStr, true, false);
+	ListTitles(client, target);
+	return Plugin_Handled;
+}
+
+public void ListTitles(int client, int target) {
+		if (!IsValidClient(target)) {
+				CReplyToCommand(client, "Player not yet loaded");
+				return;
+		}
+		char parts[MAX_TITLES][MAX_TITLE_LENGTH];
+		char out[MAX_TITLE_STRING_LENGTH];
+		if (client == target) {
+				out = "You have these titles: ";
+		} else {
+				char targetNamed[MAX_NAME_LENGTH];
+				GetClientName(target, targetNamed, sizeof(targetNamed));
+				Format(out, sizeof(out), "%s has these titles: ", targetNamed);
+		}
+		int numParts = ExplodeString(g_szCustomTitleRaw[target], "`", parts, sizeof(parts), sizeof(parts[]));
+		for (int i = 1; i < numParts; i++) {
+				StrCat(out, sizeof(out), parts[i]);
+				if (i != numParts-1) {
+						StrCat(out, sizeof(out), ", ");
+				}
+		}
+		PrintToChat(client, out);
 }
