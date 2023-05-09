@@ -2,9 +2,7 @@
 .vscode
 
 # SourcePawn
-*.dll # extensions
-*.so # extensions
-*.smx # plugins
+*.dll
+*.so
 *.smx
-*.dat
 *.dat
