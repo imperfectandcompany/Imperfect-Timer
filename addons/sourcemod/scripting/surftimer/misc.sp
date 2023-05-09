@@ -3266,7 +3266,7 @@ public void CenterHudDead(int client)
 			if (Buttons & IN_JUMP)
 				Format(sResult, sizeof(sResult), "%s <font color='#F24'>▲</font>", sResult);
 			else
-				Format(sResult, sizeof(sResult), "%s _▲", sResult);
+				Format(sResult, sizeof(sResult), "%s ▲", sResult);
 			if (Buttons & IN_LEFT)
 				Format(sResult, sizeof(sResult), "%s <font color='#F24'>↩</font>", sResult);
 			else
