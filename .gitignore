@@ -6,3 +6,4 @@
 *.so
 *.smx
 *.dat
+addons/sourcemod/scripting/compile.dat
