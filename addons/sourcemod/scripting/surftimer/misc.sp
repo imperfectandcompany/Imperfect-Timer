@@ -3475,7 +3475,7 @@ public void CenterHudAlive(int client)
 					Format(module[i], 128, "<font color='#f32'>Disabled	</font>");
 				else
 				{
-					Format(module[i], 128, "<font color='#f32'>00:00.00		</font>");
+					Format(module[i], 128, "<font color='#f32'>00:00.000 </font>");
 				}
 
 				if (g_iCurrentStyle[client] != 0)
