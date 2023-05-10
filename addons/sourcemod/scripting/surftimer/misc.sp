@@ -2260,10 +2260,10 @@ public void FormatTimeFloat(int client, float time, int type, char[] string, int
 	// +-00:00:00
 	if (type == 6)
 	{
-		if (imilli < 10)
-			Format(szMilli, 16, "0%d", imilli);
+		if (imicro < 10)
+			Format(szMicro, 16, "0%d", imicro);
 		else
-			Format(szMilli, 16, "%d", imilli);
+			Format(szMicro, 16, "%d", imicro);
 		if (iseconds < 10)
 			Format(szSeconds, 16, "0%d", iseconds);
 		else
@@ -2275,10 +2275,10 @@ public void FormatTimeFloat(int client, float time, int type, char[] string, int
 		if (ihours > 0)
 		{
 			Format(szHours, 16, "%d", ihours);
-			Format(string, length, "%s:%s:%s:%s", szHours, szMinutes, szSeconds, szMilli);
+			Format(string, length, "%s:%s:%s:%s", szHours, szMinutes, szSeconds, szMicro);
 		}
 		else
-			Format(string, length, "%s:%s:%s", szMinutes, szSeconds, szMilli);
+			Format(string, length, "%s:%s:%s", szMinutes, szSeconds, szMicro);
 
 		ReplaceString(string, length, "-", "");
 
@@ -3378,7 +3378,7 @@ public void CenterHudDead(int client)
 			}
 			else 
 			{
-				obsAika = "<font color='#f32'>00:00:00</font>";
+				obsAika = "<font color='#f32'>00:00.000</font>";
 			}
 			
 			char timerText[32] = "";

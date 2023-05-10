@@ -12553,7 +12553,7 @@ public void DisplayCCPMenu(int client, float map_time, float record_time, int ma
 	{
 		//FORMAT PLAYER STAGE TIME
 		char szStageTimeFormatted[32];
-		FormatTimeFloat(client, g_fCCP_StageTimes_Player[client][i], 3, szStageTimeFormatted, sizeof szStageTimeFormatted);
+		FormatTimeFloat(client, g_fCCP_StageTimes_Player[client][i], 8, szStageTimeFormatted, sizeof szStageTimeFormatted);
 		//FORMAT WRCP DIFF
 		char szStageTimeDifferenceFormatted[32];
 		FormatTimeFloat(client, g_fCCP_StageTimes_ServerRecord[client][i] - g_fCCP_StageTimes_Player[client][i], 8, szStageTimeDifferenceFormatted, sizeof szStageTimeDifferenceFormatted);
