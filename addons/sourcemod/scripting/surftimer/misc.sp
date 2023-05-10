@@ -3274,37 +3274,37 @@ public void CenterHudDead(int client)
 		{
 			Buttons = g_LastButton[ObservedUser];
 			if (Buttons & IN_MOVELEFT)
-				Format(sResult, sizeof(sResult), "<font color='#b8b'>A</font>");
+				Format(sResult, sizeof(sResult), "%s <font color='#F24'>←</font>", sResult);
 			else
-				Format(sResult, sizeof(sResult), "_");
+				Format(sResult, sizeof(sResult), "%s ←", sResult);
 			if (Buttons & IN_FORWARD)
-				Format(sResult, sizeof(sResult), "%s <font color='#b8b'>W</font>", sResult);
+				Format(sResult, sizeof(sResult), "%s <font color='#F24'>↑</font>", sResult);
 			else
-				Format(sResult, sizeof(sResult), "%s _", sResult);
+				Format(sResult, sizeof(sResult), "%s ↑", sResult);
 			if (Buttons & IN_BACK)
-				Format(sResult, sizeof(sResult), "%s <font color='#b8b'>S</font>", sResult);
+				Format(sResult, sizeof(sResult), "%s <font color='#F24'>↓</font>", sResult);
 			else
-				Format(sResult, sizeof(sResult), "%s _", sResult);
+				Format(sResult, sizeof(sResult), "%s ↓", sResult);
 			if (Buttons & IN_MOVERIGHT)
-				Format(sResult, sizeof(sResult), "%s <font color='#b8b'>D</font>", sResult);
+				Format(sResult, sizeof(sResult), "%s <font color='#F24'>→</font>", sResult);
 			else
-				Format(sResult, sizeof(sResult), "%s _", sResult);
+				Format(sResult, sizeof(sResult), "%s →", sResult);
 			if (Buttons & IN_DUCK)
-				Format(sResult, sizeof(sResult), "%s - <font color='#b8b'>C</font>", sResult);
+				Format(sResult, sizeof(sResult), "%s - <font color='#F24'>▼</font>", sResult);
 			else
-				Format(sResult, sizeof(sResult), "%s - _", sResult);
+				Format(sResult, sizeof(sResult), "%s - ▼", sResult);
 			if (Buttons & IN_JUMP)
-				Format(sResult, sizeof(sResult), "%s <font color='#b8b'>J</font>", sResult);
+				Format(sResult, sizeof(sResult), "%s <font color='#F24'>▲</font>", sResult);
 			else
-				Format(sResult, sizeof(sResult), "%s _", sResult);
+				Format(sResult, sizeof(sResult), "%s ▲", sResult);
 			if (Buttons & IN_LEFT)
-				Format(sResult, sizeof(sResult), "%s <font color='#b8b'>L</font>", sResult);
+				Format(sResult, sizeof(sResult), "%s <font color='#F24'>↩</font>", sResult);
 			else
-				Format(sResult, sizeof(sResult), "%s _", sResult);
+				Format(sResult, sizeof(sResult), "%s ↩", sResult);
 			if (Buttons & IN_RIGHT)
-				Format(sResult, sizeof(sResult), "%s <font color='#b8b'>R</font>", sResult);
+				Format(sResult, sizeof(sResult), "%s <font color='#F24'>↪</font>", sResult);
 			else
-				Format(sResult, sizeof(sResult), "%s _", sResult);
+				Format(sResult, sizeof(sResult), "%s ↪", sResult);
 
 			if (IsFakeClient(ObservedUser))
 			{
