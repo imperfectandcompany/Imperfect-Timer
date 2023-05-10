@@ -139,7 +139,7 @@ public void sql_DeleteMenuView(Handle owner, Handle hndl, const char[] error, an
 			SQL_FetchString(hndl, 1, playerName, 32);
 			runTime = SQL_FetchFloat(hndl, 2);
 			char szRunTime[128];
-			FormatTimeFloat(data, runTime, 3, szRunTime, sizeof(szRunTime));
+			FormatTimeFloat(data, runTime, 8, szRunTime, sizeof(szRunTime));
 			FormatEx(menuFormat, sizeof(menuFormat), "Rank: %d ► %s - %s", i, playerName, szRunTime);
 			ReplaceString(playerName, 32, ";;;", ""); // make sure the client dont has this in their name.
 			
@@ -2051,7 +2051,7 @@ public void sql_selectMapRecordCallback(Handle owner, Handle hndl, const char[] 
 				if (g_fRecordMapTime > -1.0 && !SQL_IsFieldNull(hndl, 0))
 				{
 					g_fRecordMapTime = SQL_FetchFloat(hndl, 0);
-					FormatTimeFloat(0, g_fRecordMapTime, 3, g_szRecordMapTime, 64);
+					FormatTimeFloat(0, g_fRecordMapTime, 8, g_szRecordMapTime, 64);
 					SQL_FetchString(hndl, 1, g_szRecordPlayer, MAX_NAME_LENGTH);
 					SQL_FetchString(hndl, 2, g_szRecordMapSteamID, MAX_NAME_LENGTH);
 				}
@@ -2068,7 +2068,7 @@ public void sql_selectMapRecordCallback(Handle owner, Handle hndl, const char[] 
 				if (g_fRecordStyleMapTime[style] > -1.0 && !SQL_IsFieldNull(hndl, 0))
 				{
 					g_fRecordStyleMapTime[style] = SQL_FetchFloat(hndl, 0);
-					FormatTimeFloat(0, g_fRecordStyleMapTime[style], 3, g_szRecordStyleMapTime[style], 64);
+					FormatTimeFloat(0, g_fRecordStyleMapTime[style], 8, g_szRecordStyleMapTime[style], 64);
 					SQL_FetchString(hndl, 1, g_szRecordStylePlayer[style], MAX_NAME_LENGTH);
 					SQL_FetchString(hndl, 2, g_szRecordStyleMapSteamID[style], MAX_NAME_LENGTH);
 				}
@@ -2166,7 +2166,7 @@ public void sql_selectTopSurfersCallback(Handle owner, Handle hndl, const char[]
 				if (i < 51)
 				{
 					char szTime[32];
-					FormatTimeFloat(client, time, 3, szTime, sizeof(szTime));
+					FormatTimeFloat(client, time, 8, szTime, sizeof(szTime));
 
 					if (time < 3600.0)
 						Format(szTime, 32, "   %s", szTime);
@@ -2349,7 +2349,7 @@ public void sql_selectTopBonusSurfersCallback(Handle owner, Handle hndl, const c
 				if (i < 51)
 				{
 					char szTime[32];
-					FormatTimeFloat(client, time, 3, szTime, sizeof(szTime));
+					FormatTimeFloat(client, time, 8, szTime, sizeof(szTime));
 					if (time < 3600.0)
 						Format(szTime, 32, "   %s", szTime);
 					if (i == 100)
@@ -2416,7 +2416,7 @@ public void SQL_CurrentRunRankCallback(Handle owner, Handle hndl, const char[] e
 		else
 			f_srDiff = runtime;
 
-		FormatTimeFloat(client, f_srDiff, 3, sz_srDiff, 128);
+		FormatTimeFloat(client, f_srDiff, 8, sz_srDiff, 128);
 
 		if(f_srDiff == runtime)
 			Format(sz_srDiff, 128, "SR: N/A", sz_srDiff);
@@ -2797,7 +2797,7 @@ public void SQL_ViewAllRecordsCallback3(Handle owner, Handle hndl, const char[] 
 		int rank = ReadPackCell(data);
 		CloseHandle(data);
 
-		FormatTimeFloat(client, time, 3, szTime, sizeof(szTime));
+		FormatTimeFloat(client, time, 8, szTime, sizeof(szTime));
 
 		if (time < 3600.0)
 		Format(szTime, 32, "%s", szTime);
@@ -3034,7 +3034,7 @@ public void SQL_ViewTop10RecordsCallback3(Handle owner, Handle hndl, const char[
 		int rank = ReadPackCell(data);
 		CloseHandle(data);
 
-		FormatTimeFloat(client, time, 3, szTime, sizeof(szTime));
+		FormatTimeFloat(client, time, 8, szTime, sizeof(szTime));
 
 		if (time < 3600.0)
 		Format(szTime, 32, "   %s", szTime);
@@ -3141,7 +3141,7 @@ public void SQL_selectPersonalRecordsCallback(Handle owner, Handle hndl, const c
 
                 if (g_fPersonalRecord[client] > 0.0)
                 {
-                    FormatTimeFloat(client, g_fPersonalRecord[client], 3, g_szPersonalRecord[client], 64);
+                    FormatTimeFloat(client, g_fPersonalRecord[client], 8, g_szPersonalRecord[client], 64);
                     // Time found, get rank in current map
                     db_viewMapRankPro(client);
                 }
@@ -3152,7 +3152,7 @@ public void SQL_selectPersonalRecordsCallback(Handle owner, Handle hndl, const c
 
                 if (g_fPersonalStyleRecord[style][client] > 0.0)
                 {
-                    FormatTimeFloat(client, g_fPersonalStyleRecord[style][client], 3, g_szPersonalStyleRecord[style][client], 64);
+                    FormatTimeFloat(client, g_fPersonalStyleRecord[style][client], 8, g_szPersonalStyleRecord[style][client], 64);
                     // Time found, get rank in current map
                     db_viewStyleMapRank(client, style);
                 }
@@ -4297,7 +4297,7 @@ public void db_viewBonusRunRank(Handle owner, Handle hndl, const char[] error, a
 		else
 			f_srDiff = runtime;
 
-		FormatTimeFloat(client, f_srDiff, 3, sz_srDiff, 128);
+		FormatTimeFloat(client, f_srDiff, 8, sz_srDiff, 128);
 
 		if(f_srDiff == runtime)
 			Format(sz_srDiff, 128, "SR: N/A", sz_srDiff);
@@ -4417,7 +4417,7 @@ public void SQL_selectPersonalBonusRecordsCallback(Handle owner, Handle hndl, co
 
                 if (g_fPersonalRecordBonus[zgroup][client] > 0.0)
                 {
-                    FormatTimeFloat(client, g_fPersonalRecordBonus[zgroup][client], 3, g_szPersonalRecordBonus[zgroup][client], 64);
+                    FormatTimeFloat(client, g_fPersonalRecordBonus[zgroup][client], 8, g_szPersonalRecordBonus[zgroup][client], 64);
                     db_viewMapRankBonus(client, zgroup, 0); // get rank
                 }
                 else
@@ -4432,7 +4432,7 @@ public void SQL_selectPersonalBonusRecordsCallback(Handle owner, Handle hndl, co
 
                 if (g_fStylePersonalRecordBonus[style][zgroup][client] > 0.0)
                 {
-                    FormatTimeFloat(client, g_fStylePersonalRecordBonus[style][zgroup][client], 3, g_szStylePersonalRecordBonus[style][zgroup][client], 64);
+                    FormatTimeFloat(client, g_fStylePersonalRecordBonus[style][zgroup][client], 8, g_szStylePersonalRecordBonus[style][zgroup][client], 64);
                     db_viewMapRankBonusStyle(client, zgroup, 0, style);
                 }
                 else
@@ -4514,13 +4514,13 @@ public void SQL_selectFastestBonusCallback(Handle owner, Handle hndl, const char
 			{
 				SQL_FetchString(hndl, 0, g_szBonusFastest[zonegroup], MAX_NAME_LENGTH);
 				g_fBonusFastest[zonegroup] = SQL_FetchFloat(hndl, 1);
-				FormatTimeFloat(1, g_fBonusFastest[zonegroup], 3, g_szBonusFastestTime[zonegroup], 64);
+				FormatTimeFloat(1, g_fBonusFastest[zonegroup], 8, g_szBonusFastestTime[zonegroup], 64);
 			}
 			else
 			{
 				SQL_FetchString(hndl, 0, g_szStyleBonusFastest[style][zonegroup], MAX_NAME_LENGTH);
 				g_fStyleBonusFastest[style][zonegroup] = SQL_FetchFloat(hndl, 1);
-				FormatTimeFloat(1, g_fStyleBonusFastest[style][zonegroup], 3, g_szStyleBonusFastestTime[style][zonegroup], 64);
+				FormatTimeFloat(1, g_fStyleBonusFastest[style][zonegroup], 8, g_szStyleBonusFastestTime[style][zonegroup], 64);
 			}
 
 			g_iRecordPreStrafeBonus[0][zonegroup][style] = SQL_FetchInt(hndl, 4);
@@ -5640,7 +5640,7 @@ public void sql_selectLatestRecordsCallback(Handle owner, Handle hndl, const cha
 		{
 			SQL_FetchString(hndl, 0, szName, 64);
 			ftime = SQL_FetchFloat(hndl, 1);
-			FormatTimeFloat(data, ftime, 3, szTime, sizeof(szTime));
+			FormatTimeFloat(data, ftime, 8, szTime, sizeof(szTime));
 			SQL_FetchString(hndl, 2, szMapName, 64);
 			SQL_FetchString(hndl, 3, szDate, 64);
 			Format(szItem, sizeof(szItem), "%s - %s by %s (%s)", szMapName, szTime, szName, szDate);
@@ -6679,7 +6679,7 @@ public void sql_selectWrcpRecordCallback(Handle owner, Handle hndl, const char[]
 
 	// PB
 	fDiff = (g_fWrcpRecord[data][stage][style] - time);
-	FormatTimeFloat(data, fDiff, 3, szDiff, 128);
+	FormatTimeFloat(data, fDiff, 8, szDiff, 128);
 
 	if (fDiff > 0)
 		Format(szDiff, 128, "%cPB: %c-%s%c", WHITE, LIGHTGREEN, szDiff, WHITE);
@@ -6692,7 +6692,7 @@ public void sql_selectWrcpRecordCallback(Handle owner, Handle hndl, const char[]
 	else // styles
 		f_srDiff = (g_fStyleStageRecord[style][stage] - time);
 
-	FormatTimeFloat(data, f_srDiff, 3, sz_srDiff, 128);
+	FormatTimeFloat(data, f_srDiff, 8, sz_srDiff, 128);
 
 	if (f_srDiff > 0)
 		Format(sz_srDiff, 128, "%cSR: %c-%s%c", WHITE, LIGHTGREEN, sz_srDiff, WHITE);
@@ -6875,7 +6875,7 @@ public void SQL_UpdateWrcpRecordCallback2(Handle owner, Handle hndl, const char[
 	float fDiff;
 
 	fDiff = (g_fWrcpRecord[client][stage][style] - time);
-	FormatTimeFloat(client, fDiff, 3, szDiff, 128);
+	FormatTimeFloat(client, fDiff, 8, szDiff, 128);
 
 	if (g_fWrcpRecord[client][stage][style] != -1.0) // Existing stage time
 	{
@@ -6905,7 +6905,7 @@ public void SQL_UpdateWrcpRecordCallback2(Handle owner, Handle hndl, const char[
 	else if (style != 0)
 		f_srDiff = (g_fStyleStageRecord[style][stage] - time);
 
-	FormatTimeFloat(client, f_srDiff, 3, sz_srRawDiff, 128);
+	FormatTimeFloat(client, f_srDiff, 8, sz_srRawDiff, 128);
 
 	if (f_srDiff > 0)
 	{
@@ -6933,7 +6933,7 @@ public void SQL_UpdateWrcpRecordCallback2(Handle owner, Handle hndl, const char[
 					newRecordHolder = true;
 				g_fStageRecord[stage] = g_fFinalTime[client];
 				Format(g_szStageRecordPlayer[stage], MAX_NAME_LENGTH, "%s", szName);
-				FormatTimeFloat(1, g_fStageRecord[stage], 3, g_szRecordStageTime[stage], 64);
+				FormatTimeFloat(1, g_fStageRecord[stage], 8, g_szRecordStageTime[stage], 64);
 				CPrintToChatAll("%t", "SQL15", g_szChatPrefix, szName, stage, g_szFinalWrcpTime[client], sz_srDiff, g_TotalStageRecords[stage]);
 				g_bSavingWrcpReplay[client] = true;
 				// Stage_SaveRecording(client, stage, g_szFinalWrcpTime[client]);
@@ -6958,7 +6958,7 @@ public void SQL_UpdateWrcpRecordCallback2(Handle owner, Handle hndl, const char[
 			g_bStageSRVRecord[client][stage] = true;
 			g_fStageRecord[stage] = g_fFinalTime[client];
 			Format(g_szStageRecordPlayer[stage], MAX_NAME_LENGTH, "%s", szName);
-			FormatTimeFloat(1, g_fStageRecord[stage], 3, g_szRecordStageTime[stage], 64);
+			FormatTimeFloat(1, g_fStageRecord[stage], 8, g_szRecordStageTime[stage], 64);
 
 			CPrintToChatAll("%t", "SQL18", g_szChatPrefix, szName, stage, g_szFinalWrcpTime[client]);
 			g_bSavingWrcpReplay[client] = true;
@@ -6983,7 +6983,7 @@ public void SQL_UpdateWrcpRecordCallback2(Handle owner, Handle hndl, const char[
 
 				g_fStyleStageRecord[style][stage] = g_fFinalTime[client];
 				Format(g_szStyleStageRecordPlayer[style][stage], MAX_NAME_LENGTH, "%s", szName);
-				FormatTimeFloat(1, g_fStyleStageRecord[style][stage], 3, g_szStyleRecordStageTime[style][stage], 64);
+				FormatTimeFloat(1, g_fStyleStageRecord[style][stage], 8, g_szStyleRecordStageTime[style][stage], 64);
 
 				CPrintToChatAll("%t", "SQL19", g_szChatPrefix, szName, g_szStyleRecordPrint[style], stage, g_szFinalWrcpTime[client], sz_srDiff, g_StyleStageRank[style][client][stage], g_TotalStageStyleRecords[style][stage]);
 				PlayWRCPRecord();
@@ -7007,7 +7007,7 @@ public void SQL_UpdateWrcpRecordCallback2(Handle owner, Handle hndl, const char[
 			newRecordHolder = true;
 			g_fStyleStageRecord[style][stage] = g_fFinalTime[client];
 			Format(g_szStyleStageRecordPlayer[style][stage], MAX_NAME_LENGTH, "%s", szName);
-			FormatTimeFloat(1, g_fStyleStageRecord[style][stage], 3, g_szStyleRecordStageTime[style][stage], 64);
+			FormatTimeFloat(1, g_fStyleStageRecord[style][stage], 8, g_szStyleRecordStageTime[style][stage], 64);
 
 			CPrintToChatAll("%t", "SQL22", g_szChatPrefix, szName, g_szStyleRecordPrint[style], stage, g_szFinalWrcpTime[client]);
 			PlayWRCPRecord();
@@ -7510,7 +7510,7 @@ public void sql_viewWrcpMapRecordCallback(Handle owner, Handle hndl, const char[
 
 		SQL_FetchString(hndl, 0, szName, 128);
 		runtimepro = SQL_FetchFloat(hndl, 1);
-		FormatTimeFloat(0, runtimepro, 3, szRuntimepro, 64);
+		FormatTimeFloat(0, runtimepro, 8, szRuntimepro, 64);
 
 		CPrintToChat(client, "%t", "SQL25", g_szChatPrefix, szName, szRuntimepro, g_szWrcpMapSelect[client], g_szMapName);
 		return;
@@ -7573,7 +7573,7 @@ public void sql_selectStageTopSurfersCallback(Handle owner, Handle hndl, const c
 				if (i < 51)
 				{
 					char szTime[32];
-					FormatTimeFloat(client, time, 3, szTime, sizeof(szTime));
+					FormatTimeFloat(client, time, 8, szTime, sizeof(szTime));
 					if (time < 3600.0)
 					Format(szTime, 32, "   %s", szTime);
 					if (i == 100)
@@ -7670,7 +7670,7 @@ public void sql_viewStageRecordsCallback(Handle owner, Handle hndl, const char[]
                 {
                     g_fStageRecord[stage] = SQL_FetchFloat(hndl, 1);
                     Format(g_szStageRecordPlayer[stage], sizeof(g_szStageRecordPlayer), szName);
-                    FormatTimeFloat(0, g_fStageRecord[stage], 3, g_szRecordStageTime[stage], 64);
+                    FormatTimeFloat(0, g_fStageRecord[stage], 8, g_szRecordStageTime[stage], 64);
                 }
                 else
                 {
@@ -7685,7 +7685,7 @@ public void sql_viewStageRecordsCallback(Handle owner, Handle hndl, const char[]
                 if (g_fStyleStageRecord[style][stage] > -1.0 && !SQL_IsFieldNull(hndl, 1))
                 {
                     g_fStyleStageRecord[style][stage] = SQL_FetchFloat(hndl, 1);
-                    FormatTimeFloat(0, g_fStyleStageRecord[style][stage], 3, g_szStyleRecordStageTime[style][stage], 64);
+                    FormatTimeFloat(0, g_fStyleStageRecord[style][stage], 8, g_szStyleRecordStageTime[style][stage], 64);
                 }
                 else
                 {
@@ -7952,7 +7952,7 @@ public void sql_selectStyleMapRecordCallback(Handle owner, Handle hndl, const ch
 		if (g_fRecordStyleMapTime[style] > -1.0 && !SQL_IsFieldNull(hndl, 0))
 		{
 			g_fRecordStyleMapTime[style] = SQL_FetchFloat(hndl, 0);
-			FormatTimeFloat(0, g_fRecordStyleMapTime[style], 3, g_szRecordStyleMapTime[style], 64);
+			FormatTimeFloat(0, g_fRecordStyleMapTime[style], 8, g_szRecordStyleMapTime[style], 64);
 			SQL_FetchString(hndl, 1, g_szRecordStylePlayer[style], MAX_NAME_LENGTH);
 			SQL_FetchString(hndl, 2, g_szRecordStyleMapSteamID[style], MAX_NAME_LENGTH);
 		}
@@ -8246,7 +8246,7 @@ public void SQL_selectPersonalBonusStylesRecordsCallback(Handle owner, Handle hn
 
 			if (g_fStylePersonalRecordBonus[style][zgroup][client] > 0.0)
 			{
-				FormatTimeFloat(client, g_fStylePersonalRecordBonus[style][zgroup][client], 3, g_szStylePersonalRecordBonus[style][zgroup][client], 64);
+				FormatTimeFloat(client, g_fStylePersonalRecordBonus[style][zgroup][client], 8, g_szStylePersonalRecordBonus[style][zgroup][client], 64);
 				// db_viewMapRankBonus(client, zgroup, 0); // get rank
 				db_viewMapRankBonusStyle(client, zgroup, 0, style);
 			}
@@ -8338,7 +8338,7 @@ public void sql_viewWrcpStyleMapRecordCallback(Handle owner, Handle hndl, const 
 
 		SQL_FetchString(hndl, 0, szName, 128);
 		runtimepro = SQL_FetchFloat(hndl, 1);
-		FormatTimeFloat(0, runtimepro, 3, szRuntimepro, 64);
+		FormatTimeFloat(0, runtimepro, 8, szRuntimepro, 64);
 
 		CPrintToChat(client, "%t", "SQL27", g_szChatPrefix, szName, g_szStyleRecordPrint[style], szRuntimepro, g_szWrcpMapSelect[client], g_szMapName);
 		return;
@@ -8465,7 +8465,7 @@ public void sql_selectStageStyleTopSurfersCallback(Handle owner, Handle hndl, co
 				if (i < 51)
 				{
 					char szTime[32];
-					FormatTimeFloat(client, time, 3, szTime, sizeof(szTime));
+					FormatTimeFloat(client, time, 8, szTime, sizeof(szTime));
 					if (time < 3600.0)
 						Format(szTime, 32, "   %s", szTime);
 					if (i == 100)
@@ -8542,7 +8542,7 @@ public void db_selectMapRankCallback(Handle owner, Handle hndl, const char[] err
 		SQL_FetchString(hndl, 2, mapname, sizeof(mapname));
 		runtimepro = SQL_FetchFloat(hndl, 3);
 
-		FormatTimeFloat(client, runtimepro, 3, g_szRuntimepro[client], sizeof(g_szRuntimepro));
+		FormatTimeFloat(client, runtimepro, 8, g_szRuntimepro[client], sizeof(g_szRuntimepro));
 
 		Handle pack = CreateDataPack();
 		WritePackCell(pack, client);
@@ -8700,7 +8700,7 @@ public void db_selectMapRankUnknownCallback(Handle owner, Handle hndl, const cha
 		SQL_FetchString(hndl, 2, mapname, sizeof(mapname));
 		runtimepro = SQL_FetchFloat(hndl, 3);
 
-		FormatTimeFloat(client, runtimepro, 3, g_szRuntimepro[client], sizeof(g_szRuntimepro));
+		FormatTimeFloat(client, runtimepro, 8, g_szRuntimepro[client], sizeof(g_szRuntimepro));
 
 		Handle pack = CreateDataPack();
 		WritePackCell(pack, client);
@@ -8804,7 +8804,7 @@ public void db_selectBonusRankCallback(Handle owner, Handle hndl, const char[] e
 		runtimepro = SQL_FetchFloat(hndl, 3);
 		bonus = SQL_FetchInt(hndl, 4);
 
-		FormatTimeFloat(client, runtimepro, 3, g_szRuntimepro[client], sizeof(g_szRuntimepro));
+		FormatTimeFloat(client, runtimepro, 8, g_szRuntimepro[client], sizeof(g_szRuntimepro));
 
 		Handle pack = CreateDataPack();
 		WritePackCell(pack, client);
@@ -8928,7 +8928,7 @@ public void db_selectMapRecordTimeCallback(Handle owner, Handle hndl, const char
 		}
 		else
 		{
-			FormatTimeFloat(client, runtimepro, 3, szRecord, sizeof(szRecord));
+			FormatTimeFloat(client, runtimepro, 8, szRecord, sizeof(szRecord));
 
 			CPrintToChat(client, "%t", "SQL38", g_szChatPrefix, szName, szRecord, szMapName);
 		}
@@ -9807,7 +9807,7 @@ public void SQL_ViewPlayerPrMaptimeCallback2(Handle owner, Handle hndl, const ch
 	SetMenuTitle(menu, "Personal Record for %s\n%s\n \n", szName, szMapName);
 	if (time != -1.0)
 	{
-		FormatTimeFloat(0, time, 3, szRuntimepro, 64);
+		FormatTimeFloat(0, time, 8, szRuntimepro, 64);
 		Format(szMapInfo, 256, "Map Time: %s\nRank: %i/%i\n \n", szRuntimepro, rank, total);
 	}
 	else
@@ -9832,7 +9832,7 @@ public void SQL_ViewPlayerPrMaptimeCallback2(Handle owner, Handle hndl, const ch
 		{
 			if (stagetime[i] != -1.0)
 			{
-				FormatTimeFloat(0, stagetime[i], 3, szRuntimestages[i], 64);
+				FormatTimeFloat(0, stagetime[i], 8, szRuntimestages[i], 64);
 				Format(szStageInfo[i], 256, "Stage %i: %s\nRank: %i/%i\n \n", i, szRuntimestages[i], stagerank[i], totalcompletes[i]);
 			}
 			else
@@ -10754,7 +10754,7 @@ public void SQL_SelectCPRTargetCPsCallback(Handle owner, Handle hndl, const char
 			if (targetCPs == 0.0 || g_fClientCPs[client][cp] == 0.0)
 				continue;
 			
-			FormatTimeFloat(client, targetCPs, 3, szCPR, sizeof(szCPR));
+			FormatTimeFloat(client, targetCPs, 8, szCPR, sizeof(szCPR));
 			FormatTimeFloat(client, comparedCPs, 6, szCompared, sizeof(szCompared));
 			Format(szItem, sizeof(szItem), "CP %i: %s (%s)", cp, szCPR, szCompared);
 			AddMenuItem(menu, "", szItem, ITEMDRAW_DISABLED);
@@ -10762,7 +10762,7 @@ public void SQL_SelectCPRTargetCPsCallback(Handle owner, Handle hndl, const char
 
 		char szTime[32], szCompared2[32];
 		float compared = g_fClientCPs[client][0] - g_fTargetTime[client];
-		FormatTimeFloat(client, g_fClientCPs[client][0], 3, szTime, sizeof(szTime));
+		FormatTimeFloat(client, g_fClientCPs[client][0], 8, szTime, sizeof(szTime));
 		FormatTimeFloat(client, compared, 6, szCompared2, sizeof(szCompared2));
 		Format(szItem, sizeof(szItem), "Total Time: %s (%s)", szTime, szCompared2);
 		AddMenuItem(menu, "", szItem, ITEMDRAW_DISABLED);
@@ -11100,7 +11100,7 @@ public void db_PRinfoDoneCallback(any pack){
 	FormatTimeFloat(client, stcomplete, 7, szstCompleteFormatted, 32);
 
 	char szruntimeFormatted[32];
-	FormatTimeFloat(client, runtime, 3, szruntimeFormatted, 32);
+	FormatTimeFloat(client, runtime, 8, szruntimeFormatted, 32);
 
 	SetMenuOptionFlags(menu, MENUFLAG_BUTTON_EXIT);
 	if(zonegroup == 0)
@@ -12277,7 +12277,7 @@ public void SQL_viewCCP_GetMapRankCallback(Handle owner, Handle hndl, const char
 		SQL_FetchString(hndl, 2,  szPlayerSteamID, 32);
 
 		char szMapTimeFormatted[32];
-		FormatTimeFloat(client, map_time, 3, szMapTimeFormatted, 32);
+		FormatTimeFloat(client, map_time, 8, szMapTimeFormatted, 32);
 		
 		//IF THE DIDNT PLAYER PROVIDED THE RANK BEFORE
 		//THIS -1 IS A COLUMN FROM THE SQL QUERY
@@ -12556,7 +12556,7 @@ public void DisplayCCPMenu(int client, float map_time, float record_time, int ma
 		FormatTimeFloat(client, g_fCCP_StageTimes_Player[client][i], 3, szStageTimeFormatted, sizeof szStageTimeFormatted);
 		//FORMAT WRCP DIFF
 		char szStageTimeDifferenceFormatted[32];
-		FormatTimeFloat(client, g_fCCP_StageTimes_ServerRecord[client][i] - g_fCCP_StageTimes_Player[client][i], 3, szStageTimeDifferenceFormatted, sizeof szStageTimeDifferenceFormatted);
+		FormatTimeFloat(client, g_fCCP_StageTimes_ServerRecord[client][i] - g_fCCP_StageTimes_Player[client][i], 8, szStageTimeDifferenceFormatted, sizeof szStageTimeDifferenceFormatted);
 		if(g_fCCP_StageTimes_ServerRecord[client][i] - g_fCCP_StageTimes_Player[client][i] >= 0.0)
 			Format(szStageTimeDifferenceFormatted, sizeof szStageTimeDifferenceFormatted, "-%s", szStageTimeDifferenceFormatted);
 		else
@@ -12575,10 +12575,10 @@ public void DisplayCCPMenu(int client, float map_time, float record_time, int ma
 	
 	//FORMAT PLAYERS RUNTIME
 	char szMapTimeFormatted[32];
-	FormatTimeFloat(client, map_time, 3, szMapTimeFormatted, sizeof szMapTimeFormatted);
+	FormatTimeFloat(client, map_time, 8, szMapTimeFormatted, sizeof szMapTimeFormatted);
 	//FORMAT PLAYERS VS RECORD TIME DIFFERENCE
 	char szMapTimeDiffFormatted[32];
-	FormatTimeFloat(client, record_time - map_time, 3, szMapTimeDiffFormatted, sizeof szMapTimeDiffFormatted);
+	FormatTimeFloat(client, record_time - map_time, 8, szMapTimeDiffFormatted, sizeof szMapTimeDiffFormatted);
 
 	Format(szItem, sizeof(szItem), "Map\nRank %i/%i\n%s (+%s)\n \n", map_rank, total_map_completions, szMapTimeFormatted, szMapTimeDiffFormatted);
 	AddMenuItem(ccp_menu, "", szItem, ITEMDRAW_DEFAULT);

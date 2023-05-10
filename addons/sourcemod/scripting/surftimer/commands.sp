@@ -1206,7 +1206,7 @@ public void SaveLocMenu(int client)
 	{
 		unix = GetTime() - g_iSaveLocUnix[i][client];
 		diffForHumans(unix, szBuffer, 128, 1);
-		FormatTimeFloat(client, g_fPlayerPracTimeSnap[client][i], 3, szTime, sizeof(szTime));
+		FormatTimeFloat(client, g_fPlayerPracTimeSnap[client][i], 8, szTime, sizeof(szTime));
 		Format(szItem, sizeof(szItem), "#%d %s - %s", i, szTime, szBuffer); //TODO add speed
 		IntToString(i, szId, 32);
 		AddMenuItem(menu, szId, szItem);
@@ -1840,7 +1840,7 @@ public Action Client_Avg(int client, int args)
 		return Plugin_Handled;
 
 	char szProTime[32];
-	FormatTimeFloat(client, g_favg_maptime, 3, szProTime, sizeof(szProTime));
+	FormatTimeFloat(client, g_favg_maptime, 8, szProTime, sizeof(szProTime));
 
 	if (g_MapTimesCount == 0)
 		Format(szProTime, 32, "N/A");
@@ -1853,7 +1853,7 @@ public Action Client_Avg(int client, int args)
 
 		for (int i = 1; i < g_mapZoneGroupCount; i++)
 		{
-			FormatTimeFloat(client, g_fAvg_BonusTime[i], 3, szBonusTime, sizeof(szBonusTime));
+			FormatTimeFloat(client, g_fAvg_BonusTime[i], 8, szBonusTime, sizeof(szBonusTime));
 
 			if (g_iBonusCount[i] == 0)
 				Format(szBonusTime, 32, "N/A");
