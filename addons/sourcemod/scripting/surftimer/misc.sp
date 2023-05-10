@@ -2311,7 +2311,7 @@ public void FormatTimeFloat(int client, float time, int type, char[] string, int
 	// 00:00:00.000
 	if (type == 8)
 	{
-		if (imicro < 10)
+		if (imicro < 100)
 			Format(szMicro, 16, "0%d", imicro);
 		else
 			Format(szMicro, 16, "%d", imicro);

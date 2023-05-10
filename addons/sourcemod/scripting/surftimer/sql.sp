@@ -10755,7 +10755,7 @@ public void SQL_SelectCPRTargetCPsCallback(Handle owner, Handle hndl, const char
 				continue;
 			
 			FormatTimeFloat(client, targetCPs, 8, szCPR, sizeof(szCPR));
-			FormatTimeFloat(client, comparedCPs, 6, szCompared, sizeof(szCompared));
+			FormatTimeFloat(client, comparedCPs, 8, szCompared, sizeof(szCompared));
 			Format(szItem, sizeof(szItem), "CP %i: %s (%s)", cp, szCPR, szCompared);
 			AddMenuItem(menu, "", szItem, ITEMDRAW_DISABLED);
 		}
@@ -10763,7 +10763,7 @@ public void SQL_SelectCPRTargetCPsCallback(Handle owner, Handle hndl, const char
 		char szTime[32], szCompared2[32];
 		float compared = g_fClientCPs[client][0] - g_fTargetTime[client];
 		FormatTimeFloat(client, g_fClientCPs[client][0], 8, szTime, sizeof(szTime));
-		FormatTimeFloat(client, compared, 6, szCompared2, sizeof(szCompared2));
+		FormatTimeFloat(client, compared, 8, szCompared2, sizeof(szCompared2));
 		Format(szItem, sizeof(szItem), "Total Time: %s (%s)", szTime, szCompared2);
 		AddMenuItem(menu, "", szItem, ITEMDRAW_DISABLED);
 		SetMenuOptionFlags(menu, MENUFLAG_BUTTON_EXIT);
