@@ -1809,7 +1809,7 @@ stock void MapFinishedMsgs(int client, int rankThisRun = 0)
 						if (g_fOldRecordMapTime != g_fFinalTime[client])
 						{
 							fRecordDiff = g_fOldRecordMapTime - g_fFinalTime[client];
-							FormatTimeFloat(client, fRecordDiff, 3, szRecordDiff, 54);
+							FormatTimeFloat(client, fRecordDiff, 8, szRecordDiff, 54);
 							Format(szRecordDiff, 54, "[%c-%s%c]", LIGHTGREEN, szRecordDiff, WHITE);
 						}
 
@@ -1857,7 +1857,7 @@ stock void MapFinishedMsgs(int client, int rankThisRun = 0)
 		{
 			float fRecordDiff = g_fOldRecordMapTime - g_fRecordMapTime;
 			char szRecordDiff[64];
-			FormatTimeFloat(client, fRecordDiff, 3, szRecordDiff, sizeof szRecordDiff);
+			FormatTimeFloat(client, fRecordDiff, 8, szRecordDiff, sizeof szRecordDiff);
 			Format(szRecordDiff, sizeof szRecordDiff, "-%s", szRecordDiff);
 
 			SendNewRecordForward(client, szRecordDiff);
@@ -1915,7 +1915,7 @@ stock void PrintChatBonus(int client, int zGroup, int rank = 0)
 			PlayRecordSound(2);
 
 			RecordDiff = g_fOldBonusRecordTime[zGroup] - g_fFinalTime[client];
-			FormatTimeFloat(client, RecordDiff, 3, szRecordDiff, 54);
+			FormatTimeFloat(client, RecordDiff, 8, szRecordDiff, 54);
 			Format(szRecordDiff, 54, "-%s", szRecordDiff);
 			
 			SendNewRecordForward(client, szRecordDiff, zGroup);
@@ -1957,7 +1957,7 @@ stock void PrintChatBonus(int client, int zGroup, int rank = 0)
 			PlayRecordSound(2);
 
 			RecordDiff = g_fOldBonusRecordTime[zGroup] - g_fFinalTime[client];
-			FormatTimeFloat(client, RecordDiff, 3, szRecordDiff, 54);
+			FormatTimeFloat(client, RecordDiff, 8, szRecordDiff, 54);
 			Format(szRecordDiff, 54, "-%s", szRecordDiff);
 
 			SendNewRecordForward(client, szRecordDiff, zGroup);
@@ -2073,6 +2073,7 @@ public void ReplaceChar(char[] sSplitChar, char[] sReplace, char sString[64])
 
 public void FormatTimeFloat(int client, float time, int type, char[] string, int length)
 {
+	char szMicro[16];
 	char szMilli[16];
 	char szSeconds[16];
 	char szMinutes[16];
@@ -2082,6 +2083,7 @@ public void FormatTimeFloat(int client, float time, int type, char[] string, int
 	char szMinutes2[16];
 	char szHours2[16];
 	char szDays[16];
+	int imicro;
 	int imilli;
 	int imilli2;
 	int iseconds;
@@ -2090,7 +2092,9 @@ public void FormatTimeFloat(int client, float time, int type, char[] string, int
 	int idays;
 	if (type != 6)
 		time = FloatAbs(time);
+	imicro = RoundToZero(time * 1000);
 	imilli = RoundToZero(time * 100);
+	imicro = imicro % 1000;
 	imilli2 = RoundToZero(time * 10);
 	imilli = imilli % 100;
 	imilli2 = imilli2 % 10;
@@ -2102,6 +2106,10 @@ public void FormatTimeFloat(int client, float time, int type, char[] string, int
 	ihours = ihours % 24;
 	idays = RoundToZero( ((time / 60) / 60) / 24);
 
+	if (imicro < 10)
+		Format(szMicro, 16, "0%dmis", imicro);
+	else
+		Format(szMicro, 16, "%dmis", imicro);
 	if (imilli < 10)
 		Format(szMilli, 16, "0%dms", imilli);
 	else
@@ -2252,10 +2260,10 @@ public void FormatTimeFloat(int client, float time, int type, char[] string, int
 	// +-00:00:00
 	if (type == 6)
 	{
-		if (imilli < 10)
-			Format(szMilli, 16, "0%d", imilli);
+		if (imicro < 10)
+			Format(szMicro, 16, "0%d", imicro);
 		else
-			Format(szMilli, 16, "%d", imilli);
+			Format(szMicro, 16, "%d", imicro);
 		if (iseconds < 10)
 			Format(szSeconds, 16, "0%d", iseconds);
 		else
@@ -2267,10 +2275,10 @@ public void FormatTimeFloat(int client, float time, int type, char[] string, int
 		if (ihours > 0)
 		{
 			Format(szHours, 16, "%d", ihours);
-			Format(string, length, "%s:%s:%s:%s", szHours, szMinutes, szSeconds, szMilli);
+			Format(string, length, "%s:%s:%s:%s", szHours, szMinutes, szSeconds, szMicro);
 		}
 		else
-			Format(string, length, "%s:%s:%s", szMinutes, szSeconds, szMilli);
+			Format(string, length, "%s:%s:%s", szMinutes, szSeconds, szMicro);
 
 		ReplaceString(string, length, "-", "");
 
@@ -2299,7 +2307,29 @@ public void FormatTimeFloat(int client, float time, int type, char[] string, int
 		else{
 			Format(string, 32, "%s %s %s %s", szHours, szMinutes, szSeconds, szMilli);
 		}
-		
+	}
+	// 00:00:00.000
+	if (type == 8)
+	{
+		if (imicro < 100)
+			Format(szMicro, 16, "0%d", imicro);
+		else
+			Format(szMicro, 16, "%d", imicro);
+		if (iseconds < 10)
+			Format(szSeconds, 16, "0%d", iseconds);
+		else
+			Format(szSeconds, 16, "%d", iseconds);
+		if (iminutes < 10)
+			Format(szMinutes, 16, "0%d", iminutes);
+		else
+			Format(szMinutes, 16, "%d", iminutes);
+		if (ihours > 0)
+		{
+			Format(szHours, 16, "%d", ihours);
+			Format(string, length, "%s:%s:%s:%s.%s", szHours, szMinutes, szSeconds, szMicro);
+		}
+		else
+			Format(string, length, "%s:%s.%s", szMinutes, szSeconds, szMicro);
 	}
 }
 
@@ -2973,7 +3003,7 @@ public void SpecListMenuDead(int client) // What Spectators see
 
 			if (g_fPersonalRecord[ObservedUser] > 0.0)
 			{
-				FormatTimeFloat(client, g_fPersonalRecord[ObservedUser], 3, szTime2, sizeof(szTime2));
+				FormatTimeFloat(client, g_fPersonalRecord[ObservedUser], 8, szTime2, sizeof(szTime2));
 				Format(szProBest, 32, "%s (#%i/%i)", szTime2, g_MapRank[ObservedUser], g_MapTimesCount);
 			}
 			else
@@ -2995,7 +3025,7 @@ public void SpecListMenuDead(int client) // What Spectators see
 				{
 					char szTime[32];
 					float time = GetClientTickTime(ObservedUser) - g_fStartTime[ObservedUser] - g_fPauseTime[ObservedUser];
-					FormatTimeFloat(client, time, 4, szTime, sizeof(szTime));
+					FormatTimeFloat(client, time, 8, szTime, sizeof(szTime));
 					if (!g_bPause[ObservedUser])
 					{
 						if (!IsFakeClient(ObservedUser))
@@ -3203,7 +3233,7 @@ public void SetInfoBotName(int ent)
 	GetMapTimeLeft(iInfoBotTimeleft);
 	float ftime = float(iInfoBotTimeleft);
 	char szTime[32];
-	FormatTimeFloat(g_InfoBot, ftime, 4, szTime, sizeof(szTime));
+	FormatTimeFloat(g_InfoBot, ftime, 8, szTime, sizeof(szTime));
 	Handle hTmp;
 	hTmp = FindConVar("mp_timelimit");
 	int iTimeLimit = GetConVarInt(hTmp);
@@ -3335,12 +3365,12 @@ public void CenterHudDead(int client)
 					obsTimer = GetClientTickTime(ObservedUser) - g_fStartTime[ObservedUser] - g_fPauseTime[ObservedUser];
 				}
 
-				FormatTimeFloat(client, obsTimer, 3, obsAika, sizeof(obsAika));
+				FormatTimeFloat(client, obsTimer, 8, obsAika, sizeof(obsAika));
 			}
 			else if (g_bWrcpTimeractivated[ObservedUser] && !g_bTimerRunning[ObservedUser])
 			{
 				obsTimer = GetClientTickTime(ObservedUser) - g_fStartWrcpTime[ObservedUser] - g_fPauseTime[ObservedUser];
-				FormatTimeFloat(client, obsTimer, 3, obsAika, sizeof(obsAika));
+				FormatTimeFloat(client, obsTimer, 8, obsAika, sizeof(obsAika));
 			}
 			else if (!g_bTimerEnabled[ObservedUser])
 			{
@@ -3348,7 +3378,7 @@ public void CenterHudDead(int client)
 			}
 			else 
 			{
-				obsAika = "<font color='#f32'>00:00:00</font>";
+				obsAika = "<font color='#f32'>00:00.000</font>";
 			}
 			
 			char timerText[32] = "";
@@ -3388,7 +3418,7 @@ public void CenterHudAlive(int client)
 				// Timer
 				if (g_bTimerRunning[client])
 				{
-					FormatTimeFloat(client, g_fCurrentRunTime[client], 3, pAika, 128);
+					FormatTimeFloat(client, g_fCurrentRunTime[client], 8, pAika, 128);
 					
 					if (g_bPause[client])
 					{
@@ -3438,14 +3468,14 @@ public void CenterHudAlive(int client)
 				}
 				else if (g_bWrcpTimeractivated[client] && !g_bPracticeMode[client])
 				{
-					FormatTimeFloat(client, g_fCurrentWrcpRunTime[client], 3, pAika, 128);
+					FormatTimeFloat(client, g_fCurrentWrcpRunTime[client], 8, pAika, 128);
 					Format(module[i], 128, "<font color='#8cd'>%s 	</font>", pAika);
 				}
 				else if (!g_bTimerEnabled[client])
 					Format(module[i], 128, "<font color='#f32'>Disabled	</font>");
 				else
 				{
-					Format(module[i], 128, "<font color='#f32'>00:00.00		</font>");
+					Format(module[i], 128, "<font color='#f32'>00:00.000 </font>");
 				}
 
 				if (g_iCurrentStyle[client] != 0)
@@ -3831,7 +3861,7 @@ public void SideHudAlive(int client)
 						char szCurrentCP[64];
 						if (g_iCurrentCheckpoint[client] == g_mapZonesTypeCount[g_iClientInZone[client][2]][4])
 						{
-							FormatTimeFloat(0, g_fRecordMapTime, 3, szCP, 64);
+							FormatTimeFloat(0, g_fRecordMapTime, 8, szCP, 64);
 							Format(szCurrentCP, 64, "End Zone");
 						}
 						else
@@ -3852,7 +3882,7 @@ public void SideHudAlive(int client)
 								Format(szCurrentCP, 64, "Checkpoint [%i]", g_iCurrentCheckpoint[client] + 1);
 							}
 							
-							FormatTimeFloat(0, g_fCheckpointServerRecord[g_iClientInZone[client][2]][g_iCurrentCheckpoint[client]], 3, szCP, 64);
+							FormatTimeFloat(0, g_fCheckpointServerRecord[g_iClientInZone[client][2]][g_iCurrentCheckpoint[client]], 8, szCP, 64);
 						}
 
 						Format(szModule[i], 256, "%s\n%s", szCurrentCP, szCP);
@@ -3879,7 +3909,7 @@ public void SideHudAlive(int client)
 						}
 						
 						char szWrcpTime[64];
-						FormatTimeFloat(0, g_fStageRecord[stage], 3, szWrcpTime, 64);
+						FormatTimeFloat(0, g_fStageRecord[stage], 8, szWrcpTime, 64);
 						char szName[64];
 						Format(szName, 64, "%s", g_szStageRecordPlayer[stage]);
 						Format(szModule[i], 256, "%s\nSRCP: %s\nby %s", szStage, szWrcpTime, szName);
@@ -3985,7 +4015,7 @@ public void Checkpoint(int client, int zone, int zonegroup, float time)
 	{
 		float f_srDiff = (g_fCheckpointServerRecord[zonegroup][zone] - time);
 
-		FormatTimeFloat(client, f_srDiff, 3, sz_srDiff, 128);
+		FormatTimeFloat(client, f_srDiff, 8, sz_srDiff, 128);
 
 		if (f_srDiff > 0)
 		{
@@ -4032,7 +4062,7 @@ public void Checkpoint(int client, int zone, int zonegroup, float time)
 		char szDiff[32];
 		char szDiff_colorless[32];
 
-		FormatTimeFloat(client, diff, 3, szDiff, 32);
+		FormatTimeFloat(client, diff, 8, szDiff, 32);
 
 		// MOVE TO PB variable
 		if (diff > 0)
@@ -4061,7 +4091,7 @@ public void Checkpoint(int client, int zone, int zonegroup, float time)
 			Format(szDiff, 128, "");
 
 		char szTime[32];
-		FormatTimeFloat(client, time, 3, szTime, 32);
+		FormatTimeFloat(client, time, 8, szTime, 32);
 
 		SendMapCheckpointForward(client, zonegroup, zone, time, szTime, szDiff_colorless, sz_srDiff_colorless);
 
@@ -4086,7 +4116,7 @@ public void Checkpoint(int client, int zone, int zonegroup, float time)
 				CS_SetClientAssists(client, 100);
 
 			char szTime[32];
-			FormatTimeFloat(client, time, 3, szTime, 32);
+			FormatTimeFloat(client, time, 8, szTime, 32);
 
 			Call_StartForward(g_MapCheckpointForward);
 
@@ -4177,7 +4207,7 @@ stock void StyleFinishedMsgs(int client, int style)
 						char szRecordDiff[64] = "";
 
 						fRecordDiff = g_fOldStyleRecordMapTime[style] - g_fFinalTime[client];
-						FormatTimeFloat(client, fRecordDiff, 3, szRecordDiff, sizeof szRecordDiff);
+						FormatTimeFloat(client, fRecordDiff, 8, szRecordDiff, sizeof szRecordDiff);
 						Format(szRecordDiff, sizeof szRecordDiff, "[%c-%s%c]", LIGHTGREEN, szRecordDiff, WHITE);
 
 						PlayRecordSound(2);
@@ -4196,7 +4226,7 @@ stock void StyleFinishedMsgs(int client, int style)
 					char szRecordDiff[64] = "";
 
 					fRecordDiff = g_fOldStyleRecordMapTime[style] - g_fFinalTime[client];
-					FormatTimeFloat(client, fRecordDiff, 3, szRecordDiff, sizeof szRecordDiff);
+					FormatTimeFloat(client, fRecordDiff, 8, szRecordDiff, sizeof szRecordDiff);
 					Format(szRecordDiff, sizeof szRecordDiff, "[%c-%s%c]", LIGHTGREEN, szRecordDiff, WHITE);
 
 					PlayRecordSound(2);
@@ -4213,7 +4243,7 @@ stock void StyleFinishedMsgs(int client, int style)
 		{
 			float fRecordDiff = g_fOldStyleRecordMapTime[style] - g_fFinalTime[client];
 			char szRecordDiff[64];
-			FormatTimeFloat(client, fRecordDiff, 3, szRecordDiff, sizeof szRecordDiff);
+			FormatTimeFloat(client, fRecordDiff, 8, szRecordDiff, sizeof szRecordDiff);
 			Format(szRecordDiff, sizeof szRecordDiff, "-%s", szRecordDiff);
 
 			SendNewRecordForward(client, szRecordDiff);
@@ -4249,7 +4279,7 @@ stock void PrintChatBonusStyle (int client, int zGroup, int style, int rank = 0)
 		PlayRecordSound(2);
 
 		RecordDiff = g_fStyleOldBonusRecordTime[style][zGroup] - g_fFinalTime[client];
-		FormatTimeFloat(client, RecordDiff, 3, szRecordDiff, 54);
+		FormatTimeFloat(client, RecordDiff, 8, szRecordDiff, 54);
 		Format(szRecordDiff, 54, "-%s", szRecordDiff);
 
 		SetNewRecordPrestrafe(client, zGroup, style, false, true, false);
@@ -4879,7 +4909,7 @@ public void PrintPracSrcp(int client, int style, int stage, int stage_rank, floa
 
 	// PB
 	fDiff = (fClientPbStageTime - fFinalPracSrcpTime);
-	FormatTimeFloat(client, fDiff, 3, szDiff, 128);
+	FormatTimeFloat(client, fDiff, 8, szDiff, 128);
 
 	if (fDiff > 0.0)
 	{
@@ -4899,7 +4929,7 @@ public void PrintPracSrcp(int client, int style, int stage, int stage_rank, floa
 	{
 		f_srDiff = (g_fStyleStageRecord[style][stage] - fFinalPracSrcpTime);
 	}
-	FormatTimeFloat(client, f_srDiff, 3, sz_srDiff, 128);
+	FormatTimeFloat(client, f_srDiff, 8, sz_srDiff, 128);
 
 	if (f_srDiff > 0.0)
 	{
