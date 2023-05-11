@@ -2073,7 +2073,6 @@ public void ReplaceChar(char[] sSplitChar, char[] sReplace, char sString[64])
 
 public void FormatTimeFloat(int client, float time, int type, char[] string, int length)
 {
-	char szMicro[16];
 	char szMilli[16];
 	char szSeconds[16];
 	char szMinutes[16];
@@ -2083,7 +2082,6 @@ public void FormatTimeFloat(int client, float time, int type, char[] string, int
 	char szMinutes2[16];
 	char szHours2[16];
 	char szDays[16];
-	int imicro;
 	int imilli;
 	int imilli2;
 	int iseconds;
@@ -2092,11 +2090,9 @@ public void FormatTimeFloat(int client, float time, int type, char[] string, int
 	int idays;
 	if (type != 6)
 		time = FloatAbs(time);
-	imicro = RoundToZero(time * 1000);
-	imilli = RoundToZero(time * 100);
-	imicro = imicro % 1000;
+	imilli = RoundToZero(time * 1000);
 	imilli2 = RoundToZero(time * 10);
-	imilli = imilli % 100;
+	imilli = imilli % 1000;
 	imilli2 = imilli2 % 10;
 	iseconds = RoundToZero(time);
 	iseconds = iseconds % 60;
@@ -2106,13 +2102,11 @@ public void FormatTimeFloat(int client, float time, int type, char[] string, int
 	ihours = ihours % 24;
 	idays = RoundToZero( ((time / 60) / 60) / 24);
 
-	if (imicro < 10)
-		Format(szMicro, 16, "0%dmis", imicro);
-	else
-		Format(szMicro, 16, "%dmis", imicro);
 	if (imilli < 10)
+		Format(szMilli, 16, "00%dms", imilli);
+	else if (imilli < 100)
 		Format(szMilli, 16, "0%dms", imilli);
-	else
+	else 
 		Format(szMilli, 16, "%dms", imilli);
 	if (iseconds < 10)
 		Format(szSeconds, 16, "0%ds", iseconds);
@@ -2260,10 +2254,12 @@ public void FormatTimeFloat(int client, float time, int type, char[] string, int
 	// +-00:00:00
 	if (type == 6)
 	{
-		if (imicro < 10)
-			Format(szMicro, 16, "0%d", imicro);
-		else
-			Format(szMicro, 16, "%d", imicro);
+		if (imilli < 10)
+			Format(szMilli, 16, "00%dms", imilli);
+		else if (imilli < 100)
+			Format(szMilli, 16, "0%dms", imilli);
+		else 
+			Format(szMilli, 16, "%dms", imilli);
 		if (iseconds < 10)
 			Format(szSeconds, 16, "0%d", iseconds);
 		else
@@ -2275,10 +2271,10 @@ public void FormatTimeFloat(int client, float time, int type, char[] string, int
 		if (ihours > 0)
 		{
 			Format(szHours, 16, "%d", ihours);
-			Format(string, length, "%s:%s:%s:%s", szHours, szMinutes, szSeconds, szMicro);
+			Format(string, length, "%s:%s:%s.%s", szHours, szMinutes, szSeconds, szMilli);
 		}
 		else
-			Format(string, length, "%s:%s:%s", szMinutes, szSeconds, szMicro);
+			Format(string, length, "%s:%s.%s", szMinutes, szSeconds, szMilli);
 
 		ReplaceString(string, length, "-", "");
 
@@ -2308,29 +2304,31 @@ public void FormatTimeFloat(int client, float time, int type, char[] string, int
 			Format(string, 32, "%s %s %s %s", szHours, szMinutes, szSeconds, szMilli);
 		}
 	}
-	// 00:00:00.000
-	if (type == 8)
-	{
-		if (imicro < 10)
-			Format(szMicro, 16, "0%d", imicro);
-		else
-			Format(szMicro, 16, "%d", imicro);
-		if (iseconds < 10)
-			Format(szSeconds, 16, "0%d", iseconds);
-		else
-			Format(szSeconds, 16, "%d", iseconds);
-		if (iminutes < 10)
-			Format(szMinutes, 16, "0%d", iminutes);
-		else
-			Format(szMinutes, 16, "%d", iminutes);
-		if (ihours > 0)
+	// 00:00.000
+        if (type == 8)
 		{
-			Format(szHours, 16, "%d", ihours);
-			Format(string, length, "%s:%s:%s:%s.%s", szHours, szMinutes, szSeconds, szMicro);
+			if (imilli < 10)
+				Format(szMilli, 16, "00%d", imilli);
+			else if (imilli < 100)
+				Format(szMilli, 16, "0%d", imilli);
+			else
+				Format(szMilli, 16, "%d", imilli);
+			if (iseconds < 10)
+				Format(szSeconds, 16, "0%d", iseconds);
+			else
+				Format(szSeconds, 16, "%d", iseconds);
+			if (iminutes < 10)
+				Format(szMinutes, 16, "0%d", iminutes);
+			else
+				Format(szMinutes, 16, "%d", iminutes);
+			if (ihours > 0)
+			{
+				Format(szHours, 16, "%d", ihours);
+				Format(string, length, "%s:%s:%s.%s", szHours, szMinutes, szSeconds, szMilli);
+			}
+			else
+				Format(string, length, "%s:%s.%s", szMinutes, szSeconds, szMilli);
 		}
-		else
-			Format(string, length, "%s:%s.%s", szMinutes, szSeconds, szMicro);
-	}
 }
 
 public void SetSkillGroups()
